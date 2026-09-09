@@ -815,7 +815,7 @@
                                                 >
 
                                                     <img
-                                                        src="{{ $target?->image_url ?? asset('storefront/assets/images/products/medium-size/1.jpg') }}"
+                                                        src="{{ $deal->image ? Storage::url($deal->image) : asset('storefront/assets/images/products/medium-size/1.jpg') }}"
                                                         alt="{{ $deal->name }}"
                                                     >
 
@@ -841,16 +841,17 @@
 
                                                     <div class="actions">
 
-                                                        <a
-                                                            href="javascript:void(0)"
-                                                            title="Quickview"
-                                                            class="action quickview"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModalCenter"
-                                                            data-slug="{{ $target->slug }}"
-                                                        >
-                                                            <i class="pe-7s-search"></i>
-                                                        </a>
+                                                       <a
+    href="javascript:void(0)"
+    class="action quickview"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModalCenter"
+    data-slug="{{ $target?->slug ?? $buyItem?->slug ?? $freeItem?->slug ?? $comboFirstItem?->slug }}"
+    data-deal-id="{{ $deal->id }}"
+    title="Quick View"
+>
+    <i class="pe-7s-search"></i>
+</a>
 
                                                     </div>
 
@@ -899,17 +900,21 @@
                                                         {{ $target->name }}
                                                     </p>
 
+                                                    <span class="price">
+                                                        <span class="new">
+                                                            £{{ number_format($deal->discountedPriceFor((float) $target->price), 2) }}
+                                                        </span>
+                                                        <span class="old">
+                                                            £{{ number_format($target->price, 2) }}
+                                                        </span>
+                                                    </span>
+
                                                 @endif
 
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Call to Order
-                                                    </a>
+                                                    @include('storefront.partials.add-bundle-to-cart-button', ['deal' => $deal, 'menuItem' => $target])
 
                                                 </div>
 
@@ -963,11 +968,9 @@
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Mention When Ordering
+                                                    <a href="{{ route('storefront.home') }}" class="btn btn-outline-dark btn-hover-primary">
+                                                        <i class="fa fa-utensils me-2"></i>
+                                                        Browse Menu
                                                     </a>
 
                                                 </div>
@@ -996,7 +999,7 @@
                                                 >
 
                                                     <img
-                                                        src="{{ $buyItem?->image_url ?? asset('storefront/assets/images/products/medium-size/1.jpg') }}"
+                                                        src="{{ $deal->image ? Storage::url($deal->image) : asset('storefront/assets/images/products/medium-size/1.jpg') }}"
                                                         alt="{{ $deal->name }}"
                                                     >
 
@@ -1016,17 +1019,17 @@
 
                                                     <div class="actions">
 
-                                                        <a
-                                                            href="javascript:void(0)"
-                                                            title="Quickview"
-                                                            class="action quickview"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModalCenter"
-                                                            data-slug="{{ $buyItem->slug }}"
-                                                        >
-                                                            <i class="pe-7s-search"></i>
-                                                        </a>
-
+                                                       <a
+    href="javascript:void(0)"
+    class="action quickview"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModalCenter"
+    data-slug="{{ $target?->slug ?? $buyItem?->slug ?? $freeItem?->slug ?? $comboFirstItem?->slug }}"
+    data-deal-id="{{ $deal->id }}"
+    title="Quick View"
+>
+    <i class="pe-7s-search"></i>
+</a>
                                                     </div>
 
                                                 @endif
@@ -1067,15 +1070,20 @@
 
                                                 </p>
 
+                                                @if ($buyItem)
+
+                                                    <span class="price">
+                                                        <span class="new">
+                                                            £{{ number_format((float) $buyItem->price, 2) }}
+                                                        </span>
+                                                    </span>
+
+                                                @endif
+
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Call to Order
-                                                    </a>
+                                                    @include('storefront.partials.add-bundle-to-cart-button', ['deal' => $deal, 'menuItem' => $buyItem])
 
                                                 </div>
 
@@ -1103,7 +1111,7 @@
                                                 >
 
                                                     <img
-                                                        src="{{ $freeItem?->image_url ?? asset('storefront/assets/images/products/medium-size/1.jpg') }}"
+                                                        src="{{ $deal->image ? Storage::url($deal->image) : asset('storefront/assets/images/products/medium-size/1.jpg') }}"
                                                         alt="{{ $deal->name }}"
                                                     >
 
@@ -1123,16 +1131,17 @@
 
                                                     <div class="actions">
 
-                                                        <a
-                                                            href="javascript:void(0)"
-                                                            title="Quickview"
-                                                            class="action quickview"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModalCenter"
-                                                            data-slug="{{ $freeItem->slug }}"
-                                                        >
-                                                            <i class="pe-7s-search"></i>
-                                                        </a>
+                                                       <a
+    href="javascript:void(0)"
+    class="action quickview"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModalCenter"
+    data-slug="{{ $target?->slug ?? $buyItem?->slug ?? $freeItem?->slug ?? $comboFirstItem?->slug }}"
+    data-deal-id="{{ $deal->id }}"
+    title="Quick View"
+>
+    <i class="pe-7s-search"></i>
+</a>
 
                                                     </div>
 
@@ -1166,12 +1175,7 @@
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Call to Order
-                                                    </a>
+                                                    @include('storefront.partials.add-bundle-to-cart-button', ['deal' => $deal, 'menuItem' => $freeItem])
 
                                                 </div>
 
@@ -1204,7 +1208,7 @@
                                             <div class="thumb">
 
                                                 <img
-                                                    src="{{ $comboFirstItem?->image_url ?? asset('storefront/assets/images/products/medium-size/1.jpg') }}"
+                                                    src="{{ $deal->image ? Storage::url($deal->image) : asset('storefront/assets/images/products/medium-size/1.jpg') }}"
                                                     alt="{{ $deal->name }}"
                                                 >
 
@@ -1222,16 +1226,17 @@
 
                                                     <div class="actions">
 
-                                                        <a
-                                                            href="javascript:void(0)"
-                                                            title="Quickview"
-                                                            class="action quickview"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModalCenter"
-                                                            data-slug="{{ $comboFirstItem->slug }}"
-                                                        >
-                                                            <i class="pe-7s-search"></i>
-                                                        </a>
+                                                       <a
+    href="javascript:void(0)"
+    class="action quickview"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModalCenter"
+    data-slug="{{ $target?->slug ?? $buyItem?->slug ?? $freeItem?->slug ?? $comboFirstItem?->slug }}"
+    data-deal-id="{{ $deal->id }}"
+    title="Quick View"
+>
+    <i class="pe-7s-search"></i>
+</a>
 
                                                     </div>
 
@@ -1275,12 +1280,7 @@
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Call to Order
-                                                    </a>
+                                                    @include('storefront.partials.add-bundle-to-cart-button', ['deal' => $deal])
 
                                                 </div>
 
@@ -1338,11 +1338,9 @@
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Mention This Code
+                                                    <a href="{{ route('storefront.home') }}" class="btn btn-outline-dark btn-hover-primary">
+                                                        <i class="fa fa-utensils me-2"></i>
+                                                        Browse Menu
                                                     </a>
 
                                                 </div>
@@ -1388,11 +1386,9 @@
 
                                                 <div class="shop-list-btn">
 
-                                                    <a
-                                                        href="tel:{{ $orderPhone }}"
-                                                        class="btn btn-sm btn-outline-dark btn-hover-primary"
-                                                    >
-                                                        Ask About This Deal
+                                                    <a href="{{ route('storefront.home') }}" class="btn btn-outline-dark btn-hover-primary">
+                                                        <i class="fa fa-utensils me-2"></i>
+                                                        Browse Menu
                                                     </a>
 
                                                 </div>

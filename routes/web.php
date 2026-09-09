@@ -28,7 +28,8 @@ use App\Http\Controllers\Storefront\CartController;
 Route::get('/', [HomeController::class, 'index'])->name('storefront.home');
 Route::get('/dish/{menuItem:slug}/quickview', [HomeController::class, 'quickview'])
     ->name('storefront.dish.quickview');
-
+Route::get('/deals/{deal}/quickview', [DealController::class, 'quickview'])
+    ->name('storefront.deals.quickview');
 
 Route::get('/menu/{category:slug}', [StorefrontCategoryController::class, 'show'])->name('storefront.category');
 Route::get('/dish/{menuItem:slug}', [DishController::class, 'show'])->name('storefront.dish');
@@ -42,7 +43,8 @@ Route::get('/deals', [DealController::class, 'index'])->name('storefront.deals.i
 Route::post('/cart/add', [CartController::class, 'store'])->name('storefront.cart.add');
 Route::patch('/cart/{rowId}', [CartController::class, 'update'])->name('storefront.cart.update');
 Route::delete('/cart/{rowId}', [CartController::class, 'destroy'])->name('storefront.cart.remove');
-
+Route::post('/cart/bundle', [CartController::class, 'storeBundle'])
+    ->name('storefront.cart.store-bundle');
 // Not built yet — routed to a single "coming soon" page so header links
 // (wishlist/search/cart/checkout) don't 500. Swap out once those exist.
 Route::view('/wishlist', 'storefront.coming-soon')->name('storefront.wishlist');

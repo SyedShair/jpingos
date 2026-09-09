@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', config('app.name', 'Restaurant'))</title>
     <link rel="shortcut icon" href="{{ asset('storefront/assets/images/favicon.ico') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/vendor.min.css') }}">
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/plugins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/style.min.css') }}?v={{ filemtime(public_path('storefront/assets/css/style.min.css')) }}">
@@ -14,47 +15,47 @@
 
     .header-actions .header-action-btn .header-action-num {
 
-        background: #b22b40 !important;
+        background: #D12026 !important;
     }
     .btn-primary {
-        border-color: #b22b40;
-        background: #b22b40 !important;
+        border-color: #D12026;
+        background: #D12026 !important;
         color: #fff;
     }
     .main-menu>ul>li>a>span:before{
-        background-color:#b22b40 ;
-        color: #b22b40;
+        background-color:#D12026 ;
+        color: #D12026;
     }
     .main-menu>ul>li>a:hover{
-        color:#b22b40;
+        color:#D12026;
     }
     .mega-menu>li .mega-menu-title::after{
-        background-color:#b22b40!important;
+        background-color:#D12026!important;
 
     }
     .mega-menu{
-        border-bottom:3px solid #b22b40;
+        border-bottom:3px solid #D12026;
     }
 a{
-    color: #b22b40;
+    color: #D12026;
 }
 li>a:hover{
-    color:#b22b40!important;
+    color:#D12026!important;
 }
     .product-tab-nav .nav-item .nav-link:hover, .product-tab-nav .nav-item .nav-link.active {
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .product-tab-nav .nav-item .nav-link:hover, .product-tab-nav .nav-item .nav-link.active {
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     a:hover {
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .product-tab-nav .nav-item .nav-link:after {
         position: absolute;
         content: "";
-        color: #b22b40;
-        background: #b22b40;
+        color: #D12026;
+        background: #D12026;
         width: 0%;
         height: 2px;
         -webkit-transition: all 0.3s ease 0s;
@@ -64,21 +65,21 @@ li>a:hover{
         left: 0;
     }
     .new{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .product .thumb .badges span.sale {
-        background-color: #b22b40;
+        background-color: #D12026;
     }
     .btn-hover-primary:hover{
-   background: #b22b40;
+   background: #D12026;
         color: #FFFFFF !important;
  }
     .actions a:hover,a>i:hover{
-        background: #b22b40 !important;
+        background: #D12026 !important;
         color: #FFFFFF !important;
     }
     .sub-title span{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
 
     element.style {
@@ -87,57 +88,57 @@ li>a:hover{
         width: 100px;
         height: 2px;
         display: block;
-        border: 1px solid #b22b40;
+        border: 1px solid #D12026;
         position: absolute;
         bottom: -2px;
         left: 0;
     }
     .product-list-carousel .swiper-button-prev i:hover, .product-list-carousel .swiper-button-next i:hover, .product-list-carousel-2 .swiper-button-prev i:hover, .product-list-carousel-2 .swiper-button-next i:hover, .product-list-carousel-3 .swiper-button-prev i:hover, .product-list-carousel-3 .swiper-button-next i:hover {
         color: #fff;
-        background: #b22b40 !important;
+        background: #D12026 !important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .banner:hover .small-banner-content .btn {
-        background: #b22b40;
+        background: #D12026;
     }
     .offcanvas-search-inner .offcanvas-btn-close:hover{
         font-size: 50px;
-        color: #b22b40;
+        color: #D12026;
         opacity: 1;
     }
     .shop_toolbar_btn{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .shop_toolbar_wrapper .shop_toolbar_btn button.active{
-        border: 1px solid #b22b40;
-        color: #b22b40;
+        border: 1px solid #D12026;
+        color: #D12026;
     }
     .shop_toolbar_wrapper .shop_toolbar_btn button:hover {
-        color: #b22b40;
-        border-color: #b22b40;
+        color: #D12026;
+        border-color: #D12026;
     }
     .shop_toolbar_wrapper .shop-top-bar-right .shop-short-by .nice-select:focus {
-        border-color: #b22b40;
+        border-color: #D12026;
     }
     .shop_toolbar_wrapper .shop-top-bar-right .shop-short-by .nice-select li:hover {
         padding-left: 5px;
         display: block;
-        color: #b22b40;
+        color: #D12026;
     }
     .pagination .page-item .page-link.active {
-        background: #b22b40;
+        background: #D12026;
         color: #fff;
-        border-color: #b22b40;
+        border-color: #D12026;
     }
     .page-link {
         position: relative;
         display: block;
-        color: #b22b40;
+        color: #D12026;
         text-decoration: none;
         background-color: #fff;
-        border: 1px solid #b22b40;
+        border: 1px solid #D12026;
         -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
         -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -145,61 +146,61 @@ li>a:hover{
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     }
     .pagination .page-item .page-link:hover {
-        background: #b22b40;
+        background: #D12026;
         color: #fff !important;
-        border-color: #b22b40;
+        border-color: #D12026;
     }
     .product-summery .price-box .regular-price {
         font-size: 18px;
         font-weight: 600;
         margin-right: 5px;
-        color: #b22b40;
+        color: #D12026;
     }
     .quantity .cart-plus-minus>.qtybutton:hover {
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
-        background-color: #b22b40;
+        background-color: #D12026;
         color: #fff;
     }
     .product-details-img .single-product-thumb .swiper-slide-thumb-active img {
         cursor: pointer;
-        border-color: #b22b40;
+        border-color: #D12026;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .product-details-img .single-product-thumb .swiper-button-prev i:hover, .product-details-img .single-product-thumb .swiper-button-next i:hover {
         color: #fff;
-        background: #b22b40 !important;
+        background: #D12026 !important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .single-product-tab .nav-tabs .nav-item .nav-link.active {
-        color: #b22b40;
+        color: #D12026;
     }
     .myaccount-tab-menu a:hover, .myaccount-tab-menu a.active {
-        background-color: #b22b40;
-        border-color: #b22b40;
+        background-color: #D12026;
+        border-color: #D12026;
         color: #fff !important;
     }
     .myaccount-content .welcome strong {
         font-weight: 600;
-        color: #b22b40;
+        color: #D12026;
     }
     .checkbox-form .title::before {
         content: "";
         width: 100px;
         height: 2px;
-        background: #b22b40;
+        background: #D12026;
         position: absolute;
         top: 100%;
         left: 0;
     }
     .your-order-area .title::before {
         content: "";
-        background: #b22b40;
+        background: #D12026;
         width: 100px;
         height: 2px;
         left: 0;
@@ -207,56 +208,56 @@ li>a:hover{
         position: absolute;
     }
     .payment-accordion .single-payment .panel-title .collapse-off:hover {
-        background: #b22b40;
+        background: #D12026;
         color: #fff !important;
     }
     .section-title span {
         content: "";
         position: absolute;
-        background: #b22b40;
+        background: #D12026;
         width: 100px;
         height: 2px;
     }
     .offcanvas-btn-close > i{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .pe-7s-angle-left{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .pe-7s-angle-left:hover{
         color: #fff !important;
-        background: #b22b40 !important;
+        background: #D12026 !important;
     }
     .product-carousel .swiper-button-prev i:hover, .product-carousel .swiper-button-next i:hover, .product-deal-carousel .swiper-button-prev i:hover, .product-deal-carousel .swiper-button-next i:hover {
         color: #fff;
-        background: #b22b40 !important;
+        background: #D12026 !important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     a:hover {
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .scroll-top:hover{
-        background: #b22b40;
+        background: #D12026;
     }
     .pe-7s-angle-right{
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .pe-7s-angle-right:hover{
         color: #fff !important;
-        background: #b22b40 !important;
+        background: #D12026 !important;
     }
     .pe-7s-angle-left:hover{
         color: #fff !important;
     }
     .btn-primary {
-        border-color: #b22b40;
-        background-color: #b22b40;
+        border-color: #D12026;
+        background-color: #D12026;
         color: #fff;
     } .btn-primary:hover {
-        border-color: #b22b40;
-        background-color: #b22b40;
+        border-color: #D12026;
+        background-color: #D12026;
         color: #fff;
     }
     .social-button {
@@ -441,25 +442,25 @@ li>a:hover{
     }
 .custom{
     width: 100%;
-    background: #b22b40;
+    background: #D12026;
     color: #FFFFFF;
     padding-top: 16px;
     padding-bottom: 16px;
 }
     .actions a:hover, a>i:hover {
         background: #fff !important;
-        color: #b22b40 !important;
+        color: #D12026 !important;
     }
     .btn-primary {
-        border-color: #b22b40;
-        background: #b22b40 !important;
+        border-color: #D12026;
+        background: #D12026 !important;
         color: #fff !important;
 
     }
 
     .btn-primary:hover {
-        border-color: #b22b40;
-        background: #b22b40 !important;
+        border-color: #D12026;
+        background: #D12026 !important;
         color: #fff !important;
 
     }
@@ -480,18 +481,18 @@ li>a:hover{
     }
     .product .thumb .actions .action:hover:not(.active) {
         color: #fff;
-         background-color: #b22b40 !important;
+         background-color: #D12026 !important;
     }
     .action i:hover{
-      background: #b22b40 !important;
+      background: #D12026 !important;
         color: #FFFFFF !important;
     }
 
     .pagination .page-item .page-link.active {
-        background: #b22b40;
+        background: #D12026;
         color: #fff;
         color: #fff !important;
-        border-color: #b22b40;
+        border-color: #D12026;
     }
     @-webkit-keyframes blinker {
         from {opacity: 1.0;}
@@ -803,8 +804,8 @@ li>a:hover{
 
 
      .email-box_error {
-        border: 1px solid #b22b40;
-      /*  border-bottom: 3px solid #b22b40;*/
+        border: 1px solid #D12026;
+      /*  border-bottom: 3px solid #D12026;*/
     }
     .email-box_success {
         border: 3px solid #5cb85c;
@@ -867,14 +868,14 @@ li>a:hover{
     .form-control:focus {
         color: #666666;
         background-color: #fff;
-        border-color: #b22b40;
+        border-color: #D12026;
         outline: 0;
         -webkit-box-shadow: 0 0 0 0.25rem rgb(255 69 69 / 25%);
         box-shadow: 0 0 0 0.25rem rgb(255 69 69 / 25%);
     }
     .input-item_error{
         background: #fff;
-        border: 1px solid #b22b40 !important;
+        border: 1px solid #D12026 !important;
         border-radius: 0;
         height: 42px;
         width: 100%;
@@ -893,7 +894,7 @@ li>a:hover{
         padding-left: 10px;
         padding-right: 10px;
         width: 100%;
-        border: 2px solid #b22b40;
+        border: 2px solid #D12026;
     }
 
 
@@ -980,7 +981,7 @@ li>a:hover{
 
 .comment-error textarea{
     width: 100%;
-    border: 2px solid #b22b40;
+    border: 2px solid #D12026;
     padding: 0 10px;
     height: 140px;
 }
@@ -999,7 +1000,7 @@ li>a:hover{
         outline: 0;
     }
 .checkout-border{
-    border: 1px solid #b22b40 !important;
+    border: 1px solid #D12026 !important;
 }
     .select2-selection__rendered {
         line-height: 40px !important;
@@ -1238,13 +1239,40 @@ li>a:hover{
 }
 
 #quickview-customizations-list label.badge.selected {
-    background-color: #b22b40 !important;
-    border-color: #b22b40 !important;
+    background-color: #D12026 !important;
+    border-color: #D12026 !important;
     color: #fff !important;
 }
 
 #quickview-customizations-list label.badge.selected .text-danger {
     color: #fff !important;
+}
+
+/* ==========================================================================
+   Brand color pass — added by Claude
+   Every #b22b40 in this file (80 instances) has been changed to #D12026,
+   the actual red sampled from your logo file, so the site's accent color
+   now matches your logo/signage instead of a slightly different maroon.
+
+   The rules below only touch selectors that are CONFIRMED to exist in this
+   file (.product .thumb .badges span.sale, .product .thumb .actions
+   .action). Your full product-card layout (white background, title,
+   price, rating stars) is defined in style.min.css, which wasn't shared,
+   so I can't safely restyle that card to the dark theme we mocked up
+   without guessing at class names. If you want the dark-card menu look
+   applied for real, share style.min.css or the product-card partial and
+   I'll wire it up precisely instead of guessing.
+   ========================================================================== */
+
+.product .thumb .badges span.sale {
+    background-color: #D12026;
+    color: #fff;
+}
+
+.product .thumb .actions .action:hover:not(.active),
+.product .thumb .actions .action:hover {
+    background-color: #D12026 !important;
+    color: #fff;
 }
 
  </style>
@@ -1269,211 +1297,410 @@ li>a:hover{
     <script src="{{ asset('storefront/assets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('storefront/assets/js/plugins.min.js') }}"></script>
     <script src="{{ asset('storefront/assets/js/main.js') }}?v={{ filemtime(public_path('storefront/assets/js/main.js')) }}"></script>
-
-    <script src="{{ asset('storefront/assets/js/cart.js') }}?v={{ filemtime(public_path('storefront/assets/js/cart.js')) }}"></script>
-
 <script>
-
 (function ($) {
     "use strict";
 
     let quickviewSwiper = null;
-    let quickviewBasePrice = 0;   // dish's effective starting price (deal price, sale price, or regular price)
-    let quickviewOldPrice = null; // struck-through price shown alongside, or null if not on sale/deal
+    let quickviewBasePrice = 0;
+    let quickviewOldPrice = null;
 
+    /* ==========================================
+       PRICE CALCULATOR
+    ========================================== */
     function renderPriceBox() {
+
         let total = quickviewBasePrice;
 
-        // Sum every currently-checked option's price_delta.
         $('#quickview-customizations-list input:checked').each(function () {
             total += parseFloat($(this).data('price-delta')) || 0;
         });
 
         let html = `<span class="regular-price">£${total.toFixed(2)}</span>`;
+
         if (quickviewOldPrice !== null) {
             html += `<span class="old-price"><del>£${quickviewOldPrice.toFixed(2)}</del></span>`;
         }
+
         $('#quickview-price-box').html(html);
     }
 
-    $(document).on('click', '.quickview', function (e) {
-        const slug = $(this).data('slug');
-        if (!slug) return;
+    /* ==========================================
+       OPEN QUICKVIEW
+    ========================================== */
+
+    $(document).on('click', '.quickview', function () {
+
+        const slug   = $(this).data('slug');
+        const dealId = $(this).data('deal-id');
+
+        if (!slug && !dealId) return;
 
         $('#quickview-loader').removeClass('hidden');
         $('#quickview-body').addClass('loading');
+
         $('#quickview-name').text('');
         $('#quickview-description').text('');
         $('#quickview-price-box').empty();
+        $('#quickview-images').empty();
+
         $('#quickview-spice').hide();
         $('#quickview-dietary').hide();
+
         $('#quickview-countdown-wrap').hide();
         $('#quickview-countdown').empty();
-        $('#quickview-images').empty();
+
         $('#quickview-customizations-list').empty();
         $('#quickview-customizations').addClass('d-none');
 
-        fetch(`/dish/${slug}/quickview`, {
-            headers: { 'Accept': 'application/json' },
+        /* Deal OR Dish */
+        const endpoint = dealId
+            ? `/deals/${dealId}/quickview`
+            : `/dish/${slug}/quickview`;
+
+        fetch(endpoint, {
+            headers: {
+                "Accept":"application/json"
+            }
         })
-            .then(res => {
-                if (!res.ok) throw new Error('Not found');
-                return res.json();
-            })
-            .then(data => {
-                $('#quickview-name').text(data.name);
-                $('#quickview-description').text(data.description ?? '');
-                $('#quickview-sku').text('Ref: ' + data.slug);
-                $('#quickview-view-link').attr('href', data.url);
-                $('#quickview-wishlist-link').attr('href', data.wishlist_url);
-    $('#quickview-add-to-cart').data('menu-item-id', data.id ?? null);
+        .then(response => {
+            if (!response.ok) throw new Error();
+            return response.json();
+        })
+        .then(function (data) {
 
-                // Set the base price and old (struck-through) price used
-                // for live recalculation as options are selected.
-                if (data.deal_base_price !== null) {
-                    quickviewBasePrice = data.deal_base_price;
-                    quickviewOldPrice = data.base_price;
-                } else if (data.is_on_sale) {
-                    quickviewBasePrice = parseFloat(data.discount_price);
-                    quickviewOldPrice = data.base_price;
-                } else {
-                    quickviewBasePrice = data.base_price;
-                    quickviewOldPrice = null;
-                }
-                renderPriceBox();
+            /* ===========================
+               BASIC INFO
+            =========================== */
 
-                if (data.deal_countdown) {
-                    $('#quickview-countdown-wrap').show();
-                    const $cd = $('#quickview-countdown');
-                    $cd.countdown(data.deal_countdown, function (event) {
-                        $cd.html(event.strftime(
-                            '<div class="single-countdown"><span class="single-countdown_time">%D</span><span class="single-countdown_text">Days</span></div>' +
-                            '<div class="single-countdown"><span class="single-countdown_time">%H</span><span class="single-countdown_text">Hours</span></div>' +
-                            '<div class="single-countdown"><span class="single-countdown_time">%M</span><span class="single-countdown_text">Min</span></div>' +
-                            '<div class="single-countdown"><span class="single-countdown_time">%S</span><span class="single-countdown_text">Sec</span></div>'
-                        ));
-                    });
-                }
+            $('#quickview-name').text(data.name);
 
-                if (data.spice_level) {
-                    $('#quickview-spice-value').text(data.spice_level);
-                    $('#quickview-spice').show();
-                }
+            $('#quickview-description').text(
+                data.description ?? ''
+            );
 
-                if (data.dietary && data.dietary.length) {
-                    $('#quickview-dietary-value').text(data.dietary.join(', '));
-                    $('#quickview-dietary').show();
-                }
+            $('#quickview-sku').text(
+                'Ref: ' + (data.slug ?? data.deal_id)
+            );
 
-                const wrapper = $('#quickview-images');
-                data.images.forEach(url => {
-                    wrapper.append(
-                        `<a class="swiper-slide" href="${url}"><img class="w-100" src="${url}" alt="${data.name}"></a>`
-                    );
+            $('#quickview-view-link').attr(
+                'href',
+                data.url ?? '#'
+            );
+
+            $('#quickview-wishlist-link').attr(
+                'href',
+                data.wishlist_url ?? '#'
+            );
+
+            /* ===========================
+               PRICE
+            =========================== */
+
+            if (data.deal_base_price !== null && data.deal_base_price !== undefined) {
+
+                quickviewBasePrice = parseFloat(data.deal_base_price);
+                quickviewOldPrice  = parseFloat(data.base_price);
+
+            } else if (data.is_on_sale) {
+
+                quickviewBasePrice = parseFloat(data.discount_price);
+                quickviewOldPrice  = parseFloat(data.base_price);
+
+            } else {
+
+                quickviewBasePrice = parseFloat(data.base_price);
+                quickviewOldPrice  = null;
+            }
+
+            renderPriceBox();
+
+            /* ===========================
+               COUNTDOWN
+            =========================== */
+
+            if (data.deal_countdown) {
+
+                $('#quickview-countdown-wrap').show();
+
+                const $cd = $('#quickview-countdown');
+
+                try {
+                    $cd.countdown('destroy');
+                } catch (e) {}
+
+                $cd.countdown(data.deal_countdown, function (event) {
+
+                    $cd.html(event.strftime(
+                        '<div class="single-countdown">' +
+                        '<span class="single-countdown_time">%D</span>' +
+                        '<span class="single-countdown_text">Days</span>' +
+                        '</div>' +
+
+                        '<div class="single-countdown">' +
+                        '<span class="single-countdown_time">%H</span>' +
+                        '<span class="single-countdown_text">Hours</span>' +
+                        '</div>' +
+
+                        '<div class="single-countdown">' +
+                        '<span class="single-countdown_time">%M</span>' +
+                        '<span class="single-countdown_text">Min</span>' +
+                        '</div>' +
+
+                        '<div class="single-countdown">' +
+                        '<span class="single-countdown_time">%S</span>' +
+                        '<span class="single-countdown_text">Sec</span>' +
+                        '</div>'
+                    ));
+
                 });
 
-                if (quickviewSwiper) {
-                    quickviewSwiper.destroy(true, true);
-                }
-                quickviewSwiper = new Swiper('.modal-product-carousel .swiper-container', {
+            }
+
+            /* ===========================
+               SPICE
+            =========================== */
+
+            if (data.spice_level) {
+
+                $('#quickview-spice-value').text(data.spice_level);
+
+                $('#quickview-spice').show();
+            }
+
+            /* ===========================
+               DIETARY
+            =========================== */
+
+            if (data.dietary && data.dietary.length) {
+
+                $('#quickview-dietary-value').text(
+                    data.dietary.join(', ')
+                );
+
+                $('#quickview-dietary').show();
+            }
+
+            /* ===========================
+               IMAGES
+            =========================== */
+
+            const wrapper = $('#quickview-images');
+            wrapper.empty();
+
+            if (data.images && data.images.length) {
+
+                data.images.forEach(function (image) {
+
+                    wrapper.append(`
+                        <a class="swiper-slide" href="${image}">
+                            <img src="${image}" class="w-100" alt="${data.name}">
+                        </a>
+                    `);
+
+                });
+
+            }
+
+            if (quickviewSwiper) {
+                quickviewSwiper.destroy(true, true);
+            }
+
+            quickviewSwiper = new Swiper(
+                '.modal-product-carousel .swiper-container',
+                {
                     loop: data.images.length > 1,
                     slidesPerView: 1,
                     spaceBetween: 0,
+
                     navigation: {
                         nextEl: '.modal-product-carousel .swiper-product-button-next',
                         prevEl: '.modal-product-carousel .swiper-product-button-prev',
-                    },
+                    }
+                }
+            );
+
+            /* ===========================
+               CUSTOMIZATION OPTIONS
+            =========================== */
+
+            const customBox = $('#quickview-customizations-list');
+            customBox.empty();
+
+            $('#quickview-customizations').addClass('d-none');
+
+            if (data.option_groups && data.option_groups.length) {
+
+                $('#quickview-customizations').removeClass('d-none');
+
+                data.option_groups.forEach(function (group) {
+
+                    const inputType = group.multiple ? 'checkbox' : 'radio';
+                    const groupName = `quickview_group_${group.id}`;
+
+                    let html = `
+                        <div class="mb-3">
+
+                            <strong class="d-block mb-2">
+                                ${group.name}
+
+                                <span class="text-muted small fw-normal">
+                                    (${group.multiple ? 'Choose Multiple' : 'Choose One'}${group.required ? ', Required' : ''})
+                                </span>
+
+                            </strong>
+
+                            <div class="d-flex flex-wrap gap-2">
+                    `;
+
+                    group.values.forEach(function (value, index) {
+
+                        const price = parseFloat(value.price_delta ?? 0);
+
+                        const checked =
+                            (!group.multiple && group.required && index === 0)
+                            ? 'checked'
+                            : '';
+
+                        const selected =
+                            checked ? 'selected' : '';
+
+                        const inputId =
+                            `qv_${group.id}_${value.id}`;
+
+                        html += `
+                            <label
+                                for="${inputId}"
+                                class="badge bg-light border text-dark px-3 py-2 rounded-pill ${selected}"
+                                style="cursor:pointer"
+                            >
+
+                                <input
+                                    id="${inputId}"
+                                    type="${inputType}"
+                                    name="${groupName}"
+                                    data-price-delta="${price}"
+                                    ${checked}
+                                    ${group.required && !group.multiple ? 'required' : ''}
+                                >
+
+                                ${value.name}
+
+                                ${price > 0
+                                    ? `<span class="text-danger ms-1">+£${price.toFixed(2)}</span>`
+                                    : ''}
+
+                            </label>
+                        `;
+
+                    });
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+
+                    customBox.append(html);
+
                 });
 
-               /* ================= CUSTOMIZATIONS ================= */
-const customBox = $('#quickview-customizations-list');
-customBox.empty();
-$('#quickview-customizations').addClass('d-none');
+                customBox.off('change').on('change','input',function(){
 
-if (data.option_groups && data.option_groups.length) {
-    $('#quickview-customizations').removeClass('d-none');
+                    const input = $(this);
 
-    data.option_groups.forEach(group => {
-        const inputType = group.multiple ? 'checkbox' : 'radio';
-        const groupName = `quickview_group_${group.id}`;
+                    const label = input.closest('label');
 
-        let html = `
-            <div class="mb-3">
-                <strong class="d-block">
-                    ${group.name}
-                    <span class="text-muted small fw-normal">
-                        (${group.multiple ? 'choose multiple' : 'choose one'}${group.required ? ', required' : ''})
-                    </span>
-                </strong>
+                    if (input.attr('type') === 'radio') {
 
-                <div class="d-flex flex-wrap gap-2 mt-2">
-        `;
+                        label.closest('.d-flex')
+                            .find('label')
+                            .removeClass('selected');
 
-        group.values.forEach((value, index) => {
-            const price = parseFloat(value.price_delta ?? 0);
-            const inputId = `qv_opt_${group.id}_${value.id}`;
-            const checked = (!group.multiple && group.required && index === 0) ? 'checked' : '';
-            const selectedClass = checked ? 'selected' : '';
+                        label.addClass('selected');
 
-           html += `
-    <label class="badge bg-light text-dark border px-3 py-2 rounded-pill ${selectedClass}" for="${inputId}" style="cursor:pointer;">
-        <input type="${inputType}" name="${groupName}" id="${inputId}"
-            value="${value.id}"
-            data-price-delta="${price}"
-            ${checked}
-            ${group.required && !group.multiple ? 'required' : ''}>
-        ${value.name}
-        ${price > 0 ? `<span class="text-danger ms-1">+£${price.toFixed(2)}</span>` : ''}
-    </label>
-`;
+                    } else {
+
+                        label.toggleClass(
+                            'selected',
+                            input.prop('checked')
+                        );
+
+                    }
+
+                    renderPriceBox();
+
+                });
+
+                renderPriceBox();
+
+            }
+
+            /* ===========================
+               ADD TO CART BUTTON
+            =========================== */
+
+            const button = $('#quickview-add-cart');
+
+            if (button.length) {
+
+                button
+                    .attr('data-menu-item-id', data.id ?? '')
+                    .attr('data-deal-id', data.deal_id ?? '');
+
+                if (data.deal_id) {
+
+                    button
+                        .removeClass('js-add-to-cart')
+                        .addClass('js-add-bundle-to-cart');
+
+                } else {
+
+                    button
+                        .removeClass('js-add-bundle-to-cart')
+                        .addClass('js-add-to-cart');
+
+                }
+
+            }
+
+            $('#quickview-loader').addClass('hidden');
+            $('#quickview-body').removeClass('loading');
+
+        })
+        .catch(function(){
+
+            $('#quickview-loader').addClass('hidden');
+            $('#quickview-body').removeClass('loading');
+
+            $('#quickview-name').text(
+                'Unable to load this item.'
+            );
+
         });
 
-        html += `
-                </div>
-            </div>
-        `;
-
-        customBox.append(html);
     });
 
-    // Keep each label's visual "selected" state in sync with its input,
-    // and recalculate the displayed price on every change.
-    customBox.off('change').on('change', 'input', function () {
-        const $input = $(this);
-        const $label = $input.closest('label.badge');
+    /* ==========================================
+       CLOSE MODAL
+    ========================================== */
 
-        if ($input.attr('type') === 'radio') {
-            // Radios share a name — clear .selected from every option in
-            // this group, then apply it only to the one just checked.
-            $label.closest('.d-flex').find('label.badge').removeClass('selected');
-            $label.addClass('selected');
-        } else {
-            // Checkboxes toggle independently.
-            $label.toggleClass('selected', $input.prop('checked'));
+    $(document).on(
+        'hidden.bs.modal',
+        '#exampleModalCenter',
+        function () {
+
+            try {
+                $('#quickview-countdown').countdown('destroy');
+            } catch (e) {}
+
         }
-
-        renderPriceBox();
-    });
-
-    renderPriceBox();
-}
-
-                $('#quickview-body').removeClass('loading');
-                $('#quickview-loader').addClass('hidden');
-            })
-            .catch(() => {
-                $('#quickview-name').text('Unable to load this dish.');
-                $('#quickview-body').removeClass('loading');
-                $('#quickview-loader').addClass('hidden');
-            });
-    });
-
-    $(document).on('hidden.bs.modal', '#exampleModalCenter', function () {
-        $('#quickview-countdown').countdown('destroy');
-    });
+    );
 
 })(jQuery);
 </script>
+
+    @include('storefront.partials.cart-scripts')
+
     @stack('scripts')
 
 </body>

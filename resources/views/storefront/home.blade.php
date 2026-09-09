@@ -304,7 +304,7 @@ img.first-image {
                 <ul class="product-tab-nav nav justify-content-center mb-10 title-border-bottom mt-n3">
                     <li class="nav-item" data-aos="fade-up" data-aos-delay="300"><a class="nav-link active mt-3" data-bs-toggle="tab" href="#tab-product-all">All Menu</a></li>
                     <li class="nav-item" data-aos="fade-up" data-aos-delay="400"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-featured">Featured Dishes</a></li>
-                    <li class="nav-item" data-aos="fade-up" data-aos-delay="500"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-family">Family Deals</a></li>
+                    <li class="nav-item" data-aos="fade-up" data-aos-delay="500"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-family"> Deals</a></li>
                 </ul>
             </div>
             <!-- Tab End -->
@@ -504,7 +504,7 @@ img.first-image {
                                                 <div class="product product-border-left mb-10" data-aos="fade-up" data-aos-delay="{{ $delay }}">
                                                     <div class="thumb">
                                                         <a href="{{ route('storefront.deals.index', ['type' => $deal->type]) }}" class="image">
-                                                            <img class="first-image" src="{{ $deal->bundleThumbnailUrl() }}" alt="{{ $deal->name }}" />
+                                                            <img class="first-image" src="{{ Storage::url($deal->image) }}" alt="{{ $deal->name }}" />
                                                         </a>
                                                         <span class="badges">
                                                             <span class="sale">Deal</span>
@@ -536,8 +536,7 @@ img.first-image {
                                                             @endif
                                                         </span>
                                                         @if ($firstComponent)
-                                                            @include('storefront.partials.add-to-cart-button', ['item' => $firstComponent])
-                                                        @endif
+                                                         @include('storefront.partials.add-bundle-to-cart-button', ['deal' => $deal])                                                        @endif
                                                     </div>
                                                 </div>
                                                 <!-- Single Product End -->
@@ -665,7 +664,7 @@ img.first-image {
                                                                 <span class="new">£{{ number_format($discountedPrice, 2) }}</span>
                                                                 <span class="old">£{{ number_format($item->price, 2) }}</span>
                                                             </span>
-                                                            @include('storefront.partials.add-to-cart-button', ['item' => $item])
+                                                            @include('storefront.partials.add-to-cart-button', ['item' => $item, 'deal' => $deal])
                                                         </div>
                                                     </div>
                                                     <!-- Single Product Deal End -->
@@ -868,4 +867,5 @@ img.first-image {
 @endsection
 
 @push('scripts')
+
 @endpush

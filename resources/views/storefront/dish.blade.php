@@ -26,6 +26,22 @@
     #dish-customizations-list label.badge.selected .text-danger {
         color: #fff !important;
     }
+
+    /* "You Might Also Like" only ever renders a single first-image (no
+       second-image), but the theme's base hover CSS assumes every
+       .product thumb has a pair and fades the first one out on hover
+       expecting a second to fade in. With nothing to fade in, the
+       image just disappears. Keep it visible, same guard the homepage
+       carousels already have. */
+    .product-carousel .product .thumb .image img.first-image {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .product-carousel .product .thumb:hover .image img.first-image {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
 </style>
 @endpush
 
@@ -195,11 +211,12 @@
                             $inputId = 'dish_opt_'.$group->id.'_'.$value->id;
                             $checked = ($inputType === 'radio' && $isRequired && $index === 0);
                           @endphp
-                          <input type="{{ $inputType }}" name="{{ $groupName }}" id="{{ $inputId }}"
-  value="{{ $value->id }}"
-  data-price-delta="{{ $value->price_delta }}"
-  @checked($checked)
-  {{ $inputType === 'radio' && $isRequired ? 'required' : '' }}>
+                          <label class="badge bg-light text-dark border px-3 py-2 rounded-pill {{ $checked ? 'selected' : '' }}" for="{{ $inputId }}" style="cursor:pointer;">
+                            <input type="{{ $inputType }}" name="{{ $groupName }}" id="{{ $inputId }}"
+                              value="{{ $value->id }}"
+                              data-price-delta="{{ $value->price_delta }}"
+                              @checked($checked)
+                              {{ $inputType === 'radio' && $isRequired ? 'required' : '' }}>
                             {{ $value->name }}
                             @if ($value->price_delta > 0)
                               <span class="text-danger">+£{{ number_format($value->price_delta, 2) }}</span>
@@ -215,28 +232,26 @@
             @endif
 
             <!-- Quantity Start -->
-           <div class="quantity mb-5">
-  <div class="cart-plus-minus">
-    <input class="cart-plus-minus-box" id="dish-quantity" value="1" type="text">
-    <div class="dec qtybutton"></div>
-    <div class="inc qtybutton"></div>
-  </div>
-</div>
-
-<div class="cart-wishlist-btn mb-4">
-  <div class="add-to_cart">
-    @include('storefront.partials.add-to-cart-button', [
-        'item' => $item,
-        'optionsContainer' => 'dish-customizations-list',
-        'quantityInput' => 'dish-quantity',
-    ])
-  </div>
-  </div>
-
+            <div class="quantity mb-5">
+              <div class="cart-plus-minus">
+                <input class="cart-plus-minus-box" id="dish-quantity" value="1" type="text">
+                <div class="dec qtybutton">-</div>
+                <div class="inc qtybutton">+</div>
+              </div>
+            </div>
             <!-- Quantity End -->
 
             <!-- Cart & Wishlist Button Start -->
-           
+            <div class="cart-wishlist-btn mb-4">
+              <div class="add-to_cart">
+                @include('storefront.partials.add-to-cart-button', [
+                    'item' => $item,
+                    'optionsContainer' => 'dish-customizations-list',
+                    'quantityInput' => 'dish-quantity',
+                ])
+              </div>
+             
+            </div>
             <!-- Cart & Wishlist Button End -->
 
             <!-- Social Shear Start -->
@@ -330,11 +345,6 @@
 
                   @foreach ($related as $relatedItem)
                     @php
-                      // Defensive fallback chain: primaryImage (if eager-loaded
-                      // and set), else the first image in the images collection
-                      // (if that relation happens to be loaded instead), else
-                      // the model's own accessor (which itself falls back to
-                      // the placeholder asset).
                       $relatedImageUrl = $relatedItem->primaryImage?->url
                           ?? $relatedItem->images?->first()?->url
                           ?? $relatedItem->image_url;
@@ -345,13 +355,18 @@
                           <a href="{{ route('storefront.dish', $relatedItem->slug) }}" class="image">
                             <img class="first-image" src="{{ $relatedImageUrl }}" alt="{{ $relatedItem->name }}" />
                           </a>
-                          @if ($relatedItem->is_featured)
-                            <span class="badges">
-                              <span class="sale">Featured</span>
-                            </span>
-                          @endif
+                          @if ($relatedItem->is_featured || $dealItemIds->contains($relatedItem->id))
+                                                            <span class="badges">
+                                                                @if ($dealItemIds->contains($relatedItem->id))
+                                                                    <span class="sale">Deal</span>
+                                                                @endif
+                                                                @if ($relatedItem->is_featured)
+                                                                    <span class="sale">Featured</span>
+                                                                @endif
+                                                            </span>
+                                                        @endif
+                          
                           <div class="actions">
-                            <a href="{{ route('storefront.wishlist') }}" class="action wishlist"><i class="pe-7s-like"></i></a>
                             <a href="javascript:void(0)" class="action quickview" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-slug="{{ $relatedItem->slug }}"><i class="pe-7s-search"></i></a>
                           </div>
                         </div>
@@ -372,6 +387,7 @@
                               <span class="new">£{{ number_format($relatedItem->price, 2) }}</span>
                             @endif
                           </span>
+                          @include('storefront.partials.add-to-cart-button', ['item' => $relatedItem])
                         </div>
                       </div>
                     </div>
@@ -417,6 +433,37 @@
         }
         $('#dish-price-box').html(html);
     }
+// Quantity stepper (+/-) — self-contained, doesn't depend on the theme's
+    // own cart-plus-minus binding (which wasn't firing on this page).
+    // Delegated off document so it keeps working even if this block ever
+    // gets included on a page where the quantity control is added dynamically.
+    const MIN_QTY = 1;
+
+    function currentQty($box) {
+        const val = parseInt($box.val(), 10);
+        return (isNaN(val) || val < MIN_QTY) ? MIN_QTY : val;
+    }
+
+    $(document).on('click', '.qtybutton', function (e) {
+        e.preventDefault();
+
+        const $button = $(this);
+        const $box = $button.closest('.cart-plus-minus').find('.cart-plus-minus-box');
+
+        if (!$box.length) {
+            return;
+        }
+
+        let qty = currentQty($box);
+
+        if ($button.hasClass('inc')) {
+            qty += 1;
+        } else if ($button.hasClass('dec')) {
+            qty = Math.max(MIN_QTY, qty - 1);
+        }
+
+        $box.val(qty).trigger('change');
+    });
 
     $('#dish-customizations-list').on('change', 'input', function () {
         const $input = $(this);

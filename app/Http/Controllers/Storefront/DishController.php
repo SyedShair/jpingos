@@ -26,8 +26,22 @@ public function show(MenuItem $menuItem)
     ->where('category_id', $menuItem->category_id)
     ->where('id', '!=', $menuItem->id)
     ->inRandomOrder()
-    ->take(6)
+    ->take(8)
     ->get();
+
+$dealItemIds = collect();
+
+        if ($related->isNotEmpty()) {
+            $dealItemIds = Deal::where('is_active', true)
+                ->whereHas('appliesToItems', fn ($q) => $q->whereIn('menu_item_id', $related->pluck('id')))
+                ->with(['appliesToItems' => fn ($q) => $q->whereIn('menu_item_id', $related->pluck('id'))])
+                ->get()
+                ->pluck('appliesToItems')
+                ->flatten()
+                ->pluck('menu_item_id');
+        }
+
+
 
     return view('storefront.dish', [
         'item'       => $menuItem,
@@ -38,6 +52,7 @@ public function show(MenuItem $menuItem)
             ->ordered()
             ->with(['children' => fn ($q) => $q->active()->ordered()])
             ->get(),
+        'dealItemIds' => $dealItemIds,
     ]);
 }
 }

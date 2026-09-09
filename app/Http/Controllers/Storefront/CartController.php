@@ -17,13 +17,32 @@ class CartController extends Controller
             'quantity'     => ['nullable', 'integer', 'min:1', 'max:20'],
             'options'      => ['nullable', 'array'],
             'options.*'    => ['integer', 'exists:option_values,id'],
+            'deal_id'      => ['nullable', 'integer', 'exists:deals,id'],
         ]);
 
         $this->cart->add(
             $data['menu_item_id'],
             $data['quantity'] ?? 1,
-            $data['options'] ?? []
+            $data['options'] ?? [],
+            $data['deal_id'] ?? null
         );
+
+        return $this->response();
+    }
+
+    /**
+     * Add every component of a combo/bundle deal at once, priced to the
+     * deal's combo price. Separate from store() because a bundle has no
+     * single menu_item_id — see CartService::addBundle().
+     */
+    public function storeBundle(Request $request)
+    {
+        $data = $request->validate([
+            'deal_id'  => ['required', 'integer', 'exists:deals,id'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:20'],
+        ]);
+
+        $this->cart->addBundle($data['deal_id'], $data['quantity'] ?? 1);
 
         return $this->response();
     }
