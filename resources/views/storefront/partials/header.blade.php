@@ -2,17 +2,18 @@
 <style>
     .mega-menu-auto {
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         gap: 40px;
-        width: auto;
-        min-width: 100%;
+        width: 100%;
         padding: 30px 40px;
+        max-height: 70vh;
+        overflow-y: auto;
     }
 
     .mega-menu-auto > .col {
         flex: 0 0 auto;
         width: auto;
-        white-space: nowrap;
+        white-space: normal;
     }
 
     .mega-menu-auto .mega-menu-title {
@@ -49,6 +50,7 @@
         color: #333;
         font-size: 14px;
         transition: color .15s ease;
+        white-space: normal;
     }
 
     .mega-menu-auto ul.mb-n2 li a:hover {

@@ -26,22 +26,6 @@
     #dish-customizations-list label.badge.selected .text-danger {
         color: #fff !important;
     }
-
-    /* "You Might Also Like" only ever renders a single first-image (no
-       second-image), but the theme's base hover CSS assumes every
-       .product thumb has a pair and fades the first one out on hover
-       expecting a second to fade in. With nothing to fade in, the
-       image just disappears. Keep it visible, same guard the homepage
-       carousels already have. */
-    .product-carousel .product .thumb .image img.first-image {
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-
-    .product-carousel .product .thumb:hover .image img.first-image {
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
 </style>
 @endpush
 
@@ -250,7 +234,9 @@
                     'quantityInput' => 'dish-quantity',
                 ])
               </div>
-             
+              <!-- <div class="add-to-wishlist">
+                <a class="btn btn-outline-dark btn-hover-primary" href="{{ route('storefront.wishlist') }}">Add to Wishlist</a>
+              </div> -->
             </div>
             <!-- Cart & Wishlist Button End -->
 
@@ -348,6 +334,9 @@
                       $relatedImageUrl = $relatedItem->primaryImage?->url
                           ?? $relatedItem->images?->first()?->url
                           ?? $relatedItem->image_url;
+
+                      $relatedDeal = $dealsByItemId->get($relatedItem->id);
+                      $relatedCountdown = $relatedDeal?->countdownTarget();
                     @endphp
                     <div class="swiper-slide product-wrapper">
                       <div class="product product-border-left">
@@ -355,24 +344,35 @@
                           <a href="{{ route('storefront.dish', $relatedItem->slug) }}" class="image">
                             <img class="first-image" src="{{ $relatedImageUrl }}" alt="{{ $relatedItem->name }}" />
                           </a>
-                          @if ($relatedItem->is_featured || $dealItemIds->contains($relatedItem->id))
-                                                            <span class="badges">
-                                                                @if ($dealItemIds->contains($relatedItem->id))
-                                                                    <span class="sale">Deal</span>
-                                                                @endif
-                                                                @if ($relatedItem->is_featured)
-                                                                    <span class="sale">Featured</span>
-                                                                @endif
-                                                            </span>
-                                                        @endif
-                          
+                          @if ($relatedItem->is_featured || $relatedDeal)
+                            <span class="badges">
+                              @if ($relatedDeal)
+                                <span class="sale">Deal</span>
+                              @endif
+                              @if ($relatedItem->is_featured)
+                                <span class="sale">Featured</span>
+                              @endif
+                            </span>
+                          @endif
                           <div class="actions">
+                            <a href="{{ route('storefront.wishlist') }}" class="action wishlist"><i class="pe-7s-like"></i></a>
                             <a href="javascript:void(0)" class="action quickview" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-slug="{{ $relatedItem->slug }}"><i class="pe-7s-search"></i></a>
                           </div>
                         </div>
                         <div class="content">
                           <h4 class="sub-title"><a href="{{ $relatedItem->category ? route('storefront.category', $relatedItem->category->slug) : '#' }}">{{ $relatedItem->category->name ?? 'Menu' }}</a></h4>
                           <h5 class="title"><a href="{{ route('storefront.dish', $relatedItem->slug) }}">{{ $relatedItem->name }}</a></h5>
+
+                          {{-- Countdown only renders when this dish's deal actually
+                               has a real end time (a one-off flash deal, or a
+                               recurring window with a daily_end_time) — a plain
+                               sale or an always-on deal type shows no countdown. --}}
+                          @if ($relatedCountdown)
+                            <div class="countdown-area mb-2">
+                              <div class="countdown-wrapper d-flex" data-countdown="{{ $relatedCountdown->format('Y/m/d H:i:s') }}"></div>
+                            </div>
+                          @endif
+
                           <span class="ratings">
                             <span class="rating-wrap">
                               <span class="star" style="width: 100%"></span>
@@ -380,7 +380,10 @@
                             <span class="rating-num">(5)</span>
                           </span>
                           <span class="price">
-                            @if ($relatedItem->is_on_sale)
+                            @if ($relatedDeal)
+                              <span class="new">£{{ number_format($relatedDeal->discountedPriceFor((float) $relatedItem->price), 2) }}</span>
+                              <span class="old">£{{ number_format($relatedItem->price, 2) }}</span>
+                            @elseif ($relatedItem->is_on_sale)
                               <span class="new">£{{ number_format($relatedItem->discount_price, 2) }}</span>
                               <span class="old">£{{ number_format($relatedItem->price, 2) }}</span>
                             @else
@@ -433,37 +436,6 @@
         }
         $('#dish-price-box').html(html);
     }
-// Quantity stepper (+/-) — self-contained, doesn't depend on the theme's
-    // own cart-plus-minus binding (which wasn't firing on this page).
-    // Delegated off document so it keeps working even if this block ever
-    // gets included on a page where the quantity control is added dynamically.
-    const MIN_QTY = 1;
-
-    function currentQty($box) {
-        const val = parseInt($box.val(), 10);
-        return (isNaN(val) || val < MIN_QTY) ? MIN_QTY : val;
-    }
-
-    $(document).on('click', '.qtybutton', function (e) {
-        e.preventDefault();
-
-        const $button = $(this);
-        const $box = $button.closest('.cart-plus-minus').find('.cart-plus-minus-box');
-
-        if (!$box.length) {
-            return;
-        }
-
-        let qty = currentQty($box);
-
-        if ($button.hasClass('inc')) {
-            qty += 1;
-        } else if ($button.hasClass('dec')) {
-            qty = Math.max(MIN_QTY, qty - 1);
-        }
-
-        $box.val(qty).trigger('change');
-    });
 
     $('#dish-customizations-list').on('change', 'input', function () {
         const $input = $(this);
@@ -482,5 +454,62 @@
     renderDishPrice();
 
 })(jQuery);
+</script>
+
+<script>
+    // Countdown builder/ticker — was missing from this page entirely.
+    // Same logic already running correctly on deals.blade.php / home.blade.php.
+    document.addEventListener('DOMContentLoaded', function () {
+        const wrappers = document.querySelectorAll('[data-countdown]');
+        if (! wrappers.length) return;
+
+        function buildSkeleton(el) {
+            el.innerHTML =
+                '<div class="single-countdown"><span class="single-countdown_time cd-days">00</span><span class="single-countdown_text">Days</span></div>' +
+                '<div class="single-countdown"><span class="single-countdown_time cd-hours">00</span><span class="single-countdown_text">Hours</span></div>' +
+                '<div class="single-countdown"><span class="single-countdown_time cd-mins">00</span><span class="single-countdown_text">Min</span></div>' +
+                '<div class="single-countdown"><span class="single-countdown_time cd-secs">00</span><span class="single-countdown_text">Sec</span></div>';
+        }
+
+        function parseCountdownDate(str) {
+            const parts = str.split(' ');
+            const datePart = parts[0];
+            const timePart = parts[1] || '00:00:00';
+
+            const [y, m, d] = datePart.split('/').map(Number);
+            const [hh, mm, ss] = timePart.split(':').map(Number);
+
+            return new Date(y, m - 1, d, hh || 0, mm || 0, ss || 0);
+        }
+
+        wrappers.forEach(buildSkeleton);
+
+        function tick() {
+            wrappers.forEach(function (el) {
+                const target = parseCountdownDate(el.dataset.countdown);
+                const diff = Math.max(0, target.getTime() - Date.now());
+
+                const days = Math.floor(diff / 86400000);
+                const hours = Math.floor((diff % 86400000) / 3600000);
+                const mins = Math.floor((diff % 3600000) / 60000);
+                const secs = Math.floor((diff % 60000) / 1000);
+
+                const pad = n => String(n).padStart(2, '0');
+
+                const daysEl = el.querySelector('.cd-days');
+                const hoursEl = el.querySelector('.cd-hours');
+                const minsEl = el.querySelector('.cd-mins');
+                const secsEl = el.querySelector('.cd-secs');
+
+                if (daysEl) daysEl.textContent = pad(days);
+                if (hoursEl) hoursEl.textContent = pad(hours);
+                if (minsEl) minsEl.textContent = pad(mins);
+                if (secsEl) secsEl.textContent = pad(secs);
+            });
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    });
 </script>
 @endpush

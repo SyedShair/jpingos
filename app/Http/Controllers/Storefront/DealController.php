@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Models\Deal;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\Category;
 class DealController extends Controller
 {
     private const TYPE_LABELS = [
@@ -78,7 +78,14 @@ class DealController extends Controller
             ->latest()
             ->take(8)
             ->get();
-
+  
+        $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get(); 
         return view('storefront.deals', [
             'pageTitle'   => 'Deals',
             'deals'       => $deals,
@@ -89,6 +96,7 @@ class DealController extends Controller
             'activeType'  => $type,
             'sort'        => $sort,
             'perPage'     => $perPage,
+            'categories'  => $categories,
         ]);
     }
 

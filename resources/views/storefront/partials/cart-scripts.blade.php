@@ -102,6 +102,10 @@
         });
     }
 
+
+    $(document).on("click", ".header-action-btn-cart", function () {
+        openCartOffcanvas();
+    });
     /* ==========================================
        ADD NORMAL ITEM / DEAL ITEM
        Flash Deal, Happy Hour, Lunch Special,

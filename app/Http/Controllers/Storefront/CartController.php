@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class CartController extends Controller
 {
@@ -76,4 +77,20 @@ class CartController extends Controller
             ])->render(),
         ]);
     }
+
+    public function index()
+{
+     $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get(); 
+    return view('storefront.cart', [
+        'categories'  => $categories,
+        'cartItems'    => $this->cart->detailedItems(),
+        'cartSubtotal' => $this->cart->subtotal(),
+    ]);
+}
 }

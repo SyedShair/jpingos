@@ -187,7 +187,14 @@ class CartService
             $deal = $dealId ? $deals->get($dealId) : null;
 
             $baseUnitPrice = $this->resolveDealUnitPrice($deal, $menuItem);
-            $unitPrice     = $baseUnitPrice + $selectedOptions->sum('price_adjustment');
+            // FIX: was sum('price_adjustment') — that attribute doesn't
+            // exist on OptionValue. The real column is 'price_delta'
+            // (same name used everywhere else: the JS payload's
+            // data-price-delta, the dish page, etc.). Collection::sum()
+            // on a missing attribute silently returns 0 per row instead
+            // of erroring, so options were selected/stored correctly but
+            // never actually added to the price.
+            $unitPrice = $baseUnitPrice + $selectedOptions->sum('price_delta');
 
             return (object) [
                 'row_id'     => $row['row_id'],
@@ -229,25 +236,20 @@ class CartService
         if (! $deal) {
             return $price;
         }
-return match ($deal->type) {
-    'free_gift' => 0.0,
 
-    'flash_deal',
-    'happy_hour',
-    'lunch_special' => $deal->discountedPriceFor($price),
+        return match ($deal->type) {
+            'free_gift' => 0.0,
 
-    'bogo' => $deal->get_discount_percent >= 100
-        ? 0.0
-        : $price - ($price * ($deal->get_discount_percent / 100)),
+            'flash_deal',
+            'happy_hour',
+            'lunch_special' => $deal->discountedPriceFor($price),
 
-    default => $price,
-};
-        // return match ($deal->type) {
-        //     'free_gift' => 0.0,
-        //     'bogo'      => $price,
-        //     'flash_deal', 'happy_hour', 'lunch_special' => $deal->discountedPriceFor($price),
-        //     default     => $price,
-        // };
+            'bogo' => $deal->get_discount_percent >= 100
+                ? 0.0
+                : $price - ($price * ($deal->get_discount_percent / 100)),
+
+            default => $price,
+        };
     }
 
     protected function makeRowId(?int $menuItemId, array $optionIds, ?int $dealId): string

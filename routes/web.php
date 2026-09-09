@@ -49,7 +49,7 @@ Route::post('/cart/bundle', [CartController::class, 'storeBundle'])
 // (wishlist/search/cart/checkout) don't 500. Swap out once those exist.
 Route::view('/wishlist', 'storefront.coming-soon')->name('storefront.wishlist');
 Route::view('/search', 'storefront.coming-soon')->name('storefront.search');
-Route::view('/cart', 'storefront.coming-soon')->name('storefront.cart');
+Route::get('/cart', [CartController::class, 'index'])->name('storefront.cart');
 Route::view('/checkout', 'storefront.coming-soon')->name('storefront.checkout');
 
 
