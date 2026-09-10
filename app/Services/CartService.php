@@ -187,14 +187,7 @@ class CartService
             $deal = $dealId ? $deals->get($dealId) : null;
 
             $baseUnitPrice = $this->resolveDealUnitPrice($deal, $menuItem);
-            // FIX: was sum('price_adjustment') — that attribute doesn't
-            // exist on OptionValue. The real column is 'price_delta'
-            // (same name used everywhere else: the JS payload's
-            // data-price-delta, the dish page, etc.). Collection::sum()
-            // on a missing attribute silently returns 0 per row instead
-            // of erroring, so options were selected/stored correctly but
-            // never actually added to the price.
-            $unitPrice = $baseUnitPrice + $selectedOptions->sum('price_delta');
+            $unitPrice     = $baseUnitPrice + $selectedOptions->sum('price_delta');
 
             return (object) [
                 'row_id'     => $row['row_id'],
@@ -211,45 +204,53 @@ class CartService
     }
 
     /**
-     * The per-deal-type pricing rule for a single dish row that's linked
-     * to a deal. This is the piece that was missing entirely before —
-     * every deal-linked row was being forced through addBundle()'s
-     * combo_price, which is null/0 for anything that isn't an actual
-     * combo/bundle.
+     * The per-deal-type pricing rule for a single dish row.
      *
      *  - flash_deal / happy_hour / lunch_special: the deal's discount
      *    applied to this item's price (mirrors discountedPriceFor() usage
      *    already on the deals listing page).
      *  - free_gift: the item is free by definition — 0, not a computed
      *    discount off whatever discount_type happens to be set.
-     *  - bogo: the "buy" item stays at full price. The "get" item's
-     *    discount is a property of a SECOND unit, not this line — cart
-     *    doesn't yet model "buy 2 get 1 at X% off" as a split price
-     *    within one row, so this deliberately does NOT discount here.
-     *    Flagging this as a known gap rather than faking a number.
-     *  - anything else (no deal, or an unrecognized type): full price.
+     *  - bogo: applies get_discount_percent directly to this row. Note
+     *    this still treats the row as a single unit rather than modelling
+     *    "buy N get M at X% off" as separate priced units within one
+     *    row — fine for buy_quantity = get_quantity = 1, but will
+     *    under/overcharge for any other quantities. Flagging as a known
+     *    simplification, not a full BOGO implementation.
+     *  - anything else (an unrecognized deal type): full price.
+     *
+     * No deal on the row falls back to the item's own sale price
+     * (is_on_sale ? discount_price : price) — same rule the dish page
+     * already uses for its own price display. This fallback used to be
+     * missing entirely, so a plain on-sale item (no deal attached) always
+     * priced at full price in the cart even though its own page showed
+     * the discounted price.
      */
     protected function resolveDealUnitPrice(?Deal $deal, MenuItem $menuItem): float
     {
         $price = (float) $menuItem->price;
 
-        if (! $deal) {
-            return $price;
+        if ($deal) {
+            return match ($deal->type) {
+                'free_gift' => 0.0,
+
+                'flash_deal',
+                'happy_hour',
+                'lunch_special' => $deal->discountedPriceFor($price),
+
+                'bogo' => $deal->get_discount_percent >= 100
+                    ? 0.0
+                    : $price - ($price * ($deal->get_discount_percent / 100)),
+
+                default => $price,
+            };
         }
 
-        return match ($deal->type) {
-            'free_gift' => 0.0,
-
-            'flash_deal',
-            'happy_hour',
-            'lunch_special' => $deal->discountedPriceFor($price),
-
-            'bogo' => $deal->get_discount_percent >= 100
-                ? 0.0
-                : $price - ($price * ($deal->get_discount_percent / 100)),
-
-            default => $price,
-        };
+        // No deal on this row — fall back to the item's own sale price,
+        // same as the dish page's is_on_sale ? discount_price : price.
+        return $menuItem->is_on_sale
+            ? (float) $menuItem->discount_price
+            : $price;
     }
 
     protected function makeRowId(?int $menuItemId, array $optionIds, ?int $dealId): string

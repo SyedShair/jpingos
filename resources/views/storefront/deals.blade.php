@@ -21,6 +21,96 @@
         --gold: #D9A441;
         --line: #EAE0D3;
         --muted: #8B7F73;
+        --green: #1a9c5c;
+    }
+
+
+    /* =========================================================
+       TOOLBAR
+    ========================================================== */
+
+    .deals-list-page .deals-toolbar-panel {
+        background: #f7f7f8;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 40px;
+    }
+
+    .deals-list-page .deals-toolbar-count {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .deals-list-page .deals-toolbar-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .deals-list-page .deals-toolbar-form .toolbar-search,
+    .deals-list-page .deals-toolbar-form select.toolbar-select {
+        background: #fff;
+        border: 1px solid #e3e3e6;
+        border-radius: 8px;
+        height: 48px;
+        padding: 0 16px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .deals-list-page .deals-toolbar-form .toolbar-search {
+        flex: 2 1 220px;
+    }
+
+    .deals-list-page .deals-toolbar-form select.toolbar-select {
+        flex: 1 1 150px;
+    }
+
+    .deals-list-page .deals-toolbar-form .toolbar-submit {
+        flex: 0 0 auto;
+        background: var(--charcoal);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0 28px;
+        font-weight: 700;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+        font-size: 13px;
+        transition: background .2s ease;
+    }
+
+    .deals-list-page .deals-toolbar-form .toolbar-submit:hover {
+        background: #000;
+    }
+
+    .deals-list-page .shop_toolbar_btn {
+        display: flex;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+    .deals-list-page .shop_toolbar_btn button {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid #e3e3e6;
+        background: #fff;
+        color: #6b7280 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease;
+    }
+
+    .deals-list-page .shop_toolbar_btn button.active,
+    .deals-list-page .shop_toolbar_btn button:hover {
+        background: var(--charcoal);
+        border-color: var(--charcoal);
+        color: #fff !important;
     }
 
 
@@ -113,21 +203,21 @@
 
     .deals-list-page .deal-row .badges {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 12px;
+        left: 12px;
         z-index: 3;
     }
 
     .deals-list-page .deal-row .badges .sale {
         display: inline-block;
-        background: var(--ember);
+        background: var(--green);
         color: #fff;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
         line-height: 1;
         letter-spacing: .02em;
-        padding: 7px 11px;
-        border-radius: 20px;
+        padding: 6px 12px;
+        border-radius: 6px;
         box-shadow: 0 3px 8px rgba(0, 0, 0, .12);
     }
 
@@ -218,10 +308,11 @@
     .deals-list-page .deal-row .content h5.title {
         color: var(--charcoal);
         font-family: 'Fraunces', serif;
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 700;
+        text-transform: uppercase;
         line-height: 1.3;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }
 
     .deals-list-page .deal-row .content h5.title a {
@@ -240,6 +331,18 @@
         margin-bottom: 10px;
     }
 
+    .deals-list-page .deal-row .content .ratings {
+        display: block;
+        margin-bottom: 8px;
+        color: #f5a623;
+        font-size: 13px;
+    }
+
+    .deals-list-page .deal-row .content .ratings .rating-num {
+        color: #9ca3af;
+        margin-left: 4px;
+    }
+
 
     /* =========================================================
        PRICE
@@ -248,13 +351,22 @@
     .deals-list-page .deal-row .content .price {
         display: block;
         margin-top: 6px;
+        margin-bottom: 6px;
     }
 
     .deals-list-page .deal-row .content .price .new {
-        color: var(--ember-dark);
+        color: var(--green);
         font-family: 'Fraunces', serif;
         font-size: 19px;
         font-weight: 700;
+        margin-right: 8px;
+    }
+
+    .deals-list-page .deal-row .content .price .old {
+        color: #9ca3af;
+        text-decoration: line-through;
+        font-size: 14px;
+        font-weight: 400;
     }
 
 
@@ -284,8 +396,10 @@
         border-radius: 8px;
         border-color: var(--charcoal);
         color: var(--charcoal);
-        font-weight: 600;
-        letter-spacing: .01em;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: .02em;
 
         transition:
             background .2s ease,
@@ -354,7 +468,6 @@
     .deals-list-page .deals_wrapper.grid_list .deal-row .product-inner {
         flex-direction: row;
         align-items: stretch;
-        border-left: 4px solid var(--ember);
     }
 
     .deals-list-page .deals_wrapper.grid_list .deal-row .thumb {
@@ -392,7 +505,6 @@
 
     .deals-list-page .deals_wrapper.grid_3 .deal-row .product-inner {
         flex-direction: column;
-        border-top: 4px solid var(--ember);
     }
 
     .deals-list-page .deals_wrapper.grid_3 .deal-row .thumb {
@@ -412,11 +524,15 @@
     }
 
     .deals-list-page .deals_wrapper.grid_3 .deal-row .content h5.title {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .deals-list-page .deals_wrapper.grid_3 .deal-row .content .desc-line {
         display: none;
+    }
+
+    .deals-list-page .deals_wrapper.grid_3 .deal-row .content .ratings {
+        justify-content: center;
     }
 
     .deals-list-page .deals_wrapper.grid_3 .deal-row .countdown-wrapper {
@@ -438,23 +554,58 @@
 
 
     /* =========================================================
-       TOOLBAR
-    ========================================================== */
-
-    .deals-list-page .shop_toolbar_btn button.active {
-        color: var(--ember-dark);
-    }
-
-    .deals-list-page .shop_toolbar_btn button:hover {
-        color: var(--ember-dark);
-    }
-
-
-    /* =========================================================
        SIDEBAR
     ========================================================== */
 
+    .deals-list-page .sidebar_widget .widget_inner {
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .deals-list-page .sidebar_widget .widget-title {
+        font-weight: 800;
+        font-size: 18px;
+        color: var(--charcoal);
+    }
+
+    .deals-list-page .sidebar_widget .search-box {
+        position: relative;
+        display: flex;
+    }
+
+    .deals-list-page .sidebar_widget .search-box input {
+        padding-right: 50px;
+    }
+
+    .deals-list-page .sidebar_widget .search-box button {
+        min-width: 45px;
+    }
+
+    .deals-list-page .sidebar-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .deals-list-page .sidebar-list li {
+        border-bottom: 1px solid #ececec;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .deals-list-page .sidebar-list li:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
     .deals-list-page .sidebar-list a {
+        display: block;
+        color: #4b5563;
+        font-size: 14px;
+        font-weight: 600;
         transition: color .2s ease;
     }
 
@@ -463,26 +614,18 @@
     }
 
     .deals-list-page .sidebar-list a.active {
-        color: var(--ember-dark);
-        font-weight: 600;
+        color: var(--green);
+        font-weight: 700;
     }
 
-
-    /* =========================================================
-       SEARCH
-    ========================================================== */
-
-    .deals-list-page .search-box {
-        position: relative;
-        display: flex;
+    .deals-list-page .single-product-list {
+        border-radius: 10px;
+        transition: box-shadow .2s ease, transform .2s ease;
     }
 
-    .deals-list-page .search-box input {
-        padding-right: 50px;
-    }
-
-    .deals-list-page .search-box button {
-        min-width: 45px;
+    .deals-list-page .single-product-list:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+        transform: translateY(-2px);
     }
 
 
@@ -527,6 +670,24 @@
             padding: 15px;
         }
 
+        .deals-list-page .deals-toolbar-form .toolbar-search {
+            flex: 1 1 100%;
+        }
+
+        .deals-list-page .deals-toolbar-form select.toolbar-select {
+            flex: 1 1 45%;
+        }
+
+        .deals-list-page .deals-toolbar-form .toolbar-submit {
+            flex: 1 1 100%;
+        }
+
+        .deals-list-page .shop_toolbar_btn {
+            margin-left: 0;
+            flex: 1 1 100%;
+            justify-content: center;
+        }
+
     }
 
 
@@ -539,8 +700,6 @@
 
         .deals-list-page .deals_wrapper.grid_list .deal-row .product-inner {
             flex-direction: column;
-            border-left: 0;
-            border-top: 4px solid var(--ember);
         }
 
         .deals-list-page .deals_wrapper.grid_list .deal-row .thumb {
@@ -554,6 +713,205 @@
             flex: 1 1 auto;
         }
 
+    }
+
+
+    /* =========================================================
+       TOOLBAR TOP ROW — count + filter trigger + search toggle
+    ========================================================== */
+
+    .deals-list-page .deals-toolbar-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .deals-list-page .deals-toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .deals-list-page .deals-filter-trigger {
+        background: var(--charcoal);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0 16px;
+        height: 42px;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .02em;
+    }
+
+    .deals-list-page .deals-search-wrap {
+        position: relative;
+    }
+
+    .deals-list-page .deals-search-toggle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--ember);
+        color: #fff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: background .2s ease;
+    }
+
+    .deals-list-page .deals-search-toggle:hover {
+        background: var(--ember-dark);
+    }
+
+    .deals-list-page .deals-search-form {
+        display: none;
+        position: absolute;
+        top: 52px;
+        right: 0;
+        z-index: 30;
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 10px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, .14);
+        padding: 10px;
+        width: 280px;
+    }
+
+    .deals-list-page .deals-search-form.open {
+        display: flex;
+        gap: 8px;
+    }
+
+    .deals-list-page .deals-search-form input {
+        flex: 1;
+        border: 1px solid #e3e3e6;
+        border-radius: 6px;
+        padding: 0 12px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .deals-list-page .deals-search-form button {
+        background: var(--ember);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        width: 40px;
+        height: 40px;
+    }
+
+
+    /* =========================================================
+       MOBILE FILTER DRAWER (sidebar becomes a left slide-in panel)
+    ========================================================== */
+
+    .deals-list-page .deals-filter-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .55);
+        z-index: 1040;
+    }
+
+    .deals-list-page .deals-filter-drawer-head button {
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: var(--charcoal);
+    }
+
+    @media (max-width: 991.98px) {
+
+        .deals-list-page .deals-filter-col {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 300px;
+            max-width: 85vw;
+            background: #fff;
+            z-index: 1050;
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform .28s ease;
+        }
+
+        .deals-list-page .deals-filter-col.open {
+            transform: translateX(0);
+        }
+
+        .deals-list-page .deals-filter-backdrop.open {
+            display: block;
+        }
+    }
+
+
+    /* =========================================================
+       COUNTDOWN — upgraded, higher-contrast, brand-accent version
+    ========================================================== */
+
+    .deals-list-page .countdown-wrapper {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .deals-list-page .single-countdown {
+        min-width: 54px;
+        padding: 8px 6px 7px;
+        background: linear-gradient(160deg, var(--ember), var(--ember-dark));
+        color: #fff;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 6px 16px rgba(209, 32, 38, .3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .deals-list-page .single-countdown::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 55%);
+        pointer-events: none;
+    }
+
+    .deals-list-page .single-countdown_time {
+        display: block;
+        color: #fff;
+        font-family: 'Fraunces', serif;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .deals-list-page .single-countdown_text {
+        display: block;
+        color: rgba(255, 255, 255, .85);
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        margin-top: 3px;
+    }
+
+    /* Seconds box pulses once the deal is inside its final hour */
+    .deals-list-page .single-countdown.cd-urgent {
+        animation: cd-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes cd-pulse {
+        0%, 100% { box-shadow: 0 6px 16px rgba(209, 32, 38, .3); }
+        50% { box-shadow: 0 6px 22px rgba(209, 32, 38, .65); }
     }
 
 </style>
@@ -571,7 +929,7 @@
 {{-- =========================================================
      BREADCRUMB
 ========================================================= --}}
-
+<!-- 
 <div class="section">
 
     <div class="breadcrumb-area bg-light">
@@ -604,7 +962,7 @@
 
     </div>
 
-</div>
+</div> -->
 
 
 {{-- =========================================================
@@ -627,152 +985,120 @@
 
                 {{-- =================================================
                      TOOLBAR
+                     Same $search/$activeType/$perPage/$sort fields and
+                     route as before — search is now a visible input
+                     instead of a hidden one, and sort/per-page/search
+                     share one row with the grid/list toggle.
                 ================================================== --}}
 
-                <div
-                    class="shop_toolbar_wrapper flex-column flex-md-row mb-10"
-                    data-aos="fade-up"
-                    data-aos-delay="100"
-                >
+                <div class="deals-toolbar-panel" data-aos="fade-up" data-aos-delay="100">
 
-                    <div class="shop-top-bar-left mb-md-0 mb-2">
+                    <div class="deals-toolbar-top">
 
-                        <div class="shop-top-show">
+                        <div class="deals-toolbar-count">
 
-                            <span>
+                            @if ($deals->total() > 0)
 
-                                @if ($deals->total() > 0)
+                                Showing
+                                {{ $deals->firstItem() }}–{{ $deals->lastItem() }}
+                                of
+                                {{ $deals->total() }}
+                                deals
 
-                                    Showing
-                                    {{ $deals->firstItem() }}–{{ $deals->lastItem() }}
-                                    of
-                                    {{ $deals->total() }}
-                                    deals
+                            @else
 
-                                @else
+                                No deals found
 
-                                    No deals found
+                            @endif
 
-                                @endif
+                        </div>
 
-                            </span>
+                        <div class="deals-toolbar-actions">
+
+                            {{-- Mobile-only trigger for the filter drawer (sidebar) --}}
+                            <button type="button" class="deals-filter-trigger d-lg-none" id="deals-filter-open">
+                                <i class="fa fa-sliders"></i> Filter
+                            </button>
+
+                            {{-- Search — collapsed into a corner icon, expands on click
+                                 instead of sitting inline as a full-width input --}}
+                            <div class="deals-search-wrap">
+                                <button type="button" class="deals-search-toggle" id="deals-search-toggle" aria-label="Search deals">
+                                    <i class="fa fa-search"></i>
+                                </button>
+
+                                <form
+                                    method="GET"
+                                    action="{{ route('storefront.deals.index') }}"
+                                    class="deals-search-form"
+                                    id="deals-search-form"
+                                >
+                                    <input type="hidden" name="type" value="{{ $activeType }}">
+                                    <input type="hidden" name="sort" value="{{ $sort }}">
+                                    <input type="hidden" name="per_page" value="{{ $perPage }}">
+
+                                    <input
+                                        type="text"
+                                        name="search"
+                                        value="{{ $search }}"
+                                        placeholder="Search deals..."
+                                        aria-label="Search deals"
+                                        autocomplete="off"
+                                    >
+                                    <button type="submit" aria-label="Submit search"><i class="fa fa-arrow-right"></i></button>
+                                </form>
+                            </div>
 
                         </div>
 
                     </div>
 
+                    <form
+                        method="GET"
+                        action="{{ route('storefront.deals.index') }}"
+                        id="deals-toolbar-form"
+                        class="deals-toolbar-form"
+                    >
 
-                    <div class="shop-top-bar-right">
-
-                        <form
-                            method="GET"
-                            action="{{ route('storefront.deals.index') }}"
-                            id="deals-toolbar-form"
+                        <input
+                            type="hidden"
+                            name="type"
+                            value="{{ $activeType }}"
                         >
 
-                            <input
-                                type="hidden"
-                                name="search"
-                                value="{{ $search }}"
-                            >
+                        <input type="hidden" name="search" value="{{ $search }}">
 
-                            <input
-                                type="hidden"
-                                name="type"
-                                value="{{ $activeType }}"
-                            >
+                        <select
+                            class="toolbar-select"
+                            name="sort"
+                            aria-label="Sort deals"
+                            onchange="this.form.submit()"
+                        >
+                            <option value="default" @selected($sort === 'default')>Sort by Name</option>
+                            <option value="latest" @selected($sort === 'latest')>Sort by Latest</option>
+                        </select>
 
+                        <select
+                            class="toolbar-select"
+                            name="per_page"
+                            aria-label="Deals per page"
+                            onchange="this.form.submit()"
+                        >
+                            @foreach ([12, 24, 30] as $option)
+                                <option value="{{ $option }}" @selected($perPage === $option)>{{ $option }} / page</option>
+                            @endforeach
+                        </select>
 
-                            {{-- PER PAGE --}}
-
-                            <div class="shop-short-by mr-4 d-inline-block">
-
-                                <select
-                                    class="nice-select"
-                                    name="per_page"
-                                    onchange="this.form.submit()"
-                                    aria-label="Deals per page"
-                                >
-
-                                    @foreach ([12, 24, 30] as $option)
-
-                                        <option
-                                            value="{{ $option }}"
-                                            @selected($perPage === $option)
-                                        >
-                                            Show {{ $option }}
-                                        </option>
-
-                                    @endforeach
-
-                                </select>
-
-                            </div>
-
-
-                            {{-- SORT --}}
-
-                            <div class="shop-short-by mr-4 d-inline-block">
-
-                                <select
-                                    class="nice-select"
-                                    name="sort"
-                                    onchange="this.form.submit()"
-                                    aria-label="Sort deals"
-                                >
-
-                                    <option
-                                        value="default"
-                                        @selected($sort === 'default')
-                                    >
-                                        Sort by Name
-                                    </option>
-
-                                    <option
-                                        value="latest"
-                                        @selected($sort === 'latest')
-                                    >
-                                        Sort by Latest
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </form>
-
-
-                        {{-- GRID / LIST --}}
-
-                        <div class="shop_toolbar_btn">
-
-                            <button
-                                type="button"
-                                class="btn-grid-4"
-                                data-role="grid_3"
-                                title="Grid"
-                            >
-                                <i class="fa fa-th"></i>
-                            </button>
-
-                            <button
-                                type="button"
-                                class="active btn-list"
-                                data-role="grid_list"
-                                title="List"
-                            >
-                                <i class="fa fa-th-list"></i>
-                            </button>
-
-                        </div>
-
-                    </div>
+                    </form>
 
                 </div>
 
 
                 {{-- =================================================
                      DEALS
+                     (unchanged — same @switch/@case per deal type,
+                     same @include for add-to-cart, same data-slug /
+                     data-deal-id quickview wiring)
                 ================================================== --}}
 
                 <div
@@ -790,6 +1116,23 @@
 
                                 <div class="product-inner">
 
+
+                                    @php
+                                        // All four are referenced in the data-slug
+                                        // fallback chain further down regardless of
+                                        // which @case runs — initialize them here so
+                                        // none of them are ever undefined. This is
+                                        // the actual fix: previously only the ONE
+                                        // variable each @case computed existed, so
+                                        // the other three were undefined vars, which
+                                        // Laravel's exception handler turns into a
+                                        // thrown ErrorException — i.e. every single
+                                        // deal, of every type, was crashing this loop.
+                                        $target = null;
+                                        $buyItem = null;
+                                        $freeItem = null;
+                                        $comboFirstItem = null;
+                                    @endphp
 
                                     @switch($deal->type)
 
@@ -892,6 +1235,13 @@
                                                     </a>
 
                                                 </h5>
+
+                                                <span class="ratings">
+                                                    <span class="rating-wrap">
+                                                        <span class="star" style="width: 100%"></span>
+                                                    </span>
+                                                    <span class="rating-num">(5)</span>
+                                                </span>
 
 
                                                 @if ($target)
@@ -1053,6 +1403,13 @@
                                                     </a>
 
                                                 </h5>
+
+                                                <span class="ratings">
+                                                    <span class="rating-wrap">
+                                                        <span class="star" style="width: 100%"></span>
+                                                    </span>
+                                                    <span class="rating-num">(5)</span>
+                                                </span>
 
 
                                                 <p class="desc-line">
@@ -1459,9 +1816,11 @@
 
             {{-- =================================================
                  SIDEBAR
+                 (unchanged fields/variables — $search, $activeType,
+                 $typeLabels, $typeCounts, $recentDeals — just restyled)
             ================================================== --}}
 
-            <div class="col-lg-3 col-12 col-custom">
+            <div class="col-lg-3 col-12 col-custom deals-filter-col" id="deals-filter-panel">
 
                 <aside class="sidebar_widget mt-10 mt-lg-0">
 
@@ -1470,7 +1829,13 @@
                         data-aos="fade-up"
                         data-aos-delay="200"
                     >
-
+                        <div class="d-flex justify-content-between align-items-center d-lg-none mb-3 deals-filter-drawer-head">
+                            <h5 class="mb-0">Filter Deals</h5>
+                            <button type="button" id="deals-filter-close" aria-label="Close filters">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+<!-- 
 
                         {{-- SEARCH --}}
 
@@ -1491,9 +1856,9 @@
                                     type="hidden"
                                     name="type"
                                     value="{{ $activeType }}"
-                                >
+                                > -->
 
-                                <input
+                                <!-- <input
                                     type="text"
                                     name="search"
                                     value="{{ $search }}"
@@ -1508,18 +1873,18 @@
                                     type="submit"
                                 >
                                     <i class="fa fa-search"></i>
-                                </button>
+                                </button> -->
 
-                            </form>
+                            <!-- </form>
 
-                        </div>
+                        </div>  -->
 
 
                         {{-- DEAL TYPES --}}
 
                         <div class="widget-list mb-10">
 
-                            <h3 class="widget-title">
+                            <h3 class="widget-title mb-4">
                                 Deal Type
                             </h3>
 
@@ -1625,6 +1990,8 @@
                 </aside>
 
             </div>
+
+            <div class="deals-filter-backdrop" id="deals-filter-backdrop"></div>
 
         </div>
 
@@ -1800,6 +2167,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         pad(secs);
                 }
 
+                // Pulse the whole countdown once under an hour remains,
+                // to make genuinely-urgent deals visually stand out.
+                el.querySelectorAll('.single-countdown').forEach(function (box) {
+                    box.classList.toggle('cd-urgent', diff > 0 && diff < 3600000);
+                });
+
             });
 
         }
@@ -1813,6 +2186,56 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
     }
+
+
+    /* =========================================================
+       SEARCH TOGGLE (top-right corner icon)
+    ========================================================== */
+
+    const searchToggle = document.getElementById('deals-search-toggle');
+    const searchForm = document.getElementById('deals-search-form');
+
+    if (searchToggle && searchForm) {
+
+        searchToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            searchForm.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.deals-search-wrap')) {
+                searchForm.classList.remove('open');
+            }
+        });
+    }
+
+
+    /* =========================================================
+       MOBILE FILTER DRAWER
+    ========================================================== */
+
+    const filterPanel = document.getElementById('deals-filter-panel');
+    const filterBackdrop = document.getElementById('deals-filter-backdrop');
+    const filterOpenBtn = document.getElementById('deals-filter-open');
+    const filterCloseBtn = document.getElementById('deals-filter-close');
+
+    function openFilterDrawer() {
+        if (!filterPanel) return;
+        filterPanel.classList.add('open');
+        filterBackdrop?.classList.add('open');
+        document.body.classList.add('fix');
+    }
+
+    function closeFilterDrawer() {
+        if (!filterPanel) return;
+        filterPanel.classList.remove('open');
+        filterBackdrop?.classList.remove('open');
+        document.body.classList.remove('fix');
+    }
+
+    filterOpenBtn?.addEventListener('click', openFilterDrawer);
+    filterCloseBtn?.addEventListener('click', closeFilterDrawer);
+    filterBackdrop?.addEventListener('click', closeFilterDrawer);
 
 
     /* =========================================================

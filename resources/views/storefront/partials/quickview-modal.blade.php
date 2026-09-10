@@ -106,7 +106,7 @@
                             <div class="add-to_cart mb-3">
                                 <a class="btn btn-outline-dark btn-hover-primary"
                                    id="quickview-view-link"
-                                   href="#">
+                                   href="">
                                    Buy Now
                                 </a>
                             </div>

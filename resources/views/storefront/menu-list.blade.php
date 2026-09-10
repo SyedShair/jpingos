@@ -512,25 +512,7 @@
 
 @section('content')
 
-  <!-- Breadcrumb -->
-  <div class="section">
-    <div class="breadcrumb-area bg-light">
-      <div class="container-fluid">
-        <div class="breadcrumb-content text-center">
-          <h1 class="title">{{ $pageTitle }}</h1>
-          <ul>
-            <li><a href="{{ route('storefront.home') }}">Home</a></li>
-            @if ($activeCategory)
-              <li><a href="{{ route('storefront.menu.index') }}">Menu</a></li>
-              <li class="active">{{ $activeCategory->name }}</li>
-            @else
-              <li class="active">Menu</li>
-            @endif
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
 
   <div class="section section-margin">
     <div class="container">

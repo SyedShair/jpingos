@@ -104,7 +104,7 @@
                                 <li><a href="{{ route('storefront.home') }}"><span>Home</span></a></li>
 
                                 <li class="has-children position-static">
-                                    <a href="#"><span>Menu</span> <i class="fa fa-angle-down"></i></a>
+                                    <a href="{{ route('storefront.menu.index') }}"><span>Menu</span> <i class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu mega-menu-auto">
                                         @forelse ($categories ?? [] as $main)
                                             <li class="col">

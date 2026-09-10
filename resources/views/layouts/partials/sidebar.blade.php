@@ -55,6 +55,15 @@
     <div class="menu-title">Hero Slider</div>
   </a>
 </li>
+
+
+<li>
+  <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('sliders.*') ? 'mm-active' : '' }}">
+    <div class="parent-icon"><i class="material-icons-outlined">view_carousel</i></div>
+    <div class="menu-title">Delivery Settings</div>
+  </a>
+</li>
+
        </ul>
   </div>
 </aside>

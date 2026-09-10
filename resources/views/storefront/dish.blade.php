@@ -417,6 +417,16 @@
 
 @push('scripts')
 <script>
+  $(document).on('click', '.qtybutton', function () {
+
+    const $box = $(this).closest('.cart-plus-minus').find('.cart-plus-minus-box');
+    let qty = parseInt($box.val(), 10) || 1;
+
+    qty = $(this).hasClass('inc') ? qty + 1 : Math.max(1, qty - 1);
+
+    $box.val(qty).trigger('change');
+
+});
 (function ($) {
     "use strict";
 

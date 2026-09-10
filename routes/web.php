@@ -8,16 +8,19 @@ use App\Livewire\Categories\Manager as CategoryManager;
 use App\Livewire\Deals\Manager as DealManager;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\DeliverySettingController;
+
+use App\Http\Controllers\DeliveryCheckController;
 use App\Livewire\CategoryMedia\Manager as CategoryMediaManager;
 use App\Http\Controllers\Storefront\MenuController;
 use App\Http\Controllers\Storefront\DealController;
 use App\Http\Controllers\Storefront\CategoryController;
-
 use App\Http\Controllers\Storefront\HomeController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Storefront\MenuItemController as StorefrontMenuItemController;
 use App\Http\Controllers\Storefront\DishController;
 use App\Http\Controllers\Storefront\CartController;
+use App\Http\Controllers\Storefront\CheckoutController;
 
  
 
@@ -50,8 +53,16 @@ Route::post('/cart/bundle', [CartController::class, 'storeBundle'])
 Route::view('/wishlist', 'storefront.coming-soon')->name('storefront.wishlist');
 Route::view('/search', 'storefront.coming-soon')->name('storefront.search');
 Route::get('/cart', [CartController::class, 'index'])->name('storefront.cart');
-Route::view('/checkout', 'storefront.coming-soon')->name('storefront.checkout');
+// routes/web.php — remove the old placeholder line and add:
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('storefront.checkout');
 
+ 
+Route::get('/delivery-check', [DeliveryCheckController::class, 'show'])
+    ->name('delivery-check.show');
+ 
+Route::post('/delivery-check', [DeliveryCheckController::class, 'check'])
+    ->name('delivery-check.check');
+ 
 
 Route::prefix('admin')->group(function () {
 // --- Guest-only routes ---
@@ -99,7 +110,14 @@ Route::get('/category-media', CategoryMediaManager::class)->name('category-media
     Route::post('menu/{menuItem}/images/reorder', [MenuItemImageController::class, 'reorder'])->name('menu.images.reorder');
 
 
-// 
+// Delivery setting
+ 
+Route::get('/delivery-settings', [DeliverySettingController::class, 'edit'])
+    ->name('admin.delivery-settings.edit');
+ 
+Route::put('/delivery-settings', [DeliverySettingController::class, 'update'])
+    ->name('admin.delivery-settings.update');
+
 
 
 

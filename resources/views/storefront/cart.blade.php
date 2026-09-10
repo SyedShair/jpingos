@@ -4,7 +4,7 @@
 
 @section('content')
 
-    {{-- =========================================================
+    <!-- {{-- =========================================================
          BREADCRUMB
     ========================================================= --}}
 
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-    </div>
+    </div> -->
 
     {{-- =========================================================
          SHOPPING CART
@@ -33,18 +33,20 @@
     <div class="section section-margin" id="cart-page">
         <div class="container">
 
-            @if ($cartItems->isEmpty())
-
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="mb-4">Your cart is empty.</p>
-                        <a href="{{ route('storefront.home') }}" class="btn btn-dark btn-hover-primary rounded-0">
-                            Browse Menu
-                        </a>
-                    </div>
+            {{-- Empty state — hidden by default when the cart has items;
+                 shown by JS (no reload) once the last row is removed,
+                 or rendered directly on page load if the cart was
+                 already empty when the page loaded. --}}
+            <div class="row" id="cart-page-empty" style="{{ $cartItems->isEmpty() ? '' : 'display:none;' }}">
+                <div class="col-12 text-center">
+                    <p class="mb-4">Your cart is empty.</p>
+                    <a href="{{ route('storefront.home') }}" class="btn btn-dark btn-hover-primary rounded-0">
+                        Browse Menu
+                    </a>
                 </div>
+            </div>
 
-            @else
+            <div id="cart-page-content" style="{{ $cartItems->isEmpty() ? 'display:none;' : '' }}">
 
                 <div class="row">
                     <div class="col-12">
@@ -86,10 +88,25 @@
                                                 @endif
 
                                                 @if ($cartItem->options->isNotEmpty())
-                                                    <br>
-                                                    <span class="small text-muted">
-                                                        {{ $cartItem->options->pluck('name')->join(', ') }}
-                                                    </span>
+                                                    @php
+                                                        $complimentary = $cartItem->options->filter(fn ($opt) => (float) $opt->price_delta <= 0);
+                                                        $extras = $cartItem->options->filter(fn ($opt) => (float) $opt->price_delta > 0);
+                                                    @endphp
+
+                                                    @if ($complimentary->isNotEmpty())
+                                                        <br>
+                                                        <span class="small text-muted">
+                                                            <strong>Complimentary:</strong> {{ $complimentary->pluck('name')->join(', ') }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if ($extras->isNotEmpty())
+                                                        <br>
+                                                        <span class="small text-muted">
+                                                            <strong>Extras:</strong>
+                                                            {{ $extras->map(fn ($opt) => $opt->name.' (+£'.number_format($opt->price_delta, 2).')')->join(', ') }}
+                                                        </span>
+                                                    @endif
                                                 @endif
                                             </td>
 
@@ -136,7 +153,7 @@
                              template rather than a working form, since a fake
                              "Apply" that does nothing would be worse than being
                              upfront it isn't built. --}}
-                        <div class="cart-update-option d-block d-md-flex justify-content-between">
+                        <!-- <div class="cart-update-option d-block d-md-flex justify-content-between">
 
                             <div class="apply-coupon-wrapper">
                                 <form action="#" method="post" class="d-block d-md-flex" onsubmit="return false;">
@@ -147,7 +164,7 @@
                                 </form>
                             </div>
 
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
@@ -185,7 +202,7 @@
                     </div>
                 </div>
 
-            @endif
+            </div>
 
         </div>
     </div>
@@ -198,10 +215,6 @@
     "use strict";
 
     function refreshRow($input, data) {
-        // Backend response doesn't return per-row totals — only cart-wide
-        // count/subtotal/html. Recomputing this row's total client-side
-        // from unit price × new quantity, read off the row itself, is
-        // simpler than fetching detailedItems() again just for one row.
         const $row = $input.closest('tr');
         const unitPrice = parseFloat(
             $row.find('.pro-price span').text().replace('£', '')
@@ -245,8 +258,13 @@
         updateQuantity($(this));
     });
 
-    $(document).on('click', '#cart-page-rows .js-cart-remove', function () {
+    /* ==========================================
+       REMOVE CART ITEM
+    ========================================== */
+    $(document).on('click', '.js-cart-remove', function () {
+
         const rowId = $(this).data('row-id');
+        const $row = $(this).closest('tr');
 
         fetch('/cart/' + rowId, {
             method: 'DELETE',
@@ -255,13 +273,32 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         })
-        .then(res => res.json())
-        .then(function () {
-            // Simplest correct behaviour: reload so totals, empty-cart
-            // state, and the header badge all end up consistent without
-            // reimplementing the empty-cart markup in JS.
-            window.location.reload();
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Could not remove item.');
+            }
+            return response.json();
+        })
+        .then(function (data) {
+
+            $row.remove();
+
+            if (data.count === 0) {
+                $('#cart-page-content').hide();
+                $('#cart-page-empty').show();
+                $('.header-action-btn-cart .header-action-num').text(0);
+                return;
+            }
+
+            $('#cart-page-subtotal').text('£' + data.subtotal);
+            $('#cart-page-total').text('£' + data.subtotal);
+            $('.header-action-btn-cart .header-action-num').text(data.count);
+        })
+        .catch(function (error) {
+            console.error(error);
+            alert(error.message);
         });
+
     });
 
 })(jQuery);

@@ -493,9 +493,15 @@ img.first-image {
 
                                                     // No "add whole bundle to cart" action exists yet, so
                                                     // this falls back to the first component dish for the
-                                                    // Add to Cart button and quickview — it's a stand-in,
-                                                    // not really "add the combo". Wire this to a proper
-                                                    // bundle-cart route once one exists.
+                                                    // Add to Cart button — it's a stand-in, not really
+                                                    // "add the combo". Wire this to a proper bundle-cart
+                                                    // route once one exists.
+                                                    //
+                                                    // Quick View is different: HomeController now has a
+                                                    // dedicated quickviewBundle(Deal $deal) endpoint, so
+                                                    // the quickview link below targets the deal itself via
+                                                    // data-deal-id, with $firstComponent->slug kept only as
+                                                    // a fallback for JS that doesn't check for it yet.
                                                     $firstComponent = $deal->bundleComponents
                                                         ->first(fn ($c) => $c->menuItem)
                                                         ?->menuItem;
@@ -509,11 +515,9 @@ img.first-image {
                                                         <span class="badges">
                                                             <span class="sale">Deal</span>
                                                         </span>
-                                                        @if ($firstComponent)
-                                                            <div class="actions">
-                                                                <a href="javascript:void(0)" class="action quickview" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-slug="{{ $firstComponent->slug }}"><i class="pe-7s-search"></i></a>
-                                                            </div>
-                                                        @endif
+                                                        <div class="actions">
+                                                            <a href="javascript:void(0)" class="action quickview" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-slug="{{ $firstComponent?->slug }}" data-deal-id="{{ $deal->id }}"><i class="pe-7s-search"></i></a>
+                                                        </div>
                                                     </div>
                                                     <div class="content">
                                                         <h4 class="sub-title">{{ \App\Models\Deal::typeLabel($deal->type) }}</h4>

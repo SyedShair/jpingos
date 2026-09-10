@@ -286,61 +286,130 @@ class HomeController extends Controller
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Quick View — Regular Items & Item-Level Deals
+    |
+    | Covers plain menu items, on-sale items (discount_price), and any
+    | deal type that discounts a specific item via `appliesToItems`
+    | (flash_deal, happy_hour, lunch_special). BOGO/free_gift/tiered_spend
+    | aren't surfaced as home page cards today, so they're out of scope
+    | here — this only needs to match what index() actually renders.
+    |--------------------------------------------------------------------------
+    */
+    public function quickview(MenuItem $menuItem)
+    {
+        abort_unless($menuItem->is_available, 404);
 
-public function quickview(MenuItem $menuItem)
-{
-    abort_unless($menuItem->is_available, 404);
+        $menuItem->load(['category', 'images', 'optionGroups.values']);
 
-    $menuItem->load(['category', 'images', 'optionGroups.values']);
+        $deal = Deal::query()
+            ->whereHas('appliesToItems', fn ($q) => $q->where('menu_item_id', $menuItem->id))
+            ->where('is_active', true)
+            ->get()
+            ->first(fn ($d) => $d->isCurrentlyActive());
 
-    $deal = Deal::query()
-        ->whereHas('appliesToItems', fn ($q) => $q->where('menu_item_id', $menuItem->id))
-        ->where('is_active', true)
-        ->get()
-        ->first(fn ($d) => $d->isCurrentlyActive());
+        return response()->json([
+            'type'        => 'item',
+            'name'        => $menuItem->name,
+            'slug'        => $menuItem->slug,
+            'category'    => $menuItem->category?->name,
+            'description' => $menuItem->description,
+            'price'       => number_format((float) $menuItem->price, 2),
+            'base_price'  => (float) $menuItem->price, // raw number, used for live JS price math
+            'discount_price' => $menuItem->is_on_sale
+                ? number_format((float) $menuItem->discount_price, 2)
+                : null,
+            'is_on_sale'  => $menuItem->is_on_sale,
+            'spice_level' => $menuItem->spice_level !== 'none' ? ucfirst($menuItem->spice_level) : null,
+            'dietary'     => array_filter([
+                $menuItem->is_vegetarian ? 'Vegetarian' : null,
+                $menuItem->is_vegan ? 'Vegan' : null,
+                $menuItem->is_gluten_free ? 'Gluten-Free' : null,
+            ]),
+            'images'      => $menuItem->images->isNotEmpty()
+                ? $menuItem->images->pluck('url')
+                : [$menuItem->image_url],
+            'url'          => route('storefront.dish', $menuItem->slug),
+            'wishlist_url' => route('storefront.wishlist'),
 
-    return response()->json([
-        'name'        => $menuItem->name,
-        'slug'        => $menuItem->slug,
-        'category'    => $menuItem->category?->name,
-        'description' => $menuItem->description,
-        'price'       => number_format((float) $menuItem->price, 2),
-        'base_price'  => (float) $menuItem->price, // raw number, used for live JS price math
-        'discount_price' => $menuItem->is_on_sale
-            ? number_format((float) $menuItem->discount_price, 2)
-            : null,
-        'is_on_sale'  => $menuItem->is_on_sale,
-        'spice_level' => $menuItem->spice_level !== 'none' ? ucfirst($menuItem->spice_level) : null,
-        'dietary'     => array_filter([
-            $menuItem->is_vegetarian ? 'Vegetarian' : null,
-            $menuItem->is_vegan ? 'Vegan' : null,
-            $menuItem->is_gluten_free ? 'Gluten-Free' : null,
-        ]),
-        'images'      => $menuItem->images->isNotEmpty()
-            ? $menuItem->images->pluck('url')
-            : [$menuItem->image_url],
-        'url'          => route('storefront.dish', $menuItem->slug),
-        'wishlist_url' => route('storefront.wishlist'),
+            'option_groups' => $menuItem->optionGroups->map(function ($group) {
+                return [
+                    'id'       => $group->id,
+                    'name'     => $group->name,
+                    'required' => $group->min_select > 0,
+                    'multiple' => $group->selection_type === 'multiple',
+                    'values'   => $group->values->map(function ($value) {
+                        return [
+                            'id'          => $value->id,
+                            'name'        => $value->name,
+                            'price_delta' => (float) $value->price_delta,
+                        ];
+                    })->values(),
+                ];
+            })->values(),
 
-        'option_groups' => $menuItem->optionGroups->map(function ($group) {
-            return [
-                'id'       => $group->id,
-                'name'     => $group->name,
-                'required' => $group->min_select > 0,
-                'multiple' => $group->selection_type === 'multiple',
-                'values'   => $group->values->map(function ($value) {
-                    return [
-                        'id'          => $value->id,
-                        'name'        => $value->name,
-                        'price_delta' => (float) $value->price_delta,
-                    ];
-                })->values(),
-            ];
-        })->values(),
+            'deal_price'     => $deal ? number_format($deal->discountedPriceFor((float) $menuItem->price), 2) : null,
+            'deal_base_price' => $deal ? (float) $deal->discountedPriceFor((float) $menuItem->price) : null, // raw
+            'deal_countdown' => $deal?->countdownTarget()?->format('Y/m/d H:i:s'),
+        ]);
+    }
 
-        'deal_price'     => $deal ? number_format($deal->discountedPriceFor((float) $menuItem->price), 2) : null,
-        'deal_base_price' => $deal ? (float) $deal->discountedPriceFor((float) $menuItem->price) : null, // raw
-        'deal_countdown' => $deal?->countdownTarget()?->format('Y/m/d H:i:s'),
-    ]);
-}
+
+    /*
+    |--------------------------------------------------------------------------
+    | Quick View — Family Deals (Combo / Bundle)
+    |
+    | A combo/bundle isn't a MenuItem — it's several components sold
+    | together as one unit at combo_price. It can't go through
+    | quickview() above (there's no single item to bind to, and
+    | discountedPriceFor() doesn't handle 'fixed_price' bundle pricing
+    | anyway). This mirrors the same response shape instead of inventing
+    | a new one, so the same modal can render either with minimal
+    | branching — check `type` to know which.
+    |--------------------------------------------------------------------------
+    */
+    public function quickviewBundle(Deal $deal)
+    {
+        abort_unless($deal->is_active, 404);
+        abort_unless(in_array($deal->type, ['combo', 'bundle'], true), 404);
+        abort_unless($deal->isCurrentlyActive(), 404);
+
+        $deal->load('bundleComponents.menuItem.primaryImage');
+
+        abort_if($deal->bundleComponents->isEmpty(), 404);
+
+        return response()->json([
+            'type'        => 'bundle',
+            'name'        => $deal->name,
+            'slug'        => null,
+            'category'    => $deal->type === 'bundle' ? 'Bundle' : 'Combo',
+            'description' => $deal->bundleItemNames(),
+
+            'price'       => number_format((float) $deal->bundleOriginalPrice(), 2),
+            'base_price'  => (float) $deal->bundleOriginalPrice(),
+
+            'discount_price' => null,
+            'is_on_sale'      => true,
+
+            'spice_level' => null,
+            'dietary'     => [],
+
+            'images' => [$deal->bundleThumbnailUrl()],
+
+            'url'          => route('storefront.deals.index', ['type' => $deal->type]),
+            'wishlist_url' => null,
+
+            // Bundles have components, not customizable option groups.
+            'option_groups' => [],
+            'includes' => $deal->bundleComponents
+                ->pluck('menuItem.name')
+                ->filter()
+                ->values(),
+
+            'deal_price'      => number_format((float) $deal->combo_price, 2),
+            'deal_base_price' => (float) $deal->combo_price,
+            'deal_countdown'  => $deal->countdownTarget()?->format('Y/m/d H:i:s'),
+        ]);
+    }
 }

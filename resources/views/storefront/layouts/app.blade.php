@@ -1278,6 +1278,7 @@ li>a:hover{
  </style>
     @stack('styles')
 </head>
+@include('storefront.partials.delivery-check-widget')
 
 <body>
 
@@ -1331,6 +1332,8 @@ li>a:hover{
 
     $(document).on('click', '.quickview', function () {
 
+
+    
         const slug   = $(this).data('slug');
         const dealId = $(this).data('deal-id');
 
