@@ -12,35 +12,43 @@ class DeliverySetting extends Model
         'latitude',
         'longitude',
         'radius_km',
+        'base_price',
+        'base_km',
+        'per_km_price',
+        'max_delivery_fee',
         'is_active',
     ];
 
     protected $casts = [
-        'latitude'  => 'float',
-        'longitude' => 'float',
-        'radius_km' => 'float',
-        'is_active' => 'boolean',
+        'latitude'         => 'float',
+        'longitude'        => 'float',
+        'radius_km'        => 'float',
+        'base_price'       => 'float',
+        'base_km'          => 'float',
+        'per_km_price'     => 'float',
+        'max_delivery_fee' => 'float',
+        'is_active'        => 'boolean',
     ];
 
     /**
-     * There's only ever one delivery zone right now (a single center +
-     * radius), so this is a light singleton helper rather than a full
-     * repository — always returns the one row, creating a sensible
-     * default the first time it's called if none exists yet.
+     * Singleton helper to get or initialize the setting row.
      */
     public static function current(): self
     {
         return static::firstOrCreate([], [
-            'latitude'  => 0,
-            'longitude' => 0,
-            'radius_km' => 5,
+            'latitude'         => 0,
+            'longitude'        => 0,
+            'radius_km'        => 5,
+            'base_price'       => 2.50,
+            'base_km'          => 1.0,
+            'per_km_price'     => 1.00,
+            'max_delivery_fee' => null,
+            'is_active'        => true,
         ]);
     }
 
     /**
-     * Haversine distance in km from the delivery center to an arbitrary
-     * point — use this at checkout to check whether a customer's address
-     * falls inside the radius.
+     * Straight-line distance (Haversine) in kilometers.
      */
     public function distanceToKm(float $lat, float $lng): float
     {
@@ -55,8 +63,40 @@ class DeliverySetting extends Model
         return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
+    /**
+     * Check if coordinates fall within the allowed delivery radius.
+     */
     public function isWithinDeliveryArea(float $lat, float $lng): bool
     {
-        return $this->distanceToKm($lat, $lng) <= $this->radius_km;
+        return $this->is_active && $this->distanceToKm($lat, $lng) <= $this->radius_km;
+    }
+
+    /**
+     * Calculate delivery fee based on customer's coordinates.
+     * Returns null if out of radius or delivery is disabled.
+     */
+    public function calculateFee(float $lat, float $lng): ?float
+    {
+        if (!$this->isWithinDeliveryArea($lat, $lng)) {
+            return null;
+        }
+
+        $distanceKm = $this->distanceToKm($lat, $lng);
+
+        // Within base threshold (e.g. 1 km)
+        if ($distanceKm <= $this->base_km) {
+            return round($this->base_price, 2);
+        }
+
+        // Additional distance charged at per_km_price rate
+        $extraKm = $distanceKm - $this->base_km;
+        $fee = $this->base_price + ($extraKm * $this->per_km_price);
+
+        // Apply maximum cap if defined
+        if ($this->max_delivery_fee && $fee > $this->max_delivery_fee) {
+            return round($this->max_delivery_fee, 2);
+        }
+
+        return round($fee, 2);
     }
 }

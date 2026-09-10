@@ -1,12 +1,11 @@
-{{-- resources/views/delivery-settings/edit.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Delivery Area')
+@section('title', 'Delivery Area & Pricing')
 
 @section('content')
 <div class="container-fluid py-4">
 
-    <h1 class="h4 mb-4">Delivery Area</h1>
+    <h1 class="h4 mb-4">Delivery Area & Pricing</h1>
 
     @if (session('status'))
         <div class="alert alert-success">{{ session('status') }}</div>
@@ -22,18 +21,15 @@
         </div>
     @endif
 
-    <form action="{{ route('delivery-settings.update') }}" method="POST" id="delivery-settings-form">
+    <form action="{{ route('admin.delivery-settings.update') }}" method="POST" id="delivery-settings-form">
         @csrf
         @method('PUT')
 
         <div class="row g-4">
 
-            {{-- Map — search for the restaurant address, drag the marker
-                 to fine-tune, drag the radius handle or type a number to
-                 resize the circle. All three stay in sync with each other
-                 and with the hidden form fields below. --}}
-            <div class="col-lg-8">
-                <div class="card">
+            {{-- Left Column: Map --}}
+            <div class="col-lg-7">
+                <div class="card h-100">
                     <div class="card-body p-0">
                         <input
                             id="delivery-address-search"
@@ -42,18 +38,19 @@
                             placeholder="Search for your restaurant's address…"
                             value="{{ old('address', $setting->address) }}"
                         >
-                        <div id="delivery-map" style="height: 480px;"></div>
+                        <div id="delivery-map" style="height: 520px;"></div>
                     </div>
                 </div>
             </div>
 
-            {{-- Controls --}}
-            <div class="col-lg-4">
-                <div class="card">
+            {{-- Right Column: Controls & Dynamic Pricing --}}
+            <div class="col-lg-5">
+                <div class="card mb-4">
                     <div class="card-body">
+                        <h5 class="card-title h6 mb-3 fw-bold">Delivery Zone Radius</h5>
 
                         <div class="mb-3">
-                            <label class="form-label">Delivery Radius</label>
+                            <label class="form-label">Max Delivery Radius</label>
                             <div class="input-group">
                                 <input
                                     type="number"
@@ -70,7 +67,7 @@
                             <input type="range" class="form-range mt-2" id="radius-slider"
                                    min="0.5" max="30" step="0.5"
                                    value="{{ old('radius_km', $setting->radius_km) }}">
-                            <div class="form-text">Orders outside this radius won't be offered delivery.</div>
+                            <div class="form-text">Orders beyond this radius will be rejected at checkout.</div>
                         </div>
 
                         <div class="mb-3">
@@ -83,8 +80,60 @@
                                 Postcode: <span id="postcode-display">{{ $setting->postcode ?: '—' }}</span>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-check form-switch mb-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title h6 mb-3 fw-bold">Distance Charges (Uber-style)</h5>
+
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label">Base Fee</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">£</span>
+                                    <input type="number" step="0.01" min="0" class="form-control"
+                                           name="base_price" value="{{ old('base_price', $setting->base_price) }}">
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label">Base Distance</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" min="0" class="form-control"
+                                           name="base_km" value="{{ old('base_km', $setting->base_km) }}">
+                                    <span class="input-group-text">km</span>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label">Extra Cost / km</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">£</span>
+                                    <input type="number" step="0.01" min="0" class="form-control"
+                                           name="per_km_price" value="{{ old('per_km_price', $setting->per_km_price) }}">
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label">Max Fee Cap</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">£</span>
+                                    <input type="number" step="0.01" min="0" class="form-control" placeholder="Optional"
+                                           name="max_delivery_fee" value="{{ old('max_delivery_fee', $setting->max_delivery_fee) }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-text mt-2">
+                            Example: £{{ number_format($setting->base_price, 2) }} covers the first {{ $setting->base_km }} km.
+                            Every km after that adds £{{ number_format($setting->per_km_price, 2) }}.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
                             <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -93,19 +142,19 @@
                                 value="1"
                                 {{ old('is_active', $setting->is_active) ? 'checked' : '' }}
                             >
-                            <label class="form-check-label" for="is-active">Delivery enabled</label>
+                            <label class="form-check-label fw-bold" for="is-active">Delivery enabled</label>
                         </div>
 
-                        {{-- Hidden fields the map JS keeps in sync --}}
+                        {{-- Hidden inputs synced by Maps JS --}}
                         <input type="hidden" name="address" id="address-input" value="{{ old('address', $setting->address) }}">
                         <input type="hidden" name="postcode" id="postcode-input" value="{{ old('postcode', $setting->postcode) }}">
                         <input type="hidden" name="latitude" id="latitude-input" value="{{ old('latitude', $setting->latitude) }}">
                         <input type="hidden" name="longitude" id="longitude-input" value="{{ old('longitude', $setting->longitude) }}">
 
-                        <button type="submit" class="btn btn-primary w-100">Save Delivery Area</button>
-
+                        <button type="submit" class="btn btn-primary w-100">Save Settings</button>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -116,8 +165,6 @@
 
 @push('scripts')
 <script>
-    // Seed values for the map — either the saved setting, or a fallback
-    // (London) so the map has somewhere sane to center on first setup.
     const deliverySetting = {
         lat: {{ (float) old('latitude', $setting->latitude ?: 51.5072) }},
         lng: {{ (float) old('longitude', $setting->longitude ?: -0.1276) }},
@@ -162,24 +209,21 @@
             fillOpacity: 0.15,
             strokeColor: '#D12026',
             strokeWeight: 2,
-            editable: true, // gives the user a draggable handle on the circle's edge
+            editable: true,
         });
 
-        // Marker drag -> move circle center + update hidden fields
         marker.addListener('dragend', function () {
             const pos = marker.getPosition();
             circle.setCenter(pos);
             syncHiddenFields(pos);
         });
 
-        // Dragging the circle's own edge handle -> update the km input
         circle.addListener('radius_changed', function () {
             const km = circle.getRadius() / 1000;
             document.getElementById('radius-input').value = km.toFixed(2);
             document.getElementById('radius-slider').value = Math.min(km, 30);
         });
 
-        // Typing a radius -> resize the circle
         document.getElementById('radius-input').addEventListener('input', function (e) {
             const km = parseFloat(e.target.value);
             if (!isNaN(km) && km > 0) {
@@ -188,27 +232,16 @@
             }
         });
 
-        // Dragging the slider -> resize the circle + update the number input
         document.getElementById('radius-slider').addEventListener('input', function (e) {
             const km = parseFloat(e.target.value);
             circle.setRadius(kmToMeters(km));
             document.getElementById('radius-input').value = km;
         });
 
-        // Address search box (Places Autocomplete) -> move marker + circle + map
-        //
-        // Deliberately NOT passing `types: ['address']` here — that
-        // restricts results to precise street addresses only, which
-        // silently excludes business names (type 'establishment', e.g.
-        // searching your own restaurant's name) and some postcode-only
-        // queries. Google's Autocomplete only allows one type filter
-        // collection at a time, so rather than pick one narrow bucket,
-        // leaving types unset returns addresses, postcodes, and
-        // establishments together — country restriction still keeps it UK-only.
         autocomplete = new google.maps.places.Autocomplete(
             document.getElementById('delivery-address-search'),
             {
-                componentRestrictions: { country: 'gb' }, // UK only
+                componentRestrictions: { country: 'gb' },
                 fields: ['geometry', 'formatted_address', 'address_components'],
             }
         );
@@ -226,9 +259,6 @@
             syncHiddenFields(pos);
             document.getElementById('address-input').value = place.formatted_address ?? '';
 
-            // UK postcode comes back as its own address_component with
-            // type 'postal_code' — pull it out explicitly rather than
-            // relying on the tail end of the formatted address string.
             const postcodeComponent = (place.address_components || [])
                 .find(c => c.types.includes('postal_code'));
             const postcode = postcodeComponent ? postcodeComponent.long_name : '';
@@ -243,9 +273,6 @@
     window.initDeliveryMap = initDeliveryMap;
 </script>
 
-{{-- Replace YOUR_API_KEY with a real key restricted to Maps JavaScript
-     API + Places API, ideally via config('services.google_maps.key')
-     rather than hardcoded here. --}}
 <script
     src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key', 'YOUR_API_KEY') }}&libraries=places&callback=initDeliveryMap"
     async

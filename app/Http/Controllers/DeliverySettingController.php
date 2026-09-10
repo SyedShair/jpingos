@@ -20,18 +20,22 @@ class DeliverySettingController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'address'   => ['nullable', 'string', 'max:255'],
-            'postcode'  => ['nullable', 'string', 'max:12'],
-            'latitude'  => ['required', 'numeric', 'between:-90,90'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'radius_km' => ['required', 'numeric', 'min:0.5', 'max:100'],
-            'is_active' => ['nullable', 'boolean'],
+            'address'          => ['nullable', 'string', 'max:255'],
+            'postcode'         => ['nullable', 'string', 'max:12'],
+            'latitude'         => ['required', 'numeric', 'between:-90,90'],
+            'longitude'        => ['required', 'numeric', 'between:-180,180'],
+            'radius_km'        => ['required', 'numeric', 'min:0.5', 'max:100'],
+            'base_price'       => ['required', 'numeric', 'min:0'],
+            'base_km'          => ['required', 'numeric', 'min:0'],
+            'per_km_price'     => ['required', 'numeric', 'min:0'],
+            'max_delivery_fee' => ['nullable', 'numeric', 'min:0'],
+            'is_active'        => ['nullable', 'boolean'],
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
 
         DeliverySetting::current()->update($data);
 
-        return back()->with('status', 'Delivery area updated.');
+        return back()->with('status', 'Delivery settings and pricing updated.');
     }
 }

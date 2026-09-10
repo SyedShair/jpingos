@@ -534,7 +534,7 @@
                         <span class="toggle-label-hide">Hide order summary</span>  
                         <i class="fa fa-angle-down"></i>  
                     </span>  
-                    <span>£{{ number_format($cartSubtotal, 2) }}</span>  
+                    <span class="mobile-summary-total">£{{ number_format($cartSubtotal, 2) }}</span>  
                 </div>
 
                 <form id="checkout-info-form">
@@ -780,9 +780,14 @@
     const $deliveryFields = $('#delivery-fields');  
     const $pickupFields = $('#pickup-fields');  
     const $summaryFulfilmentRow = $('#summary-fulfilment-row');
+    const $totalAmountDisplay = $('.summary-total-final .amount');
+    const $mobileSummaryTotal = $('.mobile-summary-total');
 
+    const cartSubtotal = parseFloat("{{ (float) $cartSubtotal }}");
     const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+    
     let deliveryAvailable = true;
+    let currentDeliveryFee = null;
 
     $toggle.on('click keypress', function (e) {  
         if (e.type === 'keypress' && e.which !== 13 && e.which !== 32) {  
@@ -812,6 +817,24 @@
         return $('input[name="fulfilment-method"]:checked').val() === 'pickup';  
     }
 
+    function updateSummaryTotals() {
+        let finalTotal = cartSubtotal;
+
+        if (isPickup()) {
+            $summaryFulfilmentRow.html('<span>Pickup</span><span>Free</span>');
+        } else {
+            if (currentDeliveryFee !== null && !isNaN(currentDeliveryFee) && deliveryAvailable) {
+                finalTotal += currentDeliveryFee;
+                $summaryFulfilmentRow.html(`<span>Delivery Fee</span><span>£${currentDeliveryFee.toFixed(2)}</span>`);
+            } else {
+                $summaryFulfilmentRow.html('<span>Delivery Fee</span><span>Calculated at next step</span>');  
+            }
+        }
+
+        $totalAmountDisplay.text('£' + finalTotal.toFixed(2));
+        $mobileSummaryTotal.text('£' + finalTotal.toFixed(2));
+    }
+
     function applyFulfilmentMethod() {
         const pickup = isPickup();
 
@@ -819,17 +842,14 @@
         $pickupFields.toggle(pickup);
 
         if (pickup) {  
-            $summaryFulfilmentRow.find('span:first').text('Pickup');  
-            $summaryFulfilmentRow.find('span:last').text('Free');  
             $continueBtn.prop('disabled', false);
         } else {  
-            $summaryFulfilmentRow.find('span:first').text('Delivery Fee');  
-            $summaryFulfilmentRow.find('span:last').text('Calculated at next step');  
-            
             if (!deliveryAvailable) {
                 $continueBtn.prop('disabled', true);
             }
         }
+
+        updateSummaryTotals();
 
         $deliveryFields.add($pickupFields).find('.field-error').removeClass('show');  
         $deliveryFields.add($pickupFields).find('.border-color').removeClass('border-color');  
@@ -839,7 +859,7 @@
     applyFulfilmentMethod();
 
     /* =========================================================  
-        INLINE DELIVERY-AREA CHECK ON THE POSTCODE FIELD  
+        INLINE DELIVERY-AREA & DYNAMIC FEE CHECK  
     ========================================================== */
 
     function showZipcodeResult(message, state) {  
@@ -853,11 +873,13 @@
         $zipcodeResult.removeClass('show is-available is-unavailable is-checking').text('');  
     }
 
-    $zipcode.on('blur', function () {  
-        const postcode = $(this).val().trim();
+    function checkPostcode() {
+        const postcode = $zipcode.val().trim();
 
         if (postcode === '' || !ukPostcodeRegex.test(postcode)) {  
             clearZipcodeResult();  
+            currentDeliveryFee = null;
+            updateSummaryTotals();
             return;  
         }
 
@@ -875,26 +897,30 @@
         .then(res => res.json())  
         .then(data => {  
             deliveryAvailable = !!data.available;
-            showZipcodeResult(data.message, deliveryAvailable ? 'is-available' : 'is-unavailable');  
-
-            if (!isPickup() && !deliveryAvailable) {
-                $continueBtn.prop('disabled', true);
+            
+            const parsedFee = parseFloat(data.fee);
+            if (deliveryAvailable && !isNaN(parsedFee)) {
+                currentDeliveryFee = parsedFee;
             } else {
-                $continueBtn.prop('disabled', false);
+                currentDeliveryFee = null;
             }
+
+            const message = data.message || (deliveryAvailable ? 'Delivery available' : 'Out of delivery area');
+            showZipcodeResult(message, deliveryAvailable ? 'is-available' : 'is-unavailable');  
+
+            $continueBtn.prop('disabled', !isPickup() && !deliveryAvailable);
+            updateSummaryTotals();
         })  
         .catch(() => {  
             clearZipcodeResult();  
             deliveryAvailable = true;
+            currentDeliveryFee = null;
             $continueBtn.prop('disabled', false);
+            updateSummaryTotals();
         });  
-    });
+    }
 
-    $zipcode.on('input', function () {
-        clearZipcodeResult();
-        deliveryAvailable = true;
-        $continueBtn.prop('disabled', false);
-    });
+    $zipcode.on('blur change', checkPostcode);
 
     /* =========================================================  
         CONTINUE BUTTON SUBMIT GUARD  

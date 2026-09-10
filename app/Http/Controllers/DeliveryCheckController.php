@@ -22,10 +22,8 @@ class DeliveryCheckController extends Controller
     /**
      * POST /delivery-check  { postcode: "SW1A 1AA" }
      *
-     * Geocodes the given postcode via Google's Geocoding API (server-side,
-     * so the customer-facing page never needs to load the full Maps JS
-     * API just to ask "can you deliver to me?"), then checks the result
-     * against the admin-configured DeliverySetting radius.
+     * Geocodes the given postcode via Google's Geocoding API, checks eligibility,
+     * and calculates dynamic delivery charges.
      */
     public function check(Request $request): JsonResponse
     {
@@ -39,6 +37,7 @@ class DeliveryCheckController extends Controller
             return response()->json([
                 'available' => false,
                 'message'   => "We couldn't find that postcode — please check it and try again.",
+                'fee'       => null,
             ], 422);
         }
 
@@ -48,14 +47,19 @@ class DeliveryCheckController extends Controller
             return response()->json([
                 'available' => false,
                 'message'   => 'Sorry, delivery is currently unavailable.',
+                'fee'       => null,
             ]);
         }
 
         $distanceKm = $setting->distanceToKm($coords['lat'], $coords['lng']);
         $available = $distanceKm <= $setting->radius_km;
 
+        // Calculate delivery charge if the destination is within range
+        $fee = $available ? $setting->calculateFee($coords['lat'], $coords['lng']) : null;
+
         return response()->json([
             'available'   => $available,
+            'fee'         => $fee !== null ? (float) $fee : null,
             'distance_km' => round($distanceKm, 1),
             'radius_km'   => $setting->radius_km,
             'message'     => $available
@@ -71,7 +75,7 @@ class DeliveryCheckController extends Controller
     {
         $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
             'address'    => $postcode,
-            'components' => 'country:GB', // keep results UK-only, same as the admin map search
+            'components' => 'country:GB', // keep results UK-only
             'key'        => config('services.google_maps.key'),
         ]);
 
