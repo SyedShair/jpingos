@@ -32,26 +32,7 @@
 @section('content')
 
   <!-- Breadcrumb Section Start -->
-  <div class="section">
-    <div class="breadcrumb-area bg-light">
-      <div class="container-fluid">
-        <div class="breadcrumb-content text-center">
-          <h1 class="title">{{ $item->name }}</h1>
-          <ul>
-            <li><a href="{{ route('storefront.home') }}">Home</a></li>
-            @if ($item->category)
-              <li>
-                <a href="{{ route('storefront.category', $item->category->slug) }}">
-                  {{ $item->category->name }}
-                </a>
-              </li>
-            @endif
-            <li class="active">{{ $item->name }}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  
   <!-- Breadcrumb Section End -->
 
   <!-- Shop Section Start -->

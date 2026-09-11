@@ -539,22 +539,23 @@
 
                 <form id="checkout-info-form">
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">  
-                        <div class="checkout-section-title mb-0">Contact information</div>  
-                        <div class="checkout-login-note">  
-                            Already have an account? <a href="javascript:void(0)">Log in</a>  
-                        </div>  
-                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="checkout-section-title mb-0">Contact information</div>
 
-                    <input type="email" id="checkout-email" class="form-control" placeholder="Email">  
-                    <div class="field-error" id="checkout-email-error"></div>
+    <div class="checkout-login-note">
+    @auth('customer')
+        Logged in as <strong>{{ $customer->name }}</strong> —
+      <a href=" {{ route('storefront.logout') }}">Log out</a> 
+    @else
+        Already have an account? <a href="{{ route('storefront.login') }}">Log in</a>
+    @endauth
+</div>
+</div>
 
-                    <div class="form-check">  
-                        <input class="form-check-input" type="checkbox" id="checkout-news-offers" checked>  
-                        <label class="form-check-label" for="checkout-news-offers">  
-                            Email me with news and offers  
-                        </label>  
-                    </div>
+<input type="email" id="checkout-email" class="form-control" placeholder="Email"
+    value="{{ $customer->email ?? '' }}" @if($customer) readonly @endif>
+<div class="field-error" id="checkout-email-error"></div>
+
 
                     <div class="checkout-section-title">How would you like your order?</div>
 
@@ -587,12 +588,14 @@
 
                         <div class="form-row">  
                             <div>  
-                                <input type="text" id="checkout-first-name" class="form-control" placeholder="First Name">  
-                                <div class="field-error" id="checkout-first-name-error"></div>  
+                                <input type="text" id="checkout-first-name" class="form-control" placeholder="First Name"
+            value="{{ $customer->first_name ?? '' }}">
+        <div class="field-error" id="checkout-first-name-error"></div>
                             </div>  
                             <div>  
-                                <input type="text" id="checkout-last-name" class="form-control" placeholder="Last Name">  
-                                <div class="field-error" id="checkout-last-name-error"></div>  
+                                <input type="text" id="checkout-last-name" class="form-control" placeholder="Last Name"
+            value="{{ $customer->last_name ?? '' }}">
+        <div class="field-error" id="checkout-last-name-error"></div>
                             </div>  
                         </div>
 
@@ -604,17 +607,17 @@
                                 <div class="field-error" id="checkout-city-error"></div>  
                             </div>  
                             <div>  
-                                <input type="text" id="checkout-zipcode" class="form-control" placeholder="Postcode">  
+                                <input type="text" id="checkout-zipcode" class="form-control" placeholder="Postcode" value="{{ $customer->postcode ?? '' }}">  
                                 <div class="field-error" id="checkout-zipcode-error"></div>  
                                 <div class="delivery-check-inline" id="checkout-zipcode-result"></div>  
                             </div>  
                         </div>
 
-                        <input type="text" id="checkout-address" class="form-control" placeholder="Delivery Address">  
+                        <input type="text" id="checkout-address" class="form-control" placeholder="Delivery Address" value="{{ $customer->address ?? '' }}">  
                         <div class="field-error" id="checkout-address-error"></div>  
                         <div class="field-hint">*kindly add your complete address in above field</div>
 
-                        <input type="text" id="checkout-apartment" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
+                        <input type="text" id="checkout-apartment" class="form-control" placeholder="Apartment, suite, unit etc. (optional)" value="{{ $customer->apartment ?? '' }}">
 
                         <input type="text" id="checkout-delivery-notes" class="form-control" placeholder="Delivery notes (optional) — e.g. gate code, floor, landmark">
 
@@ -648,19 +651,21 @@
                     <div class="field-error" id="checkout-phone-error"></div>  
                     <div class="field-hint">*Phone number must be like this 07123456789</div>
 
-                    <div class="form-check">  
-                        <input class="form-check-input" type="checkbox" id="checkout-save-info">  
-                        <label class="form-check-label" for="checkout-save-info">  
-                            Save this information for next time  
-                        </label>  
-                    </div>
+                    @guest('customer')
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="checkout-save-info">
+        <label class="form-check-label" for="checkout-save-info">
+            Save this information for next time
+        </label>
+    </div>
+@endguest
 
-                    <div class="form-check">  
+                    <!-- <div class="form-check">  
                         <input class="form-check-input" type="checkbox" id="checkout-text-offers">  
                         <label class="form-check-label" for="checkout-text-offers">  
                             Text me with news and offers  
                         </label>  
-                    </div>
+                    </div> -->
 
                     <div class="checkout-actions">  
                         <a href="{{ route('storefront.cart') }}" class="checkout-return-link">  
@@ -744,7 +749,7 @@
 
                             <div class="summary-totals-row muted-value" id="summary-fulfilment-row">  
                                 <span>Delivery Fee</span>  
-                                <span>Calculated at next step</span>  
+                                <span>Processing..... </span>  
                             </div>
 
                         </div>

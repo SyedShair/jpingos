@@ -20,6 +20,8 @@ class CheckoutController extends Controller
         return view('storefront.checkout', [
             'cartItems'    => $items,
             'cartSubtotal' => $cart->subtotal(),
+            'customer'     => auth('customer')->user(),
+
         ]);
     }
 }

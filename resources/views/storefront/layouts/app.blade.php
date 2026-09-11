@@ -1278,7 +1278,7 @@ li>a:hover{
  </style>
     @stack('styles')
 </head>
-@include('storefront.partials.delivery-check-widget')
+<!-- @include('storefront.partials.delivery-check-widget') -->
 
 <body>
 

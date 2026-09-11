@@ -21,7 +21,8 @@ use App\Http\Controllers\Storefront\MenuItemController as StorefrontMenuItemCont
 use App\Http\Controllers\Storefront\DishController;
 use App\Http\Controllers\Storefront\CartController;
 use App\Http\Controllers\Storefront\CheckoutController;
-
+use App\Http\Controllers\Storefront\Auth\RegisteredCustomerController;
+use App\Http\Controllers\Storefront\Auth\AuthenticatedCustomerController;
  
 
 
@@ -63,7 +64,40 @@ Route::get('/delivery-check', [DeliveryCheckController::class, 'show'])
 Route::post('/delivery-check', [DeliveryCheckController::class, 'check'])
     ->name('delivery-check.check');
  
+use App\Http\Controllers\Storefront\Auth\EmailVerificationController;
+use App\Http\Controllers\Storefront\Auth\ForgotPasswordController;
+use App\Http\Controllers\Storefront\Auth\ResetPasswordController;
 
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/account/verify-notice', [EmailVerificationController::class, 'notice'])->name('storefront.verification.notice');
+});
+
+Route::get('/account/verify/{customer}', [EmailVerificationController::class, 'verify'])
+    ->middleware('signed')
+    ->name('storefront.verification.verify');
+
+Route::post('/account/verify/resend', [EmailVerificationController::class, 'resend'])->name('storefront.verification.resend');
+
+Route::middleware('guest:customer')->group(function () {
+    Route::get('/account/forgot-password', [ForgotPasswordController::class, 'create'])->name('storefront.password.request');
+    Route::post('/account/forgot-password', [ForgotPasswordController::class, 'send'])->name('storefront.password.send');
+
+    Route::get('/account/reset-password/{customer}', [ResetPasswordController::class, 'create'])
+        ->middleware('signed')
+        ->name('storefront.password.reset.form');
+    Route::post('/account/reset-password/{customer}', [ResetPasswordController::class, 'update'])->name('storefront.password.reset.update');
+
+
+    Route::get('/account/register', [RegisteredCustomerController::class, 'create'])->name('storefront.register');
+    Route::post('/account/register', [RegisteredCustomerController::class, 'store']);
+    Route::get('/account/login', [AuthenticatedCustomerController::class, 'create'])->name('storefront.login');
+    Route::post('/account/login', [AuthenticatedCustomerController::class, 'store']);
+});
+
+Route::middleware('auth:customer')->group(function () {
+        Route::get('/account/logout', [AuthenticatedCustomerController::class, 'destroy'])->name('storefront.logout');
+
+});
 Route::prefix('admin')->group(function () {
 // --- Guest-only routes ---
 Route::middleware('guest')->group(function () {
