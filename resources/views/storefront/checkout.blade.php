@@ -938,7 +938,130 @@
             return false;
         }
 
-        // Add your form validation / submission logic here
+        let hasError = false;
+        const pickup = isPickup();
+
+        const email = $('#checkout-email').val().trim();
+        const phone = $('#checkout-phone').val().trim();
+
+        // Pickup and delivery use SEPARATE first/last name fields in
+        // this markup (#checkout-first-name vs #checkout-first-name-pickup)
+        // — read from whichever pair is actually visible/in-use.
+        const firstName = pickup
+            ? $('#checkout-first-name-pickup').val().trim()
+            : $('#checkout-first-name').val().trim();
+        const lastName = pickup
+            ? $('#checkout-last-name-pickup').val().trim()
+            : $('#checkout-last-name').val().trim();
+
+        if (email === '') {
+            showFieldError($('#checkout-email'), $('#checkout-email-error'), 'Please Enter Email');
+            hasError = true;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showFieldError($('#checkout-email'), $('#checkout-email-error'), 'Please Enter a Valid Email');
+            hasError = true;
+        }
+
+        if (pickup) {
+            if (firstName === '') {
+                showFieldError($('#checkout-first-name-pickup'), $('#checkout-first-name-pickup-error'), 'Please Enter First Name');
+                hasError = true;
+            }
+            if (lastName === '') {
+                showFieldError($('#checkout-last-name-pickup'), $('#checkout-last-name-pickup-error'), 'Please Enter Last Name');
+                hasError = true;
+            }
+        } else {
+            if (firstName === '') {
+                showFieldError($('#checkout-first-name'), $('#checkout-first-name-error'), 'Please Enter First Name');
+                hasError = true;
+            }
+            if (lastName === '') {
+                showFieldError($('#checkout-last-name'), $('#checkout-last-name-error'), 'Please Enter Last Name');
+                hasError = true;
+            }
+
+            const address = $('#checkout-address').val().trim();
+            const zipcode = $zipcode.val().trim();
+
+            if (address === '') {
+                showFieldError($('#checkout-address'), $('#checkout-address-error'), 'Please Enter Address');
+                hasError = true;
+            }
+
+            if (zipcode === '') {
+                showFieldError($zipcode, $('#checkout-zipcode-error'), 'Please Enter Postcode');
+                hasError = true;
+            } else if (!ukPostcodeRegex.test(zipcode)) {
+                showFieldError($zipcode, $('#checkout-zipcode-error'), 'Please Enter a Valid UK Postcode');
+                hasError = true;
+            }
+        }
+
+        if (phone === '') {
+            showFieldError($('#checkout-phone'), $('#checkout-phone-error'), 'Please Enter Mobile Number');
+            hasError = true;
+        } else if (!/^\d{11}$/.test(phone)) {
+            showFieldError($('#checkout-phone'), $('#checkout-phone-error'), 'Mobile number must be 11 digits');
+            hasError = true;
+        } else if (!/^0\d{10}$/.test(phone)) {
+            showFieldError($('#checkout-phone'), $('#checkout-phone-error'), 'Mobile number format is invalid');
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+
+        const payload = {
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            phone: phone,
+            order_type: pickup ? 'pickup' : 'delivery',
+        };
+
+        if (pickup) {
+            payload.address = null;
+            payload.apartment = null;
+            payload.city = null;
+            payload.postcode = null;
+            payload.notes = null;
+        } else {
+            payload.address = $('#checkout-address').val().trim();
+            payload.apartment = $('#checkout-apartment').val().trim() || null;
+            payload.city = $('#checkout-city option:selected').text();
+            payload.postcode = $zipcode.val().trim();
+            payload.notes = $('#checkout-delivery-notes').val().trim() || null;
+        }
+
+        const originalLabel = $continueBtn.text();
+        $continueBtn.prop('disabled', true).text('Please wait...');
+
+        fetch('{{ route('storefront.checkout.store') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(function (response) {
+            if (!response.ok) {
+                return response.json().then(function (err) {
+                    throw new Error(err.message || 'Something went wrong placing your order.');
+                });
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            window.location.href = data.confirmation_url;
+        })
+        .catch(function (error) {
+            alert(error.message);
+            $continueBtn.prop('disabled', false).text(originalLabel);
+        });
     });
 
 })(jQuery);

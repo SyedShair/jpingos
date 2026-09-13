@@ -23,7 +23,12 @@ use App\Http\Controllers\Storefront\CartController;
 use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\Auth\RegisteredCustomerController;
 use App\Http\Controllers\Storefront\Auth\AuthenticatedCustomerController;
- 
+use App\Http\Controllers\Storefront\Auth\EmailVerificationController;
+use App\Http\Controllers\Storefront\Auth\ForgotPasswordController;
+use App\Http\Controllers\Storefront\Auth\ResetPasswordController;
+use App\Http\Controllers\Storefront\OrderController;
+use App\Http\Controllers\Storefront\CustomerAccountController;
+use App\Http\Controllers\Storefront\TrackOrderController;
 
 
 
@@ -51,12 +56,13 @@ Route::post('/cart/bundle', [CartController::class, 'storeBundle'])
     ->name('storefront.cart.store-bundle');
 // Not built yet — routed to a single "coming soon" page so header links
 // (wishlist/search/cart/checkout) don't 500. Swap out once those exist.
-Route::view('/wishlist', 'storefront.coming-soon')->name('storefront.wishlist');
 Route::view('/search', 'storefront.coming-soon')->name('storefront.search');
 Route::get('/cart', [CartController::class, 'index'])->name('storefront.cart');
 // routes/web.php — remove the old placeholder line and add:
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('storefront.checkout');
 
+Route::post('/checkout', [OrderController::class, 'store'])->name('storefront.checkout.store');
+Route::get('/order/{order}/confirmation', [OrderController::class, 'confirmation'])->name('storefront.order.confirmation');
  
 Route::get('/delivery-check', [DeliveryCheckController::class, 'show'])
     ->name('delivery-check.show');
@@ -64,13 +70,19 @@ Route::get('/delivery-check', [DeliveryCheckController::class, 'show'])
 Route::post('/delivery-check', [DeliveryCheckController::class, 'check'])
     ->name('delivery-check.check');
  
-use App\Http\Controllers\Storefront\Auth\EmailVerificationController;
-use App\Http\Controllers\Storefront\Auth\ForgotPasswordController;
-use App\Http\Controllers\Storefront\Auth\ResetPasswordController;
+Route::get('/track-order', [TrackOrderController::class, 'index'])->name('storefront.track-order');
+Route::post('/track-order', [TrackOrderController::class, 'lookup'])->name('storefront.track-order.lookup');
+
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/account/verify-notice', [EmailVerificationController::class, 'notice'])->name('storefront.verification.notice');
+     Route::get('/account', [CustomerAccountController::class, 'index'])->name('storefront.account');
+    Route::post('/account/details', [CustomerAccountController::class, 'updateDetails'])->name('storefront.account.update-details');
+    Route::post('/account/password', [CustomerAccountController::class, 'updatePassword'])->name('storefront.account.update-password');
+    Route::post('/account/address', [CustomerAccountController::class, 'updateAddress'])->name('storefront.account.update-address');
 });
+
+
 
 Route::get('/account/verify/{customer}', [EmailVerificationController::class, 'verify'])
     ->middleware('signed')

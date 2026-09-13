@@ -331,7 +331,6 @@ class HomeController extends Controller
                 ? $menuItem->images->pluck('url')
                 : [$menuItem->image_url],
             'url'          => route('storefront.dish', $menuItem->slug),
-            'wishlist_url' => route('storefront.wishlist'),
 
             'option_groups' => $menuItem->optionGroups->map(function ($group) {
                 return [

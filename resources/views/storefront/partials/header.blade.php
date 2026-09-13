@@ -129,6 +129,7 @@
                                 </li>
 
                                  <li><a href="{{ route('storefront.deals.index') }}"><span>Deals</span></a></li>
+                                <li><a href="{{ route('storefront.track-order') }}"><span>Track Order</span></a></li>
                                 <li><a href="#"><span>About</span></a></li>
                                 <li><a href="#"><span>Contact</span></a></li>
                             </ul>
@@ -139,7 +140,15 @@
                         <div class="header-actions">
                             <a href="javascript:void(0)" class="header-action-btn header-action-btn-search"><i class="pe-7s-search"></i></a>
 
-                           
+                            @auth('customer')
+                                <a href="{{ route('storefront.account') }}" class="header-action-btn d-none d-md-block">
+                                    <i class="pe-7s-user"></i>
+                                </a>
+                            @else
+                                <a href="{{ route('storefront.login') }}" class="header-action-btn d-none d-md-block">
+                                    <i class="pe-7s-user"></i>
+                                </a>
+                            @endauth
 
                             <a href="javascript:void(0)" class="header-action-btn header-action-btn-cart">
                                 <i class="pe-7s-shopbag"></i>
@@ -185,12 +194,19 @@
             @endforelse
 
             <li><a href="{{ route('storefront.deals.index') }}"><span>Deals</span></a></li>
+            <li><a href="{{ route('storefront.track-order') }}"><span>Track Order</span></a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Contact</a></li>
+
+            @auth('customer')
+                <li><a href="{{ route('storefront.account') }}">My Account</a></li>
+            @else
+                <li><a href="{{ route('storefront.login') }}">Login | Register</a></li>
+            @endauth
         </ul>
     </nav>
 </div>
-            <div class="offcanvas-lag-curr mb-6">
+            <!-- <div class="offcanvas-lag-curr mb-6">
                 <h2 class="title">Languages</h2>
                 <div class="header-top-lan-curr-link">
                     <div class="header-top-lan dropdown">
@@ -207,7 +223,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="mt-auto">
                 <ul class="contact-links">

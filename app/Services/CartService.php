@@ -107,6 +107,11 @@ class CartService
         $this->saveRows($rows);
     }
 
+    public function clear(): void
+{
+    Session::forget(self::SESSION_KEY);
+}
+
     public function count(): int
     {
         return collect($this->rows())->sum('quantity');

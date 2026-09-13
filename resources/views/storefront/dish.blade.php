@@ -215,9 +215,7 @@
                     'quantityInput' => 'dish-quantity',
                 ])
               </div>
-              <!-- <div class="add-to-wishlist">
-                <a class="btn btn-outline-dark btn-hover-primary" href="{{ route('storefront.wishlist') }}">Add to Wishlist</a>
-              </div> -->
+              
             </div>
             <!-- Cart & Wishlist Button End -->
 
@@ -336,7 +334,6 @@
                             </span>
                           @endif
                           <div class="actions">
-                            <a href="{{ route('storefront.wishlist') }}" class="action wishlist"><i class="pe-7s-like"></i></a>
                             <a href="javascript:void(0)" class="action quickview" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-slug="{{ $relatedItem->slug }}"><i class="pe-7s-search"></i></a>
                           </div>
                         </div>
