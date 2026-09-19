@@ -225,19 +225,36 @@
                 </div>
             </div> -->
 
-            <div class="mt-auto">
-                <ul class="contact-links">
-                    <li><i class="fa fa-phone"></i><a href="tel:+10123456789"> +1 (012) 345-6789</a></li>
-                    <li><i class="fa fa-envelope-o"></i><a href="mailto:hello@example.com"> hello@example.com</a></li>
-                    <li><i class="fa fa-clock-o"></i> <span>Mon – Sun, 9:00 – 22:00</span></li>
-                </ul>
+            @php
+    $mobileMenuSettings = \App\Models\Setting::current();
+@endphp
 
-                <div class="widget-social">
-                    <a title="Facebook" href="#"><i class="fa fa-facebook-f"></i></a>
-                    <a title="Twitter" href="#"><i class="fa fa-twitter"></i></a>
-                    <a title="Instagram" href="#"><i class="fa fa-instagram"></i></a>
-                </div>
-            </div>
+<div class="mt-auto">
+    <ul class="contact-links">
+        @if ($mobileMenuSettings->phone)
+            <li><i class="fa fa-phone"></i><a href="tel:{{ $mobileMenuSettings->phone }}"> {{ $mobileMenuSettings->phone }}</a></li>
+        @endif
+        @if ($mobileMenuSettings->email)
+            <li><i class="fa fa-envelope-o"></i><a href="mailto:{{ $mobileMenuSettings->email }}"> {{ $mobileMenuSettings->email }}</a></li>
+        @endif
+        @forelse ($mobileMenuSettings->groupedOpeningHours() as $group)
+            <li><i class="fa fa-clock-o"></i> <span>{{ $group['label'] }}, {{ $group['hours'] }}</span></li>
+        @empty
+            <li><i class="fa fa-clock-o"></i> <span>Hours not set yet.</span></li>
+        @endforelse
+    </ul>
+
+    @if ($mobileMenuSettings->facebook || $mobileMenuSettings->instagram)
+        <div class="widget-social">
+            @if ($mobileMenuSettings->facebook)
+                <a title="Facebook" href="{{ $mobileMenuSettings->facebook }}" target="_blank" rel="noopener"><i class="fa fa-facebook-f"></i></a>
+            @endif
+            @if ($mobileMenuSettings->instagram)
+                <a title="Instagram" href="{{ $mobileMenuSettings->instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
+            @endif
+        </div>
+    @endif
+</div>
         </div>
     </div>
 

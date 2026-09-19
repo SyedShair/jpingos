@@ -6,12 +6,18 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MenuItemImageController;
 use App\Livewire\Categories\Manager as CategoryManager;
 use App\Livewire\Deals\Manager as DealManager;
+use App\Livewire\Orders\Manager as OrderManager;
+use App\Livewire\Orders\AcceptQueue as OrderAcceptQueue;
+
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\DeliverySettingController;
 
 use App\Http\Controllers\DeliveryCheckController;
 use App\Livewire\CategoryMedia\Manager as CategoryMediaManager;
+use App\Livewire\Settings\Manager as SettingsManager;
+
 use App\Http\Controllers\Storefront\MenuController;
 use App\Http\Controllers\Storefront\DealController;
 use App\Http\Controllers\Storefront\CategoryController;
@@ -29,6 +35,7 @@ use App\Http\Controllers\Storefront\Auth\ResetPasswordController;
 use App\Http\Controllers\Storefront\OrderController;
 use App\Http\Controllers\Storefront\CustomerAccountController;
 use App\Http\Controllers\Storefront\TrackOrderController;
+use App\Http\Controllers\OrderPrintController;
 
 
 
@@ -164,14 +171,19 @@ Route::get('/delivery-settings', [DeliverySettingController::class, 'edit'])
 Route::put('/delivery-settings', [DeliverySettingController::class, 'update'])
     ->name('admin.delivery-settings.update');
 
+Route::get('/settings', SettingsManager::class)->name('settings.edit');
 
-
-
+// orders 
+Route::get('/orders', OrderManager::class)->name('orders.index');
+Route::get('/orders/accept', OrderAcceptQueue::class)->name('orders.accept');
+Route::get('/orders/{order:id}/print', [OrderPrintController::class, 'show'])->name('orders.print');
 // Slider section
 
     Route::resource('sliders', SliderController::class)->except(['show']);
 Route::patch('sliders/{slider}/toggle-active', [SliderController::class, 'toggleActive'])->name('sliders.toggle-active');
 Route::post('sliders/reorder', [SliderController::class, 'reorder'])->name('sliders.reorder');
+
+
 });
 
 });

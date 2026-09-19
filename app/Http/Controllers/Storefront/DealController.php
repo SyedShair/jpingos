@@ -152,7 +152,6 @@ class DealController extends Controller
                 'dietary'     => [],
                 'images'      => [$deal->image ? Storage::url($deal->image) : $firstComponent->image_url],
                 'url'          => '#',
-                'wishlist_url' => route('storefront.wishlist'),
                 'option_groups' => [],
 
                 'deal_price'      => number_format($deal->combo_price, 2),
@@ -204,7 +203,6 @@ class DealController extends Controller
                 ? $menuItem->images->pluck('url')
                 : [$menuItem->image_url],
             'url'          => route('storefront.dish', $menuItem->slug),
-            'wishlist_url' => route('storefront.wishlist'),
 
             'option_groups' => $menuItem->optionGroups->map(function ($group) {
                 return [

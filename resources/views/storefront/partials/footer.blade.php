@@ -1,3 +1,7 @@
+@php
+    $footerSettings = \App\Models\Setting::current();
+@endphp
+
 <footer class="section footer-section">
     <div class="footer-top section-padding">
         <div class="container">
@@ -7,15 +11,28 @@
                         <h2 class="widget-title">Contact Us</h2>
                         <p class="desc-content">Come in, call ahead, or order online for pickup and delivery.</p>
                         <ul class="widget-address">
-                            <li><span>Address: </span> 123 Main Street, Anytown, ST 12345</li>
-                            <li><span>Call to: </span> <a href="tel:+10123456789">+1 (012) 345-6789</a></li>
-                            <li><span>Mail to: </span> <a href="mailto:hello@example.com">hello@example.com</a></li>
+                            @if ($footerSettings->phone)
+                                <li><span>Call to: </span> <a href="tel:{{ $footerSettings->phone }}">{{ $footerSettings->phone }}</a></li>
+                            @endif
+                            @if ($footerSettings->whatsapp)
+                                <li><span>WhatsApp: </span> <a href="https://wa.me/{{ preg_replace('/\D/', '', $footerSettings->whatsapp) }}" target="_blank" rel="noopener">{{ $footerSettings->whatsapp }}</a></li>
+                            @endif
+                            @if ($footerSettings->email)
+                                <li><span>Mail to: </span> <a href="mailto:{{ $footerSettings->email }}">{{ $footerSettings->email }}</a></li>
+                            @endif
+                            
                         </ul>
-                        <div class="widget-social justify-content-start mt-4">
-                            <a title="Facebook" href="#"><i class="fa fa-facebook-f"></i></a>
-                            <a title="Instagram" href="#"><i class="fa fa-instagram"></i></a>
-                            <a title="Twitter" href="#"><i class="fa fa-twitter"></i></a>
-                        </div>
+
+                        @if ($footerSettings->facebook || $footerSettings->instagram)
+                            <div class="widget-social justify-content-start mt-4">
+                                @if ($footerSettings->facebook)
+                                    <a title="Facebook" href="{{ $footerSettings->facebook }}" target="_blank" rel="noopener"><i class="fa fa-facebook-f"></i></a>
+                                @endif
+                                @if ($footerSettings->instagram)
+                                    <a title="Instagram" href="{{ $footerSettings->instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -34,8 +51,11 @@
                     <div class="single-footer-widget">
                         <h2 class="widget-title">Hours</h2>
                         <ul class="widget-list">
-                            <li>Mon – Fri: 9:00 – 22:00</li>
-                            <li>Sat – Sun: 10:00 – 23:00</li>
+                            @forelse ($footerSettings->groupedOpeningHours() as $group)
+                                <li>{{ $group['label'] }}: {{ $group['hours'] }}</li>
+                            @empty
+                                <li>Hours not set yet.</li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -65,7 +85,10 @@
             <div class="row align-items-center">
                 <div class="col-12 text-center">
                     <div class="copyright-content">
-                        <p class="mb-0">Copyright &copy; {{ date('Y') }} {{ config('app.name', 'Restaurant') }}. All Rights Reserved.</p>
+                        <p class="mb-0">
+                            Copyright &copy; {{ date('Y') }}
+                            {{ $footerSettings->site_name ?: config('app.name', 'Restaurant') }}. All Rights Reserved.
+                        </p>
                     </div>
                 </div>
             </div>

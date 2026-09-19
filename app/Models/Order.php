@@ -15,12 +15,13 @@ class Order extends Model
         'first_name', 'last_name', 'email', 'phone',
         'address', 'apartment', 'city', 'postcode',
         'order_type', 'notes',
-        'subtotal', 'total', 'status',
+        'subtotal', 'total', 'status','is_pre_order', 'pre_order_date', 'pre_order_time','delivery_fee'
     ];
 
     protected $casts = [
         'subtotal' => 'decimal:2',
         'total'    => 'decimal:2',
+        'is_pre_order' => 'boolean',
     ];
 
     // URL/route-model-binding uses order_number, not id — the
@@ -56,6 +57,23 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+     public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    // Multiple attempts are possible (a failed card charge followed by
+    // a retry) — this is always the one that actually matters.
+    public function latestPayment()
+    {
+        return $this->hasOne(Payment::class)->latestOfMany();
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payments()->where('status', 'paid')->exists();
     }
 
     public function getNameAttribute(): string

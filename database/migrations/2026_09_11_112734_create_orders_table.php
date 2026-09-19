@@ -22,10 +22,10 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->string('phone');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->string('apartment')->nullable();
-            $table->string('city');
-            $table->string('postcode');
+            $table->string('city')->nullable();
+            $table->string('postcode')->nullable();
             $table->string('order_type'); // pickup | delivery
             $table->text('notes')->nullable();
 

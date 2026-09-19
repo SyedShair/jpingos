@@ -21,6 +21,22 @@
           </a>
         </li>
 
+        <li class="menu-label">Orders</li>
+
+        <li>
+          <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.index') ? 'mm-active' : '' }}">
+            <div class="parent-icon"><i class="material-icons-outlined">receipt_long</i></div>
+            <div class="menu-title">Orders</div>
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('orders.accept') }}" class="{{ request()->routeIs('orders.accept') ? 'mm-active' : '' }}">
+            <div class="parent-icon"><i class="material-icons-outlined">notifications_active</i></div>
+            <div class="menu-title">Accept Orders</div>
+          </a>
+        </li>
+
         <li class="menu-label">Menu Management</li>
 
         <li>
@@ -58,12 +74,19 @@
 
 
 <li>
-  <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('sliders.*') ? 'mm-active' : '' }}">
+  <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('admin.delivery-settings.edit') ? 'mm-active' : '' }}">
     <div class="parent-icon"><i class="material-icons-outlined">view_carousel</i></div>
     <div class="menu-title">Delivery Settings</div>
   </a>
 </li>
+<li class="menu-label">Settings</li>
 
+<li>
+  <a href="{{ route('settings.edit') }}" class="{{ request()->routeIs('settings.*') ? 'mm-active' : '' }}">
+    <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
+    <div class="menu-title">Settings</div>
+  </a>
+</li>
        </ul>
   </div>
 </aside>
