@@ -4,8 +4,10 @@ namespace App\Livewire\Orders;
 
 use App\Models\Order;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.kiosk')]
 class AcceptQueue extends Component
 {
     /*
