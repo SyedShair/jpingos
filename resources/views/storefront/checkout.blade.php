@@ -682,19 +682,7 @@
 <div class="section checkout-page">
     <div class="container">
 
-        <div class="text-center mb-6">
-            <a href="{{ route('storefront.home') }}">
-                <img src="{{ asset('storefront/assets/images/logo/logo.png') }}" alt="{{ config('app.name', 'Restaurant') }}" style="max-height: 60px;">
-            </a>
-        </div>
-
-        <div class="checkout-breadcrumb">
-            <a href="{{ route('storefront.cart') }}">Cart</a>
-            <i class="fa fa-chevron-right"></i>
-            <span class="active">Information</span>
-            <i class="fa fa-chevron-right"></i>
-            <span>Payment</span>
-        </div>
+     
 
         <div class="row">
 
@@ -1040,7 +1028,6 @@
                             <span>Total</span>
                             <span class="amount">£{{ number_format($cartSubtotal, 2) }}</span>
                         </div>
-
                     </div>
 
                 </div>
@@ -1090,6 +1077,15 @@
 
     let deliveryAvailable = true;
     let currentDeliveryFee = null;
+
+    // --- Delivery postcode check state (declared up here so every function below can use it) ---
+    let lastCheckedPostcode = null;   // postcode we last got an answer for
+    let pendingPostcode = null;       // postcode being checked right now
+    let pendingPromise = null;
+    let checkSeq = 0;                 // ignores out-of-date responses
+    let verifyOnce = false;           // stops the Continue click re-checking in a loop
+
+    const normalisePostcode = pc => pc.replace(/\s+/g, '').toUpperCase();
 
     /* =========================================================
         PRELOADER
@@ -1206,13 +1202,24 @@
         updateSummaryTotals();
     }
 
-    $('input[name="fulfilment-method"]').on('change', applyFulfilmentMethod);
+    $('input[name="fulfilment-method"]').on('change', function () {
+        applyFulfilmentMethod();
+
+        // Customer switched back to Delivery: re-check whatever postcode is in the box
+        if (fulfilmentMethod() === 'delivery') {
+            checkPostcode();
+        }
+    });
     $preorderType.on('change', applyPreorderType);
     applyFulfilmentMethod();
     applyPreorderType();
 
     /* =========================================================
         INLINE DELIVERY-AREA & DYNAMIC FEE CHECK (normal Delivery only)
+        Runs when the customer types, leaves the field, pastes,
+        uses browser autofill, OR when the postcode is pre-filled
+        from their saved account — and again just before the order
+        is placed if it hasn't been checked yet.
     ========================================================== */
 
     function showZipcodeResult(message, state) {
@@ -1228,17 +1235,35 @@
 
     function checkPostcode() {
         const postcode = $zipcode.val().trim();
+        const key = normalisePostcode(postcode);
 
+        // Empty or not a valid UK postcode yet: reset, so the button is never left disabled
         if (postcode === '' || !ukPostcodeRegex.test(postcode)) {
-            clearZipcodeResult();
+            checkSeq++;
+            lastCheckedPostcode = null;
+            pendingPostcode = null;
+            pendingPromise = null;
+            deliveryAvailable = true;
             currentDeliveryFee = null;
+            clearZipcodeResult();
+            $continueBtn.prop('disabled', false);
             updateSummaryTotals();
-            return;
+            return Promise.resolve();
         }
 
+        // Already answered for this postcode, or already asking about it
+        if (key === lastCheckedPostcode) {
+            return Promise.resolve();
+        }
+        if (key === pendingPostcode && pendingPromise) {
+            return pendingPromise;
+        }
+
+        const seq = ++checkSeq;
+        pendingPostcode = key;
         showZipcodeResult('Checking delivery availability…', 'is-checking');
 
-        fetch('{{ route('delivery-check.check') }}', {
+        pendingPromise = fetch('{{ route('delivery-check.check') }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1249,14 +1274,15 @@
         })
         .then(res => res.json())
         .then(data => {
+            if (seq !== checkSeq) return;          // a newer check replaced this one
+
+            pendingPostcode = null;
+            pendingPromise = null;
+            lastCheckedPostcode = key;
             deliveryAvailable = !!data.available;
 
             const parsedFee = parseFloat(data.fee);
-            if (deliveryAvailable && !isNaN(parsedFee)) {
-                currentDeliveryFee = parsedFee;
-            } else {
-                currentDeliveryFee = null;
-            }
+            currentDeliveryFee = (deliveryAvailable && !isNaN(parsedFee)) ? parsedFee : null;
 
             const message = data.message || (deliveryAvailable ? 'Delivery available' : 'Out of delivery area');
             showZipcodeResult(message, deliveryAvailable ? 'is-available' : 'is-unavailable');
@@ -1265,21 +1291,67 @@
             updateSummaryTotals();
         })
         .catch(() => {
+            if (seq !== checkSeq) return;
+
+            pendingPostcode = null;
+            pendingPromise = null;
+            lastCheckedPostcode = null;
             clearZipcodeResult();
             deliveryAvailable = true;
             currentDeliveryFee = null;
             $continueBtn.prop('disabled', false);
             updateSummaryTotals();
         });
+
+        return pendingPromise;
     }
 
+    // Typing, pasting and browser autofill
+    let zipTimer;
+    $zipcode.on('input', function () {
+        clearTimeout(zipTimer);
+        zipTimer = setTimeout(checkPostcode, 500);
+    });
     $zipcode.on('blur change', checkPostcode);
+
+    // Saved-account or autofilled postcode: check as soon as the page opens
+    function checkPrefilledPostcode() {
+        if (fulfilmentMethod() === 'delivery' && $zipcode.val().trim() !== '') {
+            checkPostcode();
+        }
+    }
+    checkPrefilledPostcode();
+    $(window).on('load', checkPrefilledPostcode);
+    setTimeout(checkPrefilledPostcode, 800);       // autofill can land after the page loads
 
     /* =========================================================
         CONTINUE BUTTON SUBMIT GUARD
     ========================================================== */
 
     $continueBtn.on('click', function (e) {
+
+        // Delivery: make sure the postcode in the box (typed OR pre-filled) has really been checked
+        if (fulfilmentMethod() === 'delivery') {
+            const typed = $zipcode.val().trim();
+
+            if (ukPostcodeRegex.test(typed) && normalisePostcode(typed) !== lastCheckedPostcode && !verifyOnce) {
+                e.preventDefault();
+                verifyOnce = true;
+                $continueBtn.prop('disabled', true).text('Checking postcode…');
+
+                checkPostcode().then(function () {
+                    $continueBtn.prop('disabled', false).text('Continue to Payment');
+                    $continueBtn.trigger('click');          // now runs with the real result
+                    if (!deliveryAvailable) {
+                        $continueBtn.prop('disabled', true);
+                    }
+                });
+
+                return false;
+            }
+            verifyOnce = false;
+        }
+
         if (fulfilmentMethod() === 'delivery' && !deliveryAvailable) {
             e.preventDefault();
             showFieldError($zipcode, $('#checkout-zipcode-error'), 'Sorry, we do not deliver to this postcode.');

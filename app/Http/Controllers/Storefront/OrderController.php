@@ -178,8 +178,15 @@ class OrderController extends Controller
             );
         }
 
+        $categories = \App\Models\Category::topLevel()
+                ->active()
+                ->ordered()
+                ->with(['children' => fn ($q) => $q->active()->ordered()])
+                ->get();
+
         return view('storefront.order-confirmation', [
             'order' => $order->load(['items', 'latestPayment']),
+            'categories' => $categories,
         ]);
     }
 }

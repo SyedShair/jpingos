@@ -1278,8 +1278,13 @@ li>a:hover{
  </style>
     @stack('styles')
 </head>
-<!-- @include('storefront.partials.delivery-check-widget') -->
+@php 
+$locationConsent = App\Models\Setting::find(1);
+@endphp
 
+@if($locationConsent->show_delivery_checker == true)
+@include('storefront.partials.delivery-check-widget') 
+@endif
 <body>
 
     @include('storefront.partials.header')

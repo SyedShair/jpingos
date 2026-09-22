@@ -13,3 +13,5 @@ Artisan::command('inspire', function () {
 // flips is_active off. This is what makes an expired Flash Deal /
 // promo code / etc. actually turn itself off without you touching it.
 Schedule::command(DeactivateExpiredDeals::class)->everyMinute();
+
+

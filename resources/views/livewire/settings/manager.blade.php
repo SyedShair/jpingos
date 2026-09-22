@@ -42,11 +42,28 @@
                             <input type="text" class="form-control" wire:model="vatNumber">
                             @error('vatNumber') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control" wire:model="email">
                             @error('email') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Postal Address</label>
+                            <textarea class="form-control" rows="2" wire:model="address"></textarea>
+                            @error('address') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Google Maps Embed URL</label>
+                            <input type="text" class="form-control" wire:model="mapUrl" placeholder="https://www.google.com/maps/embed?pb=...">
+                            <div class="form-text">
+                                In Google Maps: Share → Embed a map → copy the URL inside <code>src="..."</code>.
+                            </div>
+                            @error('mapUrl') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Telephone</label>

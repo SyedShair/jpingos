@@ -26,6 +26,16 @@
     #dish-customizations-list label.badge.selected .text-danger {
         color: #fff !important;
     }
+
+    /* The theme's default .thumb img styling is built for a two-image
+       hover-swap effect (a second image fades in over the first on
+       hover). The related-items carousel below only renders one image
+       per item (.first-image, no second image), so that same rule was
+       leaving it at opacity:0 until hovered. Force it visible here
+       rather than editing the shared theme stylesheet. */
+    .product-carousel .thumb .image .first-image {
+        opacity: 1 !important;
+    }
 </style>
 @endpush
 

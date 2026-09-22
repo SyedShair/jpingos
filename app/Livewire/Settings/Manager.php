@@ -30,6 +30,8 @@ class Manager extends Component
     public string $whatsapp = '';
     public string $instagram = '';
     public string $facebook = '';
+    public string $address = '';
+    public string $mapUrl = '';
 
     public array $openingHours = [];
     public bool $showDeliveryChecker = true;
@@ -48,7 +50,8 @@ class Manager extends Component
             'instagram'   => ['nullable', 'string', 'max:255'],
             'facebook'    => ['nullable', 'string', 'max:255'],
             'showDeliveryChecker' => ['boolean'],
-
+            'address' => ['nullable', 'string', 'max:1000'],
+            'mapUrl'  => ['nullable', 'url', 'max:500'],
             'openingHours.*.open'   => ['required_unless:openingHours.*.closed,true', 'nullable', 'date_format:H:i'],
             'openingHours.*.close'  => ['required_unless:openingHours.*.closed,true', 'nullable', 'date_format:H:i'],
             'openingHours.*.closed' => ['boolean'],
@@ -67,7 +70,8 @@ class Manager extends Component
         $this->instagram  = $setting->instagram ?? '';
         $this->facebook   = $setting->facebook ?? '';
         $this->showDeliveryChecker = $setting->show_delivery_checker;
-
+        $this->address = $setting->address ?? '';
+        $this->mapUrl  = $setting->map_url ?? '';
         $this->existingLogo      = $setting->logo;
         $this->existingBannerOne = $setting->banner_one;
         $this->existingBannerTwo = $setting->banner_two;
@@ -94,6 +98,8 @@ class Manager extends Component
             'whatsapp'   => $this->whatsapp ?: null,
             'instagram'  => $this->instagram ?: null,
             'facebook'   => $this->facebook ?: null,
+            'address' => $this->address ?: null,
+            'map_url' => $this->mapUrl ?: null,
             'opening_hours' => $this->openingHours,
             'show_delivery_checker' => $this->showDeliveryChecker,
         ];

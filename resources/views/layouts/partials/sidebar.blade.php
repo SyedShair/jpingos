@@ -12,82 +12,100 @@
     </div>
   </div>
   <div class="sidebar-nav">
-      <ul class="metismenu" id="sidenav">
+    <ul class="metismenu" id="sidenav">
 
-        <li>
-          <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
-            <div class="menu-title">Dashboard</div>
-          </a>
-        </li>
+      <li>
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
+          <div class="menu-title">Dashboard</div>
+        </a>
+      </li>
 
-        <li class="menu-label">Orders</li>
+      <li class="menu-label">Orders</li>
 
-        <li>
-          <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.index') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">receipt_long</i></div>
-            <div class="menu-title">Orders</div>
-          </a>
-        </li>
+      <li>
+        <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.index') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">receipt_long</i></div>
+          <div class="menu-title">Orders</div>
+        </a>
+      </li>
 
-        <li>
-          <a href="{{ route('orders.accept') }}" class="{{ request()->routeIs('orders.accept') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">notifications_active</i></div>
-            <div class="menu-title">Accept Orders</div>
-          </a>
-        </li>
+      <li>
+        <a href="{{ route('orders.accept') }}" class="{{ request()->routeIs('orders.accept') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">notifications_active</i></div>
+          <div class="menu-title">Accept Orders</div>
+        </a>
+      </li>
 
-        <li class="menu-label">Menu Management</li>
+      {{-- NEW: visitor analytics --}}
+      <li class="menu-label">Analytics</li>
 
-        <li>
-          <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.*') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">category</i></div>
-            <div class="menu-title">Categories</div>
-          </a>
-        </li>
-        <li>
-  <a href="{{ route('category-media.index') }}" class="{{ request()->routeIs('category-media.*') ? 'mm-active' : '' }}">
-    <div class="parent-icon"><i class="material-icons-outlined">perm_media</i></div>
-    <div class="menu-title">Category Media</div>
-  </a>
-</li>
+      <li>
+        <a href="{{ route('visitors.index') }}" class="{{ request()->routeIs('visitors.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">insights</i></div>
+          <div class="menu-title">Visitors</div>
+        </a>
+      </li>
 
-        <li>
-          <a href="{{ route('menu.index') }}" class="{{ request()->routeIs('menu.*') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">restaurant_menu</i></div>
-            <div class="menu-title">Menu (Dishes)</div>
-          </a>
-        </li>
+      <li class="menu-label">Menu Management</li>
 
-        <li>
-          <a href="{{ route('deals.index') }}" class="{{ request()->routeIs('deals.*') ? 'mm-active' : '' }}">
-            <div class="parent-icon"><i class="material-icons-outlined">local_offer</i></div>
-            <div class="menu-title">Deals &amp; Offers</div>
-          </a>
-        </li>
+      <li>
+        <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">category</i></div>
+          <div class="menu-title">Categories</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ route('category-media.index') }}" class="{{ request()->routeIs('category-media.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">perm_media</i></div>
+          <div class="menu-title">Category Media</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ route('menu.index') }}" class="{{ request()->routeIs('menu.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">restaurant_menu</i></div>
+          <div class="menu-title">Menu (Dishes)</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ route('deals.index') }}" class="{{ request()->routeIs('deals.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">local_offer</i></div>
+          <div class="menu-title">Deals &amp; Offers</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ route('sliders.index') }}" class="{{ request()->routeIs('sliders.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">view_carousel</i></div>
+          <div class="menu-title">Hero Slider</div>
+        </a>
+      </li>
 <li>
-  <a href="{{ route('sliders.index') }}" class="{{ request()->routeIs('sliders.*') ? 'mm-active' : '' }}">
-    <div class="parent-icon"><i class="material-icons-outlined">view_carousel</i></div>
-    <div class="menu-title">Hero Slider</div>
+  <a href="{{ route('contact-messages.index') }}" class="{{ request()->routeIs('contact-messages.*') ? 'mm-active' : '' }}">
+    <div class="parent-icon"><i class="material-icons-outlined">mail</i></div>
+    <div class="menu-title">Contact Messages</div>
   </a>
 </li>
+      <li>
+        <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('admin.delivery-settings.edit') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">local_shipping</i></div>
+          <div class="menu-title">Delivery Settings</div>
+        </a>
+      </li>
 
+      <li class="menu-label">Settings</li>
 
-<li>
-  <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('admin.delivery-settings.edit') ? 'mm-active' : '' }}">
-    <div class="parent-icon"><i class="material-icons-outlined">view_carousel</i></div>
-    <div class="menu-title">Delivery Settings</div>
-  </a>
-</li>
-<li class="menu-label">Settings</li>
+      <li>
+        <a href="{{ route('settings.edit') }}" class="{{ request()->routeIs('settings.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
+          <div class="menu-title">Settings</div>
+        </a>
+      </li>
 
-<li>
-  <a href="{{ route('settings.edit') }}" class="{{ request()->routeIs('settings.*') ? 'mm-active' : '' }}">
-    <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
-    <div class="menu-title">Settings</div>
-  </a>
-</li>
-       </ul>
+    </ul>
   </div>
 </aside>
 <!--end sidebar-->

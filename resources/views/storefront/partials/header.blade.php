@@ -130,8 +130,7 @@
 
                                  <li><a href="{{ route('storefront.deals.index') }}"><span>Deals</span></a></li>
                                 <li><a href="{{ route('storefront.track-order') }}"><span>Track Order</span></a></li>
-                                <li><a href="#"><span>About</span></a></li>
-                                <li><a href="#"><span>Contact</span></a></li>
+                                <li><a href="{{route('storefront.contact')}}"><span>Contact</span></a></li>
                             </ul>
                         </div>
                     </div>
