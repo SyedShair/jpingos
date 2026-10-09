@@ -293,7 +293,22 @@ img.first-image {
     </div>
 </div>
 <!-- Banner Section End -->
- 
+ <!-- Banner Fullwidth Start -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12" data-aos="fade-up" data-aos-delay="300">
+                    <div class="banner">
+                        <div class="banner-image">
+                            <a href="shop-grid.html"><img src="{{ $setting->banner_one ?? asset('storefront/assets/images/banner/big-banner2.png') }}" alt="Banner"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Banner Fullwidth End -->
+
 <!-- Product Section Start -->
 <div class="section section-padding mt-0">
     <div class="container">
@@ -323,7 +338,7 @@ img.first-image {
                                 <div class="swiper-wrapper mb-n10">
 
                                     @php $delay = 300; @endphp
-                                    @foreach ($newArrivals->chunk(2) as $pair)
+                                    @foreach ($newArrivals->sortBy('created_at')->chunk(2) as $pair)
                                         <!-- Product Start -->
                                         <div class="swiper-slide product-wrapper">
                                             @foreach ($pair as $item)
@@ -585,7 +600,7 @@ img.first-image {
                 <div class="col-12" data-aos="fade-up" data-aos-delay="300">
                     <div class="banner">
                         <div class="banner-image">
-                            <a href="shop-grid.html"><img src="{{ asset('storefront/assets/images/banner/big-banner2.png') }}" alt="Banner"></a>
+                            <a href="shop-grid.html"><img src="{{ $setting->banner_two ?? asset('storefront/assets/images/banner/big-banner2.png') }}" alt="Banner"></a>
                         </div>
                     </div>
                 </div>

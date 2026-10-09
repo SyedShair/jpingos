@@ -10,7 +10,7 @@
             </div>
             <div class="cart-product-content">
                 <h3 class="title">
-                    <a href="{{ route('storefront.dish', $cartItem->menuItem->slug) }}">{{ $cartItem->menuItem->name }}</a>
+                    <a href="{{ route('storefront.dish', $cartItem->menuItem->slug) }}" class="capitalized" style="text-transform: capitalize;">{{ $cartItem->menuItem->name }}</a>
                 </h3>
                 @if ($cartItem->options->isNotEmpty())
                     <p class="mb-1 small text-muted">

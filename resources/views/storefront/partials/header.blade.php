@@ -83,7 +83,7 @@
             </div>
         </div>
     </div> -->
-
+@php   $settings = \App\Models\Setting::first(); @endphp
     <!-- Header Bottom -->
     <div class="header-bottom">
         <div class="header-sticky">
@@ -93,7 +93,7 @@
                     <div class="col-xl-2 col-6">
                         <div class="header-logo">
                             <a href="{{ route('storefront.home') }}">
-                                <img src="{{ asset('storefront/assets/images/logo/logo.png') }}" alt="{{ config('app.name') }}" />
+                                <img src="{{ Storage::url($settings->logo) ?? asset('storefront/assets/images/logo/logo.png') }}" alt="{{ config('app.name') }}" />
                             </a>
                         </div>
                     </div>

@@ -56,8 +56,7 @@ Route::middleware('track.visit')->group(function () {
     Route::get('/deals', [DealController::class, 'index'])->name('storefront.deals.index');
 
     // Not built yet — routed to a single "coming soon" page so header links don't 500.
-    Route::view('/search', 'storefront.coming-soon')->name('storefront.search');
-
+Route::get('/search', [MenuController::class, 'search'])->name('storefront.search');
     Route::get('/cart', [CartController::class, 'index'])->name('storefront.cart');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('storefront.checkout');
     Route::get('/order/{order}/confirmation', [OrderController::class, 'confirmation'])->name('storefront.order.confirmation');

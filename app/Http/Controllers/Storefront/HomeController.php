@@ -53,7 +53,7 @@ class HomeController extends Controller
             ])
             ->available()
             ->latest()
-            ->take(20)
+            // ->take(20)
             ->get();
 
 
@@ -251,6 +251,7 @@ class HomeController extends Controller
         */
         $familyDealProducts = $familyDeals->values();
 
+$setting = \App\Models\Setting::current();
 
         /*
         |--------------------------------------------------------------------------
@@ -282,6 +283,7 @@ class HomeController extends Controller
             'familyDeals'       => $familyDeals,
 
             'familyDealProducts'=> $familyDealProducts,
+            'setting'           => $setting,
         ]);
     }
 

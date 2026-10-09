@@ -45,7 +45,7 @@
                     <div class="product-summery">
 
                         <div class="product-head mb-3">
-                            <h2 class="product-title" id="quickview-name"></h2>
+                            <h2  id="quickview-name" class="product-title capitalized" style="text-transform: capitalize !important;"></h2>
                         </div>
 
                         <div class="price-box mb-2" id="quickview-price-box">

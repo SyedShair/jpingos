@@ -99,7 +99,7 @@
 
             <!-- Product Head Start -->
             <div class="product-head mb-3">
-              <h2 class="product-title">{{ $item->name }}</h2>
+              <h2 class="product-title capitalized" style="text-transform: capitalize !important;">{{ $item->name }}</h2>
             </div>
             <!-- Product Head End -->
 

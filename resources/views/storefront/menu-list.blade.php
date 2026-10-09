@@ -512,7 +512,10 @@
 
 @section('content')
 
- 
+  {{-- The controller passes $searchTerm (from ?q= on /search or ?search=
+       on the menu pages). Falling back to request('search') keeps this
+       view safe if anything else ever renders it without that variable. --}}
+  @php $searchTerm = $searchTerm ?? request('search', ''); @endphp
 
   <div class="section section-margin">
     <div class="container">
@@ -524,15 +527,14 @@
           <!-- Toolbar Start (desktop) -->
           <div class="menu-toolbar-panel mb-10 d-none d-lg-block">
             <div class="menu-toolbar-count">
-              Showing {{ $dishes->firstItem() ?? 0 }}–{{ $dishes->lastItem() ?? 0 }} of {{ $dishes->total() }} dishes
+              Showing <span id="dishes-shown">{{ $dishes->count() }}</span> of {{ $dishes->total() }} dishes{{ $searchTerm !== '' ? ' matching “' . $searchTerm . '”' : '' }}
             </div>
 
             {{-- Search + sort + per-page in one row, one submit.
-                 NOTE: the controller needs to read request('per_page')
-                 when building $dishes->paginate(...) for the per-page
-                 select to actually change the page size. --}}
+                 "Per page" is the batch size: how many dishes show
+                 first and how many each "Load more" click adds. --}}
             <form method="GET" id="filters-form" class="menu-toolbar-form">
-              <input type="text" name="search" value="{{ request('search') }}"
+              <input type="text" name="search" value="{{ $searchTerm }}"
                 class="toolbar-search" placeholder="Search products" aria-label="Search the menu">
 
               <select class="toolbar-select" name="sort" aria-label="Sort dishes">
@@ -573,8 +575,8 @@
                    desktop #filters-form, so hidden fields don't collide
                    with it when both exist in the DOM at once. --}}
               <form method="GET" id="mobile-sort-form" class="mobile-pill-select-wrap">
-                @if (request('search'))
-                  <input type="hidden" name="search" value="{{ request('search') }}">
+                @if ($searchTerm !== '')
+                  <input type="hidden" name="search" value="{{ $searchTerm }}">
                 @endif
                 @if (request('per_page'))
                   <input type="hidden" name="per_page" value="{{ request('per_page') }}">
@@ -589,8 +591,8 @@
               </form>
 
               <form method="GET" id="mobile-per-page-form" class="mobile-pill-select-wrap">
-                @if (request('search'))
-                  <input type="hidden" name="search" value="{{ request('search') }}">
+                @if ($searchTerm !== '')
+                  <input type="hidden" name="search" value="{{ $searchTerm }}">
                 @endif
                 @if (request('sort'))
                   <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -607,7 +609,10 @@
           <!-- Toolbar End (mobile) -->
 
           <!-- Shop Wrapper Start -->
-          <div class="row shop_wrapper grid_3">
+          {{-- id="dish-grid": the "Load more" script appends newly fetched
+               dish cards into this element, so the cards must stay its
+               direct children. --}}
+          <div class="row shop_wrapper grid_3" id="dish-grid">
             @forelse ($dishes as $dish)
               @php
                 $savings = $dish->is_on_sale ? max($dish->price - $dish->discount_price, 0) : 0;
@@ -662,21 +667,19 @@
               </div>
             @empty
               <div class="col-12 text-center text-muted py-5">
-                No dishes {{ $activeCategory ? 'in this category ' : '' }}yet.
+                @if ($searchTerm !== '')
+                  No dishes found for “{{ $searchTerm }}”. Try a different word, or <a href="{{ route('storefront.menu.index') }}">browse the full menu</a>.
+                @else
+                  No dishes {{ $activeCategory ? 'in this category ' : '' }}yet.
+                @endif
               </div>
             @endforelse
           </div>
           <!-- Shop Wrapper End -->
 
-          @if ($dishes->hasPages())
-            <!-- Toolbar Start -->
-            <div class="shop_toolbar_wrapper mt-10">
-              <div class="shop-top-bar-right ms-auto">
-                {{ $dishes->onEachSide(1)->links() }}
-              </div>
-            </div>
-            <!-- Toolbar End -->
-          @endif
+          {{-- Replaces the numbered page links. Renders nothing when
+               everything already fits in the first batch. --}}
+          @include('storefront.partials.load-more', ['dishes' => $dishes])
 
         </div>
 
@@ -704,7 +707,7 @@
                   @if (request('per_page'))
                     <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                   @endif
-                  <input type="text" name="search" value="{{ request('search') }}"
+                  <input type="text" name="search" value="{{ $searchTerm }}"
                     class="form-control" placeholder="Search products" aria-label="Search the menu">
                   <button class="btn btn-dark btn-hover-primary" type="submit">Go</button>
                 </form>
@@ -747,14 +750,19 @@
               </div>
 
               {{-- Price filter. Reuses the #slider-range jQuery UI widget
-                   already initialized in custom.js. NOTE: the controller
-                   needs to read request('price_min')/request('price_max')
-                   for the Filter button to actually narrow $dishes. --}}
+                   already initialized in custom.js.
+                   Submits back to the CURRENT page (a category page, or
+                   /search) instead of always /menu, and carries the
+                   search term and sort along — otherwise filtering by
+                   price silently dropped the category or the search. --}}
               <div class="widget-list mb-10">
                 <h3 class="widget-title mb-5">Price Filter</h3>
-                <form action="{{ route('storefront.menu.index') }}" method="GET">
-                  @if ($activeCategory)
-                    <input type="hidden" name="category" value="{{ $activeCategory->slug }}">
+                <form action="{{ url()->current() }}" method="GET">
+                  @if ($searchTerm !== '')
+                    <input type="hidden" name="search" value="{{ $searchTerm }}">
+                  @endif
+                  @if (request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
                   @endif
                   <div id="slider-range"
                        data-min="{{ request('price_min', 0) }}"
