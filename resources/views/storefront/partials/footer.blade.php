@@ -60,22 +60,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mb-10">
-                    <div class="single-footer-widget">
-                        <h2 class="widget-title">Newsletter</h2>
-                        <div class="widget-body">
-                            <p class="desc-content mb-0">Get updates on new dishes and special offers.</p>
-                            <div class="newsletter-form-wrap pt-4">
-                                <form>
-                                    <input type="email" class="form-control email-box mb-4" placeholder="Enter your email..">
-                                    <button class="newsletter-btn btn btn-primary btn-hover-dark" type="button" disabled>
-                                        Subscribe (coming soon)
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               @include('storefront.partials.newsletter-widget')
             </div>
         </div>
     </div>

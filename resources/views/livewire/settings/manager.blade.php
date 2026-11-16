@@ -215,6 +215,23 @@
                     </div>
                 </div>
 
+                {{-- =================================================
+                     MENU QR CODE — opens the popup below.
+                     type="button" so it never submits the settings form.
+                ================================================== --}}
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-2">Menu QR Code</h5>
+                        <p class="text-muted small mb-3">Print it for tables, windows or flyers so customers can scan and open your menu.</p>
+
+                        <button type="button" class="btn btn-outline-dark w-100"
+                                data-bs-toggle="modal" data-bs-target="#menuQrModal">
+                            <i class="bx bx-qr me-1"></i> Show Menu QR Code
+                        </button>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-dark w-100" wire:loading.attr="disabled" wire:target="save">
                     <span wire:loading.remove wire:target="save">Save Settings</span>
                     <span wire:loading wire:target="save">Saving...</span>
@@ -225,5 +242,121 @@
         </div>
 
     </form>
+
+    {{-- =================================================
+         MENU QR POPUP
+         wire:ignore keeps Livewire from re-rendering (and breaking)
+         the modal and the drawn QR code.
+    ================================================== --}}
+
+    <div class="modal fade" id="menuQrModal" tabindex="-1" aria-labelledby="menuQrModalLabel" aria-hidden="true" wire:ignore>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuQrModalLabel">Menu QR Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p class="text-muted small mb-3">Customers scan this to open your menu.</p>
+
+                    <div id="menuQrWrap" data-url="{{ route('storefront.menu.index') }}"
+                         class="d-flex justify-content-center mb-3" style="min-height: 200px;"></div>
+
+                    <a href="{{ route('storefront.menu.index') }}" target="_blank" rel="noopener" class="small text-break">
+                        {{ route('storefront.menu.index') }}
+                    </a>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light" id="menuQrCopy">
+                        <i class="bx bx-copy me-1"></i> Copy link
+                    </button>
+                    <button type="button" class="btn btn-dark" id="menuQrDownload">
+                        <i class="bx bx-download me-1"></i> Download PNG
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {{-- QR library: loaded once by Livewire, before the script below runs --}}
+    @assets
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    @endassets
+
+    @script
+    <script>
+        const modalEl = document.getElementById('menuQrModal');
+        const wrap    = document.getElementById('menuQrWrap');
+        let finalCanvas = null;
+
+        // Draw the QR (with a white margin so phones can scan it) each time the popup opens
+        function renderMenuQr() {
+            if (typeof QRCode === 'undefined') {
+                wrap.textContent = 'QR library failed to load. Check your internet connection.';
+                return;
+            }
+
+            wrap.innerHTML = '';
+
+            const tmp = document.createElement('div');
+            new QRCode(tmp, {
+                text: wrap.dataset.url,
+                width: 512,
+                height: 512,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+
+            const source = tmp.querySelector('canvas');
+            const pad = 40;
+            const size = 512 + pad * 2;
+
+            finalCanvas = document.createElement('canvas');
+            finalCanvas.width = size;
+            finalCanvas.height = size;
+
+            const ctx = finalCanvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, size, size);
+            ctx.drawImage(source, pad, pad);
+
+            finalCanvas.style.width = '100%';
+            finalCanvas.style.maxWidth = '300px';
+            finalCanvas.style.height = 'auto';
+            wrap.appendChild(finalCanvas);
+        }
+
+        if (modalEl && !modalEl.dataset.qrBound) {
+            modalEl.dataset.qrBound = '1';
+
+            modalEl.addEventListener('shown.bs.modal', renderMenuQr);
+
+            document.getElementById('menuQrDownload').addEventListener('click', function () {
+                if (!finalCanvas) return;
+
+                const link = document.createElement('a');
+                link.href = finalCanvas.toDataURL('image/png');
+                link.download = 'menu-qr-code.png';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            });
+
+            document.getElementById('menuQrCopy').addEventListener('click', function () {
+                const btn = this;
+                navigator.clipboard.writeText(wrap.dataset.url).then(function () {
+                    const old = btn.innerHTML;
+                    btn.textContent = 'Copied!';
+                    setTimeout(function () { btn.innerHTML = old; }, 1500);
+                });
+            });
+        }
+    </script>
+    @endscript
 
 </div>

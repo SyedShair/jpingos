@@ -105,7 +105,7 @@ class AcceptQueue extends Component
     |--------------------------------------------------------------------------
     | Status Transitions
     |
-    | pending -> confirmed -> ready -> completed
+    | pending -> confirmed -> preparing -> ready -> completed
     | pending -> cancelled (reject)
     |
     | Each transition only fires from the status it expects, so a
@@ -116,9 +116,8 @@ class AcceptQueue extends Component
 
     public function accept(int $orderId): void
     {
-        // Pending -> confirmed is "kitchen has accepted this order and
-        // will start preparing it." Adjust if your actual kitchen
-        // workflow treats "accepted" differently from "confirmed."
+        // Pending -> confirmed is "the order has been accepted." It now
+        // waits in the Confirmed column until someone starts on it.
         Order::where('id', $orderId)->where('status', 'pending')->update(['status' => 'confirmed']);
     }
 
@@ -130,13 +129,24 @@ class AcceptQueue extends Component
         Order::where('id', $orderId)->where('status', 'pending')->update(['status' => 'cancelled']);
     }
 
+    public function startPreparing(int $orderId): void
+    {
+        // Confirmed -> preparing is "the kitchen has started on this order."
+        Order::where('id', $orderId)->where('status', 'confirmed')->update(['status' => 'preparing']);
+    }
+
     public function markReady(int $orderId): void
     {
-        // Confirmed -> ready is "kitchen has finished preparing this
-        // order" — for delivery, this is normally what triggers a
-        // courier dispatch; for pickup, it's what the "we'll text you"
-        // note on checkout is referring to. Neither is wired up here.
-        Order::where('id', $orderId)->where('status', 'confirmed')->update(['status' => 'ready']);
+        // Preparing -> ready is "the kitchen has finished this order" — for
+        // delivery, this is normally what triggers a courier dispatch; for
+        // pickup, it's what the "we'll text you" note on checkout is
+        // referring to. Neither is wired up here.
+        //
+        // 'confirmed' is accepted too, so a kitchen that doesn't use the
+        // separate Preparing step can still go straight to Ready.
+        Order::where('id', $orderId)
+            ->whereIn('status', ['confirmed', 'preparing'])
+            ->update(['status' => 'ready']);
     }
 
     public function complete(int $orderId): void
@@ -155,8 +165,13 @@ class AcceptQueue extends Component
             ->oldest() // first-come-first-served, oldest pending order shown first
             ->get();
 
-        $preparingOrders = Order::with('items')
+        $confirmedOrders = Order::with('items')
             ->where('status', 'confirmed')
+            ->oldest()
+            ->get();
+
+        $preparingOrders = Order::with('items')
+            ->where('status', 'preparing')
             ->oldest()
             ->get();
 
@@ -187,10 +202,11 @@ class AcceptQueue extends Component
             $this->dispatch('new-order-received');
         }
         $this->lastKnownPendingCount = $pendingOrders->count();
-
+$this->dispatch('orders-need-action', count: $takeoverOrders->count());
         return view('livewire.orders.accept-queue', [
             'pendingOrders'   => $pendingOrders,
             'takeoverOrders'  => $takeoverOrders,
+            'confirmedOrders' => $confirmedOrders,
             'preparingOrders' => $preparingOrders,
             'readyOrders'     => $readyOrders,
         ]);

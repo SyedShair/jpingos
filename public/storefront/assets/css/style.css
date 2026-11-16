@@ -101,7 +101,7 @@ body {
   font-weight: 400;
   line-height: 1.875;
   color: #666666;
-  background-color: #fff;
+  background-color: #000 !important;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

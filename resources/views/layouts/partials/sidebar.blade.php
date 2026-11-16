@@ -89,6 +89,13 @@
     <div class="menu-title">Contact Messages</div>
   </a>
 </li>
+<li>
+  <a href="{{ route('newsletter.subscribers') }}" class="{{ request()->routeIs('newsletter.subscribers') ? 'mm-active' : '' }}">
+    <div class="parent-icon"><i class="material-icons-outlined">mail</i></div>
+    <div class="menu-title">Newsletter Subscribers</div>
+  </a>
+</li>
+
       <li>
         <a href="{{ route('admin.delivery-settings.edit') }}" class="{{ request()->routeIs('admin.delivery-settings.edit') ? 'mm-active' : '' }}">
           <div class="parent-icon"><i class="material-icons-outlined">local_shipping</i></div>

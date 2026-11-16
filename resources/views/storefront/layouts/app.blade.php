@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/vendor.min.css') }}">
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/plugins.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('storefront/assets/css/style.min.css') }}?v={{ filemtime(public_path('storefront/assets/css/style.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset('storefront/assets/css/style.css') }}?v={{ filemtime(public_path('storefront/assets/css/style.css')) }}">
 <style>
 
     .header-actions .header-action-btn .header-action-num {

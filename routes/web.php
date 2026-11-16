@@ -17,7 +17,7 @@ use App\Http\Controllers\DeliverySettingController;
 use App\Http\Controllers\DeliveryCheckController;
 use App\Livewire\CategoryMedia\Manager as CategoryMediaManager;
 use App\Livewire\Settings\Manager as SettingsManager;
-
+use App\Livewire\Admin\NewsletterSubscribers;
 use App\Http\Controllers\Storefront\MenuController;
 use App\Http\Controllers\Storefront\DealController;
 use App\Http\Controllers\Storefront\CategoryController;
@@ -35,8 +35,10 @@ use App\Http\Controllers\Storefront\CustomerAccountController;
 use App\Http\Controllers\Storefront\TrackOrderController;
 use App\Http\Controllers\OrderPrintController;
 use App\Http\Controllers\Storefront\ContactController;
-
+use App\Http\Controllers\Storefront\NewsletterController;
 use App\Livewire\ContactMessages\Manager as ContactMessagesManager;
+use App\Http\Controllers\PendingOrdersController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,8 +57,7 @@ Route::middleware('track.visit')->group(function () {
     Route::get('/dish/{menuItem:slug}', [DishController::class, 'show'])->name('storefront.dish');
     Route::get('/deals', [DealController::class, 'index'])->name('storefront.deals.index');
 
-    // Not built yet — routed to a single "coming soon" page so header links don't 500.
-Route::get('/search', [MenuController::class, 'search'])->name('storefront.search');
+    Route::get('/search', [MenuController::class, 'search'])->name('storefront.search');
     Route::get('/cart', [CartController::class, 'index'])->name('storefront.cart');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('storefront.checkout');
     Route::get('/order/{order}/confirmation', [OrderController::class, 'confirmation'])->name('storefront.order.confirmation');
@@ -94,6 +95,11 @@ Route::post('/visitor/location', [\App\Http\Controllers\Storefront\VisitorLocati
 
 Route::get('/contact', [ContactController::class, 'index'])->name('storefront.contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('storefront.contact.store');
+
+// Footer newsletter signup. Throttled per IP: 5 attempts a minute.
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->middleware('throttle:5,1')
+    ->name('storefront.newsletter.subscribe');
 
 /*
 |--------------------------------------------------------------------------
@@ -141,9 +147,6 @@ Route::middleware('auth:customer')->group(function () {
 */
 Route::prefix('admin')->group(function () {
 
-
-Route::get('/contact-messages', ContactMessagesManager::class)->name('contact-messages.index');
-
     // --- Guest-only routes ---
     Route::middleware('guest')->group(function () {
         Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -184,6 +187,9 @@ Route::get('/contact-messages', ContactMessagesManager::class)->name('contact-me
             Route::patch('{image}/primary', [MenuItemImageController::class, 'makePrimary'])->name('primary');
         });
 
+        
+ 
+Route::get('/pending-orders/poll', [PendingOrdersController::class, 'poll'])->name('admin.pending-orders.poll');
         Route::post('menu/{menuItem}/images', [MenuItemImageController::class, 'store'])->name('menu.images.store');
         Route::post('menu/{menuItem}/images/reorder', [MenuItemImageController::class, 'reorder'])->name('menu.images.reorder');
 
@@ -202,5 +208,11 @@ Route::get('/contact-messages', ContactMessagesManager::class)->name('contact-me
         Route::resource('sliders', SliderController::class)->except(['show']);
         Route::patch('sliders/{slider}/toggle-active', [SliderController::class, 'toggleActive'])->name('sliders.toggle-active');
         Route::post('sliders/reorder', [SliderController::class, 'reorder'])->name('sliders.reorder');
+
+        // Contact form messages (customer names, emails, message text)
+        Route::get('/contact-messages', ContactMessagesManager::class)->name('contact-messages.index');
+
+        // Newsletter subscribers
+        Route::get('/newsletter/subscribers', NewsletterSubscribers::class)->name('newsletter.subscribers');
     });
 });
