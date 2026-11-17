@@ -76,6 +76,13 @@
           <div class="menu-title">Deals &amp; Offers</div>
         </a>
       </li>
+      <li>
+        <a href="{{ route('loyalty-coupons.index') }}" class="{{ request()->routeIs('loyalty-coupons.*') ? 'mm-active' : '' }}">
+          <div class="parent-icon"><i class="material-icons-outlined">card_giftcard</i></div>
+          <div class="menu-title">Reward Coupons</div>
+        </a>
+      </li> 
+
 
       <li>
         <a href="{{ route('sliders.index') }}" class="{{ request()->routeIs('sliders.*') ? 'mm-active' : '' }}">

@@ -9,6 +9,8 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Services\CartService;
+use App\Services\LoyaltyService;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +19,10 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
-    public function __construct(protected CartService $cart) {}
+    public function __construct(
+        protected CartService $cart,
+        protected LoyaltyService $loyalty,
+    ) {}
 
     public function store(Request $request)
     {
@@ -45,6 +50,9 @@ class OrderController extends Controller
             'notes'     => ['nullable', 'string', 'max:1000'],
 
             'payment_method' => ['required', 'in:cod,card'],
+
+            // Loyalty reward code (optional).
+            'coupon_code' => ['nullable', 'string', 'max:32'],
         ]);
 
         // Card isn't wired to any gateway yet — reject explicitly rather
@@ -75,9 +83,26 @@ class OrderController extends Controller
             ? (float) ($data['delivery_fee'] ?? 0)
             : 0.0;
 
-        $total = $subtotal + $deliveryFee;
+        // Discount code. Validated again here on the server: the checkout
+        // page's "Apply" button is only a preview, and whatever amount the
+        // browser showed is never trusted.
+        $coupon   = null;
+        $discount = 0.0;
 
-        $order = DB::transaction(function () use ($data, $cartItems, $subtotal, $deliveryFee, $total) {
+        if (! empty($data['coupon_code'])) {
+            $result = $this->loyalty->validateForCheckout($data['coupon_code'], $data['email'], (float) $subtotal);
+
+            if (! $result['valid']) {
+                return response()->json(['message' => $result['message']], 422);
+            }
+
+            $coupon   = $result['coupon'];
+            $discount = $result['discount'];
+        }
+
+        $total = $subtotal + $deliveryFee - $discount;
+
+        $order = DB::transaction(function () use ($data, $cartItems, $subtotal, $deliveryFee, $total, $coupon, $discount) {
 
             $order = Order::create([
                 // Works for both guest and logged-in customer: a guest
@@ -100,10 +125,13 @@ class OrderController extends Controller
                 'pre_order_date' => $data['pre_order_date'] ?? null,
                 'pre_order_time' => $data['pre_order_time'] ?? null,
 
-                'subtotal'     => $subtotal,
-                'delivery_fee' => $deliveryFee,
-                'total'        => $total,
-                'status'       => 'pending',
+                'subtotal'       => $subtotal,
+                'delivery_fee'   => $deliveryFee,
+                'discount_total' => $discount,
+                'coupon_id'      => $coupon?->id,
+                'coupon_code'    => $coupon?->code,
+                'total'          => $total,
+                'status'         => 'pending',
             ]);
 
             foreach ($cartItems as $cartItem) {
@@ -134,6 +162,16 @@ class OrderController extends Controller
                 'amount'   => $total,
                 'currency' => 'GBP',
             ]);
+
+            // Burn the code LAST, inside the same transaction. redeem() is a
+            // single conditional UPDATE, so if a double-click or a second tab
+            // used it a moment ago this returns false, and throwing here
+            // rolls back the order, its items and its payment together.
+            if ($coupon && ! $this->loyalty->redeem($coupon, $order)) {
+                throw new HttpResponseException(
+                    response()->json(['message' => 'This code has already been used.'], 422)
+                );
+            }
 
             return $order;
         });
@@ -178,15 +216,8 @@ class OrderController extends Controller
             );
         }
 
-        $categories = \App\Models\Category::topLevel()
-                ->active()
-                ->ordered()
-                ->with(['children' => fn ($q) => $q->active()->ordered()])
-                ->get();
-
         return view('storefront.order-confirmation', [
             'order' => $order->load(['items', 'latestPayment']),
-            'categories' => $categories,
         ]);
     }
 }

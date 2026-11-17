@@ -282,6 +282,13 @@
             <span>£{{ number_format($order->subtotal, 2) }}</span>
         </div>
 
+        @if ($order->discount_total > 0)
+            <div class="totals-row">
+                <span>Discount ({{ $order->coupon_code }})</span>
+                <span>-£{{ number_format($order->discount_total, 2) }}</span>
+            </div>
+        @endif
+
         @if ($isDelivery)
             <div class="totals-row">
                 <span>Delivery Fee</span>

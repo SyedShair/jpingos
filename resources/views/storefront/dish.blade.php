@@ -18,8 +18,8 @@
     }
 
     #dish-customizations-list label.badge.selected {
-        background-color: #b22b40 !important;
-        border-color: #b22b40 !important;
+        background-color: #A78360 !important;
+        border-color: #A78360 !important;
         color: #fff !important;
     }
 

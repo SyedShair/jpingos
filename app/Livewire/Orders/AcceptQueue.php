@@ -154,7 +154,14 @@ class AcceptQueue extends Component
         // Ready -> completed is "handed to the courier / collected by
         // the customer / served at the table." This just closes the
         // order out of the active board.
-        Order::where('id', $orderId)->where('status', 'ready')->update(['status' => 'completed']);
+        //
+        // Loaded and saved as a model (not a bulk ->update()) on purpose:
+        // only an Eloquent save fires the Order "updated" event, and that
+        // event is what checks whether this completion earns the customer
+        // a loyalty coupon.
+        $order = Order::where('id', $orderId)->where('status', 'ready')->first();
+
+        $order?->update(['status' => 'completed']);
     }
 
 
@@ -202,7 +209,7 @@ class AcceptQueue extends Component
             $this->dispatch('new-order-received');
         }
         $this->lastKnownPendingCount = $pendingOrders->count();
-$this->dispatch('orders-need-action', count: $takeoverOrders->count());
+       $this->dispatch('orders-need-action', count: $takeoverOrders->count());
         return view('livewire.orders.accept-queue', [
             'pendingOrders'   => $pendingOrders,
             'takeoverOrders'  => $takeoverOrders,

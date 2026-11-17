@@ -1010,6 +1010,17 @@
 
                         @endforeach
 
+                        {{-- Discount / loyalty code --}}
+                        <div id="coupon-box" style="margin: 4px 0 18px;">
+                            <div style="display:flex; gap:8px;">
+                                <input type="text" id="coupon-code" class="form-control" placeholder="Discount code"
+                                       autocomplete="off" style="text-transform:uppercase; margin-bottom:0;">
+                                <button type="button" id="coupon-apply-btn" class="btn btn-dark"
+                                        style="flex:0 0 auto; border-radius:6px; font-weight:700;">Apply</button>
+                            </div>
+                            <div id="coupon-message" style="display:none; font-size:13px; margin-top:8px;"></div>
+                        </div>
+
                         <div class="summary-totals">
 
                             <div class="summary-totals-row">
@@ -1020,6 +1031,11 @@
                             <div class="summary-totals-row muted-value" id="summary-fulfilment-row">
                                 <span>Delivery Fee</span>
                                 <span>Calculated at next step</span>
+                            </div>
+
+                            <div class="summary-totals-row" id="summary-discount-row" style="display:none;">
+                                <span id="summary-discount-label">Discount</span>
+                                <span id="summary-discount-value" style="color:#1a9c5c; font-weight:600;"></span>
                             </div>
 
                         </div>
@@ -1077,6 +1093,8 @@
 
     let deliveryAvailable = true;
     let currentDeliveryFee = null;
+    let appliedCouponCode = null;
+    let couponDiscount = 0;
 
     // --- Delivery postcode check state (declared up here so every function below can use it) ---
     let lastCheckedPostcode = null;   // postcode we last got an answer for
@@ -1172,6 +1190,17 @@
             } else {
                 $summaryFulfilmentRow.html('<span>Delivery Fee</span><span>Calculated at next step</span>');
             }
+        }
+
+        // Discount code (food subtotal only — the delivery fee is never discounted)
+        const $discountRow = $('#summary-discount-row');
+        if (appliedCouponCode && couponDiscount > 0) {
+            finalTotal = Math.max(0, finalTotal - couponDiscount);
+            $('#summary-discount-label').text('Discount (' + appliedCouponCode + ')');
+            $('#summary-discount-value').text('−£' + couponDiscount.toFixed(2));
+            $discountRow.show();
+        } else {
+            $discountRow.hide();
         }
 
         $totalAmountDisplay.text('£' + finalTotal.toFixed(2));
@@ -1323,6 +1352,97 @@
     checkPrefilledPostcode();
     $(window).on('load', checkPrefilledPostcode);
     setTimeout(checkPrefilledPostcode, 800);       // autofill can land after the page loads
+
+    /* =========================================================
+        DISCOUNT / LOYALTY CODE
+    ========================================================== */
+
+    const $couponInput = $('#coupon-code');
+    const $couponBtn = $('#coupon-apply-btn');
+    const $couponMsg = $('#coupon-message');
+
+    function setCouponMessage(text, ok) {
+        $couponMsg.text(text).css('color', ok ? '#1a9c5c' : '#b22b40').show();
+    }
+
+    function clearCoupon(message) {
+        appliedCouponCode = null;
+        couponDiscount = 0;
+        $couponInput.prop('readonly', false).val('');
+        $couponBtn.text('Apply');
+
+        if (message) {
+            setCouponMessage(message, false);
+        } else {
+            $couponMsg.hide();
+        }
+
+        updateSummaryTotals();
+    }
+
+    $couponBtn.on('click', function () {
+        // Once a code is applied, this button becomes "Remove".
+        if (appliedCouponCode) {
+            clearCoupon();
+            return;
+        }
+
+        const code = $couponInput.val().trim();
+        const email = $('#checkout-email').val().trim();
+
+        if (code === '') {
+            setCouponMessage('Enter your discount code.', false);
+            return;
+        }
+
+        if (email === '') {
+            setCouponMessage('Enter your email above first — the code is tied to it.', false);
+            return;
+        }
+
+        $couponBtn.prop('disabled', true).text('Checking…');
+
+        fetch('{{ route('storefront.coupon.check') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            body: JSON.stringify({ code: code, email: email }),
+        })
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+            if (!ok || !data.valid) {
+                const message = (data.errors && data.errors.email && data.errors.email[0])
+                    || data.message
+                    || 'That code could not be applied.';
+                setCouponMessage(message, false);
+                $couponBtn.text('Apply');
+                return;
+            }
+
+            appliedCouponCode = data.code;
+            couponDiscount = parseFloat(data.discount) || 0;
+            $couponInput.val(data.code).prop('readonly', true);
+            $couponBtn.text('Remove');
+            setCouponMessage(data.message, true);
+            updateSummaryTotals();
+        })
+        .catch(() => {
+            setCouponMessage('Could not check the code. Please try again.', false);
+            $couponBtn.text('Apply');
+        })
+        .finally(() => $couponBtn.prop('disabled', false));
+    });
+
+    // A code only works with the email it was sent to, so editing the
+    // email after applying a code removes the code.
+    $('#checkout-email').on('input', function () {
+        if (appliedCouponCode) {
+            clearCoupon('Email changed — please apply your code again.');
+        }
+    });
 
     /* =========================================================
         CONTINUE BUTTON SUBMIT GUARD
@@ -1487,6 +1607,7 @@
             pre_order_date: preorder ? $('#preorder-date').val() : null,
             pre_order_time: preorder ? $('#preorder-time').val() : null,
             payment_method: paymentMethod,
+            coupon_code: appliedCouponCode,
         };
 
         if (preorder) {

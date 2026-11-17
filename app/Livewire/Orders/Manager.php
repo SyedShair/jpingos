@@ -15,13 +15,7 @@ class Manager extends Component
     public string $statusFilter = '';
     public string $typeFilter = '';
 
-    /**
-     * Which day's orders to show. Defaults to today, since the kitchen
-     * almost always cares about today's service rather than the whole
-     * history — an explicit "All dates" option switches it off.
-     *
-     * '' = all dates, otherwise a Y-m-d string.
-     */
+    /** Y-m-d. Defaults to today on first load; '' means "all dates". */
     public string $dateFilter = '';
 
     public ?int $selectedOrderId = null;
@@ -36,15 +30,12 @@ class Manager extends Component
     /** Matches the plain-string status column on the payments table. */
     public const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded', 'cancelled'];
 
-    /**
-     * Seed the date filter to today on first load. Done in mount() rather
-     * than as a property default so that a queryString value in the URL
-     * (e.g. a bookmarked "all dates" or a specific day) still wins.
-     */
     public function mount(): void
     {
+        // First visit: show today's orders. If the URL already carries a
+        // dateFilter (including an empty one from "All dates"), respect it.
         if (! request()->has('dateFilter')) {
-            $this->dateFilter = Carbon::today()->toDateString();
+            $this->dateFilter = today()->toDateString();
         }
     }
 
@@ -70,7 +61,7 @@ class Manager extends Component
 
     public function showToday(): void
     {
-        $this->dateFilter = Carbon::today()->toDateString();
+        $this->dateFilter = today()->toDateString();
         $this->resetPage();
     }
 
@@ -86,7 +77,10 @@ class Manager extends Component
             return;
         }
 
-        Order::whereKey($orderId)->update(['status' => $status]);
+        // Loaded and saved as a model (not a bulk ->update()) so the Order
+        // "updated" event fires — marking an order "completed" is what
+        // triggers the loyalty-coupon check.
+        Order::find($orderId)?->update(['status' => $status]);
 
         session()->flash('status-message', 'Order updated.');
     }
@@ -137,6 +131,13 @@ class Manager extends Component
 
     public function render()
     {
+        // A hand-edited URL like ?dateFilter=banana must not crash the page.
+        $dateFilter = $this->dateFilter;
+        if ($dateFilter !== '' && ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFilter)) {
+            $dateFilter = '';
+            $this->dateFilter = '';
+        }
+
         $orders = Order::query()
             ->with('latestPayment')
             ->when($this->search !== '', function ($q) {
@@ -151,7 +152,7 @@ class Manager extends Component
             })
             ->when($this->statusFilter !== '', fn ($q) => $q->where('status', $this->statusFilter))
             ->when($this->typeFilter !== '', fn ($q) => $q->where('order_type', $this->typeFilter))
-            ->when($this->dateFilter !== '', fn ($q) => $q->whereDate('created_at', $this->dateFilter))
+            ->when($dateFilter !== '', fn ($q) => $q->whereDate('created_at', $dateFilter))
             ->latest()
             ->paginate(15);
 
@@ -165,7 +166,7 @@ class Manager extends Component
             'statuses'        => self::STATUSES,
             'orderTypes'      => self::ORDER_TYPES,
             'paymentStatuses' => self::PAYMENT_STATUSES,
-            'isToday'         => $this->dateFilter === Carbon::today()->toDateString(),
+            'isToday'         => $dateFilter === today()->toDateString(),
         ]);
     }
 }

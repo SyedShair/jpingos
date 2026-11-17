@@ -10,52 +10,49 @@
 
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/vendor.min.css') }}">
     <link rel="stylesheet" href="{{ asset('storefront/assets/css/plugins.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('storefront/assets/css/style.css') }}?v={{ filemtime(public_path('storefront/assets/css/style.css')) }}">
 <style>
 
     .header-actions .header-action-btn .header-action-num {
 
-        background: #D12026 !important;
+        background: #6B1118!important;
     }
     .btn-primary {
-        border-color: #D12026;
-        background: #D12026 !important;
+        border-color: #6B1118;
+        background: #6B1118!important;
         color: #fff;
     }
     .main-menu>ul>li>a>span:before{
-        background-color:#D12026 ;
-        color: #D12026;
+        background-color:#6B1118;
+        color: #6B1118;
     }
     .main-menu>ul>li>a:hover{
-        color:#D12026;
+        color:#6B1118;
     }
     .mega-menu>li .mega-menu-title::after{
-        background-color:#D12026!important;
+        background-color:#6B1118!important;
 
     }
     .mega-menu{
-        border-bottom:3px solid #D12026;
+        border-bottom:3px solid #6B1118;
     }
-a{
-    color: #D12026;
-}
+
 li>a:hover{
-    color:#D12026!important;
+    color:#6B1118!important;
 }
     .product-tab-nav .nav-item .nav-link:hover, .product-tab-nav .nav-item .nav-link.active {
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .product-tab-nav .nav-item .nav-link:hover, .product-tab-nav .nav-item .nav-link.active {
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     a:hover {
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .product-tab-nav .nav-item .nav-link:after {
         position: absolute;
         content: "";
-        color: #D12026;
-        background: #D12026;
+        color: #6B1118;
+        background: #6B1118;
         width: 0%;
         height: 2px;
         -webkit-transition: all 0.3s ease 0s;
@@ -65,21 +62,21 @@ li>a:hover{
         left: 0;
     }
     .new{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .product .thumb .badges span.sale {
-        background-color: #D12026;
+        background-color: #6B1118;
     }
     .btn-hover-primary:hover{
-   background: #D12026;
+   background: #6B1118;
         color: #FFFFFF !important;
  }
     .actions a:hover,a>i:hover{
-        background: #D12026 !important;
+        background: #6B1118!important;
         color: #FFFFFF !important;
     }
     .sub-title span{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
 
     element.style {
@@ -88,57 +85,57 @@ li>a:hover{
         width: 100px;
         height: 2px;
         display: block;
-        border: 1px solid #D12026;
+        border: 1px solid #6B1118;
         position: absolute;
         bottom: -2px;
         left: 0;
     }
     .product-list-carousel .swiper-button-prev i:hover, .product-list-carousel .swiper-button-next i:hover, .product-list-carousel-2 .swiper-button-prev i:hover, .product-list-carousel-2 .swiper-button-next i:hover, .product-list-carousel-3 .swiper-button-prev i:hover, .product-list-carousel-3 .swiper-button-next i:hover {
         color: #fff;
-        background: #D12026 !important;
+        background: #6B1118!important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .banner:hover .small-banner-content .btn {
-        background: #D12026;
+        background: #6B1118;
     }
     .offcanvas-search-inner .offcanvas-btn-close:hover{
         font-size: 50px;
-        color: #D12026;
+        color: #6B1118;
         opacity: 1;
     }
     .shop_toolbar_btn{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .shop_toolbar_wrapper .shop_toolbar_btn button.active{
-        border: 1px solid #D12026;
-        color: #D12026;
+        border: 1px solid #6B1118;
+        color: #6B1118;
     }
     .shop_toolbar_wrapper .shop_toolbar_btn button:hover {
-        color: #D12026;
-        border-color: #D12026;
+        color: #6B1118;
+        border-color: #6B1118;
     }
     .shop_toolbar_wrapper .shop-top-bar-right .shop-short-by .nice-select:focus {
-        border-color: #D12026;
+        border-color: #6B1118;
     }
     .shop_toolbar_wrapper .shop-top-bar-right .shop-short-by .nice-select li:hover {
         padding-left: 5px;
         display: block;
-        color: #D12026;
+        color: #6B1118;
     }
     .pagination .page-item .page-link.active {
-        background: #D12026;
+        background: #6B1118;
         color: #fff;
-        border-color: #D12026;
+        border-color: #6B1118;
     }
     .page-link {
         position: relative;
         display: block;
-        color: #D12026;
+        color: #6B1118;
         text-decoration: none;
         background-color: #fff;
-        border: 1px solid #D12026;
+        border: 1px solid #6B1118;
         -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
         -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -146,61 +143,61 @@ li>a:hover{
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     }
     .pagination .page-item .page-link:hover {
-        background: #D12026;
+        background: #6B1118;
         color: #fff !important;
-        border-color: #D12026;
+        border-color: #6B1118;
     }
     .product-summery .price-box .regular-price {
         font-size: 18px;
         font-weight: 600;
         margin-right: 5px;
-        color: #D12026;
+        color: #6B1118;
     }
     .quantity .cart-plus-minus>.qtybutton:hover {
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
-        background-color: #D12026;
+        background-color: #6B1118;
         color: #fff;
     }
     .product-details-img .single-product-thumb .swiper-slide-thumb-active img {
         cursor: pointer;
-        border-color: #D12026;
+        border-color: #6B1118;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .product-details-img .single-product-thumb .swiper-button-prev i:hover, .product-details-img .single-product-thumb .swiper-button-next i:hover {
         color: #fff;
-        background: #D12026 !important;
+        background: #6B1118!important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     .single-product-tab .nav-tabs .nav-item .nav-link.active {
-        color: #D12026;
+        color: #6B1118;
     }
     .myaccount-tab-menu a:hover, .myaccount-tab-menu a.active {
-        background-color: #D12026;
-        border-color: #D12026;
+        background-color: #6B1118;
+        border-color: #6B1118;
         color: #fff !important;
     }
     .myaccount-content .welcome strong {
         font-weight: 600;
-        color: #D12026;
+        color: #6B1118;
     }
     .checkbox-form .title::before {
         content: "";
         width: 100px;
         height: 2px;
-        background: #D12026;
+        background: #6B1118;
         position: absolute;
         top: 100%;
         left: 0;
     }
     .your-order-area .title::before {
         content: "";
-        background: #D12026;
+        background: #6B1118;
         width: 100px;
         height: 2px;
         left: 0;
@@ -208,56 +205,56 @@ li>a:hover{
         position: absolute;
     }
     .payment-accordion .single-payment .panel-title .collapse-off:hover {
-        background: #D12026;
+        background: #6B1118;
         color: #fff !important;
     }
     .section-title span {
         content: "";
         position: absolute;
-        background: #D12026;
+        background: #6B1118;
         width: 100px;
         height: 2px;
     }
     .offcanvas-btn-close > i{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .pe-7s-angle-left{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .pe-7s-angle-left:hover{
         color: #fff !important;
-        background: #D12026 !important;
+        background: #6B1118!important;
     }
     .product-carousel .swiper-button-prev i:hover, .product-carousel .swiper-button-next i:hover, .product-deal-carousel .swiper-button-prev i:hover, .product-deal-carousel .swiper-button-next i:hover {
         color: #fff;
-        background: #D12026 !important;
+        background: #6B1118!important;
         -webkit-transition: .3s;
         -o-transition: .3s;
         transition: .3s;
     }
     a:hover {
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .scroll-top:hover{
-        background: #D12026;
+        background: #6B1118;
     }
     .pe-7s-angle-right{
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .pe-7s-angle-right:hover{
         color: #fff !important;
-        background: #D12026 !important;
+        background: #6B1118!important;
     }
     .pe-7s-angle-left:hover{
         color: #fff !important;
     }
     .btn-primary {
-        border-color: #D12026;
-        background-color: #D12026;
+        border-color: #6B1118;
+        background-color: #6B1118;
         color: #fff;
     } .btn-primary:hover {
-        border-color: #D12026;
-        background-color: #D12026;
+        border-color: #6B1118;
+        background-color: #6B1118;
         color: #fff;
     }
     .social-button {
@@ -442,25 +439,25 @@ li>a:hover{
     }
 .custom{
     width: 100%;
-    background: #D12026;
+    background: #6B1118;
     color: #FFFFFF;
     padding-top: 16px;
     padding-bottom: 16px;
 }
     .actions a:hover, a>i:hover {
         background: #fff !important;
-        color: #D12026 !important;
+        color: #6B1118!important;
     }
     .btn-primary {
-        border-color: #D12026;
-        background: #D12026 !important;
+        border-color: #6B1118;
+        background: #6B1118!important;
         color: #fff !important;
 
     }
 
     .btn-primary:hover {
-        border-color: #D12026;
-        background: #D12026 !important;
+        border-color: #6B1118;
+        background: #6B1118!important;
         color: #fff !important;
 
     }
@@ -481,18 +478,18 @@ li>a:hover{
     }
     .product .thumb .actions .action:hover:not(.active) {
         color: #fff;
-         background-color: #D12026 !important;
+         background-color: #6B1118!important;
     }
     .action i:hover{
-      background: #D12026 !important;
+      background: #6B1118!important;
         color: #FFFFFF !important;
     }
 
     .pagination .page-item .page-link.active {
-        background: #D12026;
+        background: #6B1118;
         color: #fff;
         color: #fff !important;
-        border-color: #D12026;
+        border-color: #6B1118;
     }
     @-webkit-keyframes blinker {
         from {opacity: 1.0;}
@@ -751,7 +748,7 @@ li>a:hover{
     {
         height: 80%;
         width: 80%;
-        border: 3px solid #F00;
+        border: 3px solid #6B1118;
         border-radius: 50%;
         border-bottom-color: transparent;
         border-left-color: transparent;
@@ -779,7 +776,7 @@ li>a:hover{
 
     div#circlesLoader div.circle div.innerRing
     {
-        border: 1px solid #F00;
+        border: 1px solid #6B1118;
         height: 50%;
         width: 50%;
         border-radius: 50%;
@@ -804,8 +801,8 @@ li>a:hover{
 
 
      .email-box_error {
-        border: 1px solid #D12026;
-      /*  border-bottom: 3px solid #D12026;*/
+        border: 1px solid #6B1118;
+      /*  border-bottom: 3px solid #6B1118;*/
     }
     .email-box_success {
         border: 3px solid #5cb85c;
@@ -868,14 +865,14 @@ li>a:hover{
     .form-control:focus {
         color: #666666;
         background-color: #fff;
-        border-color: #D12026;
+        border-color: #6B1118;
         outline: 0;
         -webkit-box-shadow: 0 0 0 0.25rem rgb(255 69 69 / 25%);
         box-shadow: 0 0 0 0.25rem rgb(255 69 69 / 25%);
     }
     .input-item_error{
         background: #fff;
-        border: 1px solid #D12026 !important;
+        border: 1px solid #6B1118!important;
         border-radius: 0;
         height: 42px;
         width: 100%;
@@ -894,7 +891,7 @@ li>a:hover{
         padding-left: 10px;
         padding-right: 10px;
         width: 100%;
-        border: 2px solid #D12026;
+        border: 2px solid #6B1118;
     }
 
 
@@ -924,7 +921,7 @@ li>a:hover{
 
     .stars input:checked ~ label{
         color: gold;
-        text-shadow: 1px 1px #c60;
+        text-shadow: 1px 1px #6B1118;
     }
 
     .stars:not(:checked) > label:hover,
@@ -981,7 +978,7 @@ li>a:hover{
 
 .comment-error textarea{
     width: 100%;
-    border: 2px solid #D12026;
+    border: 2px solid #6B1118;
     padding: 0 10px;
     height: 140px;
 }
@@ -1000,7 +997,7 @@ li>a:hover{
         outline: 0;
     }
 .checkout-border{
-    border: 1px solid #D12026 !important;
+    border: 1px solid #6B1118!important;
 }
     .select2-selection__rendered {
         line-height: 40px !important;
@@ -1239,8 +1236,8 @@ li>a:hover{
 }
 
 #quickview-customizations-list label.badge.selected {
-    background-color: #D12026 !important;
-    border-color: #D12026 !important;
+    background-color: #6B1118!important;
+    border-color: #6B1118!important;
     color: #fff !important;
 }
 
@@ -1250,7 +1247,7 @@ li>a:hover{
 
 /* ==========================================================================
    Brand color pass — added by Claude
-   Every #b22b40 in this file (80 instances) has been changed to #D12026,
+   Every #b22b40 in this file (80 instances) has been changed to #6B1118,
    the actual red sampled from your logo file, so the site's accent color
    now matches your logo/signage instead of a slightly different maroon.
 
@@ -1265,17 +1262,96 @@ li>a:hover{
    ========================================================================== */
 
 .product .thumb .badges span.sale {
-    background-color: #D12026;
+    background-color: #6B1118;
     color: #fff;
 }
 
 .product .thumb .actions .action:hover:not(.active),
 .product .thumb .actions .action:hover {
-    background-color: #D12026 !important;
+    background-color: #6B1118!important;
+    color: #fff;
+}
+/* Main Header */
+.header-area,
+.header-wrapper,
+.main-header {
+    background: #F8F3EC !important;
+    border-bottom: 1px solid #D8C1A5;
+    box-shadow: 0 2px 12px rgba(75, 51, 41, 0.08);
+}
+
+/* Logo */
+.header-logo img {
+    max-height: 75px;
+}
+
+/* Navigation */
+.main-menu ul li a,
+.navbar-nav .nav-link {
+    color: #6B1118 !important;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+/* Hover */
+.main-menu ul li a:hover,
+.navbar-nav .nav-link:hover {
+    color: #A78360 !important;
+}
+
+/* Active Menu */
+.main-menu ul li.active > a,
+.navbar-nav .nav-link.active {
+    color: #A78360 !important;
+}
+
+/* Header Icons */
+.header-icons i,
+.header-action i {
+    color: #6B1118 !important;
+}
+
+/* Cart Count */
+.cart-count,
+.cart-counter {
+    background: #6B1118 !important;
+    color: #fff !important;
+}
+
+/* Header Buttons */
+.header-area .btn,
+.header-area button {
+    background: #6B1118;
+    color: #fff;
+    border: 1px solid #6B1118;
+    border-radius: 3px;
+}
+
+.header-area .btn:hover,
+.header-area button:hover {
+    background: #A78360;
+    border-color: #A78360;
     color: #fff;
 }
 
+/* Dropdown Menu */
+.main-menu ul li .sub-menu {
+    background: #FFFCF8;
+    border-top: 2px solid #A78360;
+}
+
+.main-menu ul li .sub-menu a {
+    color: #4B3329 !important;
+}
+
+.main-menu ul li .sub-menu a:hover {
+    background: #F8F3EC;
+    color: #6B1118 !important;
+}
  </style>
+     <link rel="stylesheet" href="{{ asset('storefront/assets/css/style.css') }}?v={{ filemtime(public_path('storefront/assets/css/style.css')) }}">
+
     @stack('styles')
 </head>
 @php 

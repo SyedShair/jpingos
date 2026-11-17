@@ -151,7 +151,7 @@
 
                             <a href="javascript:void(0)" class="header-action-btn header-action-btn-cart">
                                 <i class="pe-7s-shopbag"></i>
-                            <span class="header-action-num">{{ $cartCount ?? 0 }}</span>     
+                            <span class="header-action-num" style="background-color: var(--mc-gold) !important; color: var(--mc-deep) !important;">{{ $cartCount ?? 0 }}</span>     
                            </a>
                             <a href="javascript:void(0)" class="header-action-btn header-action-btn-menu d-xl-none d-lg-block">
                                 <i class="fa fa-bars"></i>

@@ -742,7 +742,7 @@ img.first-image {
                                             </div>
                                             <div class="content">
                                                 <h5 class="title">
-                                                    <a href="{{ route('storefront.dish', $item->slug) }}">{{ $item->name }}</a>
+                                                    <a href="{{ route('storefront.dish', $item->slug) }}" style="text-transform: capitalize;">{{ $item->name }}</a>
                                                 </h5>
                                                 <span class="price">
                                                     @if(!is_null($item->discount_price))
@@ -796,7 +796,7 @@ img.first-image {
                                             </div>
                                             <div class="content">
                                                 <h5 class="title">
-                                                    <a href="{{ route('storefront.dish', $item->slug) }}">{{ $item->name }}</a>
+                                                    <a href="{{ route('storefront.dish', $item->slug) }}" style="text-transform: capitalize;">{{ $item->name }}</a>
                                                 </h5>
                                                 <span class="price">
                                                     @if(!is_null($item->discount_price))
@@ -853,7 +853,7 @@ img.first-image {
                                             </div>
                                             <div class="content">
                                                 <h5 class="title">
-                                                    <a href="{{ route('storefront.dish', $item->slug) }}">{{ $item->name }}</a>
+                                                    <a href="{{ route('storefront.dish', $item->slug) }}" style="text-transform: capitalize;">{{ $item->name }}</a>
                                                 </h5>
                                                 <span class="price">
                                                     <span class="new">£{{ number_format((float)$item->discount_price, 2) }}</span>

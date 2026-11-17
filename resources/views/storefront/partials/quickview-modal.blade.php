@@ -104,9 +104,9 @@
                         <div class="cart-wishlist-btn pb-4 mb-n3">
 
                             <div class="add-to_cart mb-3">
-                                <a class="btn btn-outline-dark btn-hover-primary"
+                                <a class="btn  btn-hover-primary"
                                    id="quickview-view-link"
-                                   href="">
+                                   href="#" style="background-color: #A78360; color: #fff; border-color: #A78360;">
                                    Buy Now
                                 </a>
                             </div>

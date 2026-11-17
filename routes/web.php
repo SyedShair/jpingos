@@ -18,6 +18,7 @@ use App\Http\Controllers\DeliveryCheckController;
 use App\Livewire\CategoryMedia\Manager as CategoryMediaManager;
 use App\Livewire\Settings\Manager as SettingsManager;
 use App\Livewire\Admin\NewsletterSubscribers;
+use App\Livewire\Admin\LoyaltyCoupons;
 use App\Http\Controllers\Storefront\MenuController;
 use App\Http\Controllers\Storefront\DealController;
 use App\Http\Controllers\Storefront\CategoryController;
@@ -36,6 +37,7 @@ use App\Http\Controllers\Storefront\TrackOrderController;
 use App\Http\Controllers\OrderPrintController;
 use App\Http\Controllers\Storefront\ContactController;
 use App\Http\Controllers\Storefront\NewsletterController;
+use App\Http\Controllers\Storefront\CouponController;
 use App\Livewire\ContactMessages\Manager as ContactMessagesManager;
 use App\Http\Controllers\PendingOrdersController;
 
@@ -82,6 +84,12 @@ Route::delete('/cart/{rowId}', [CartController::class, 'destroy'])->name('storef
 Route::post('/cart/bundle', [CartController::class, 'storeBundle'])->name('storefront.cart.store-bundle');
 
 Route::post('/checkout', [OrderController::class, 'store'])->name('storefront.checkout.store');
+
+// Checkout "Apply" button for reward codes. Throttled: codes are random, but
+// there is no reason to let anyone hammer the endpoint.
+Route::post('/checkout/coupon', [CouponController::class, 'check'])
+    ->middleware('throttle:10,1')
+    ->name('storefront.coupon.check');
 
 Route::get('/delivery-check', [DeliveryCheckController::class, 'show'])->name('delivery-check.show');
 Route::post('/delivery-check', [DeliveryCheckController::class, 'check'])->name('delivery-check.check');
@@ -187,9 +195,9 @@ Route::prefix('admin')->group(function () {
             Route::patch('{image}/primary', [MenuItemImageController::class, 'makePrimary'])->name('primary');
         });
 
-        
- 
-Route::get('/pending-orders/poll', [PendingOrdersController::class, 'poll'])->name('admin.pending-orders.poll');
+        // Pending-orders poll (admin only — URL is /admin/pending-orders/poll)
+        Route::get('/pending-orders/poll', [PendingOrdersController::class, 'poll'])->name('admin.pending-orders.poll');
+
         Route::post('menu/{menuItem}/images', [MenuItemImageController::class, 'store'])->name('menu.images.store');
         Route::post('menu/{menuItem}/images/reorder', [MenuItemImageController::class, 'reorder'])->name('menu.images.reorder');
 
@@ -214,5 +222,8 @@ Route::get('/pending-orders/poll', [PendingOrdersController::class, 'poll'])->na
 
         // Newsletter subscribers
         Route::get('/newsletter/subscribers', NewsletterSubscribers::class)->name('newsletter.subscribers');
+
+        // Loyalty reward coupons
+        Route::get('/loyalty-coupons', LoyaltyCoupons::class)->name('loyalty-coupons.index');
     });
 });

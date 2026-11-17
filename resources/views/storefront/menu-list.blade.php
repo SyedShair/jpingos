@@ -62,14 +62,15 @@
        TOOLBAR
     ========================================================= */
     .menu-toolbar-panel {
-        background: #f7f7f8;
-        border: 1px solid #ececec;
+        background: #A78360;
+        border: 1px solid #fef0e6;
         border-radius: 12px;
         padding: 20px;
+        color : #fff;
     }
 
     .menu-toolbar-count {
-        color: #6b7280;
+        color: #fff;
         font-size: 14px;
         margin-bottom: 12px;
     }
@@ -152,8 +153,8 @@
     }
 
     .shop_wrapper .product .product-inner {
-        background: #fff;
-        border: 1px solid #ececec;
+        background: #F8F3EC;
+        border: 1px solid #F8F3EC;
         border-radius: 12px;
         overflow: hidden;
         height: 100%;
@@ -314,8 +315,8 @@
        SIDEBAR CATEGORIES
     ========================================================= */
     .sidebar_widget .widget_inner {
-        background: #fff;
-        border: 1px solid #ececec;
+        background: #F8F3EC;
+        border: 1px solid #A78360;
         border-radius: 12px;
         padding: 24px;
     }
@@ -323,7 +324,7 @@
     .sidebar_widget .widget-title {
         font-weight: 800;
         font-size: 18px;
-        color: #1a1a1a;
+        color: #A78360;
     }
 
     .sidebar_widget .category-menu > li {
@@ -345,13 +346,13 @@
     .sidebar_widget .category-menu .dropdown li a {
         display: block;
         padding: 6px 0;
-        color: #4b5563;
+        color: #A78360;
         font-size: 14px;
     }
 
     .sidebar_widget .category-menu .dropdown li a.fw-bold,
     .sidebar_widget .category-menu > li > a.fw-bold {
-        color: #1a9c5c;
+        color: #fff;
     }
 
     .sidebar_widget .category-menu .menu-item-has-children {
@@ -405,8 +406,8 @@
         gap: 8px;
         width: 100%;
         background: #fff;
-        border: 1px solid #ff4545;
-        color: #ff4545;
+        border: 1px solid #A78360;
+        color: #A78360;
         border-radius: 30px;
         padding: 12px 20px;
         font-weight: 700;
@@ -506,6 +507,12 @@
         .sidebar_widget .category-menu .menu-item-has-children {
             padding-top: 4px;
         }
+    }
+    .btn-dark{
+      background-color: #A78360 !important;
+    }
+    .shop_wrapper .product .badges .featured-badge{
+      background-color: #A78360 !important;
     }
 </style>
 @endpush
