@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
-
+use App\Models\Category;
 class TrackOrderController extends Controller
 {
     public function index()
     {
-        return view('storefront.track-order');
+         $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get();
+        return view('storefront.track-order', compact('categories'));
     }
 
     public function lookup(Request $request)

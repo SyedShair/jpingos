@@ -14,8 +14,8 @@
     ========================================================== */
 
     .deals-list-page {
-        --ember: #D12026;
-        --ember-dark: #A5171C;
+        --ember: #A78360;
+        --ember-dark: #A78360;
         --charcoal: #1A1A1A;
         --cream: #FAF5EE;
         --gold: #D9A441;
@@ -408,7 +408,7 @@
     }
 
     .deals-list-page .deal-row .shop-list-btn .btn:hover {
-        background: var(--charcoal);
+        background: #A78360;
         border-color: var(--charcoal);
         color: #fff;
     }
@@ -429,7 +429,7 @@
         min-width: 44px;
         padding: 6px 8px;
 
-        background: var(--charcoal);
+        background: #A78360;
         color: #fff;
 
         border-radius: 8px;
@@ -445,14 +445,17 @@
         line-height: 1.1;
     }
 
-    .deals-list-page .single-countdown_text {
-        display: block;
-        color: #cbb9a9;
-        font-size: 8.5px;
-        text-transform: uppercase;
-        letter-spacing: .05em;
-        margin-top: 2px;
+     .single-countdown_text {
+        color: #fff !important;
+  
     }
+    .single-countdown_time {
+        color: #fff !important;
+    }
+.btn-outline-dark{
+    background-color: #A78360;
+    color: #fff;
+}
 
 
     /* =========================================================
@@ -910,10 +913,52 @@
     }
 
     @keyframes cd-pulse {
-        0%, 100% { box-shadow: 0 6px 16px rgba(209, 32, 38, .3); }
-        50% { box-shadow: 0 6px 22px rgba(209, 32, 38, .65); }
+        0%, 100% { box-shadow: 0 6px 16px #A78360; }
+        50% { box-shadow: 0 6px 22px #A78360; }
+    }
+ #dish-customizations-list label.badge {
+        position: relative;
+        transition: background-color .15s ease, border-color .15s ease, color .15s ease;
     }
 
+    #dish-customizations-list label.badge input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        pointer-events: none;
+    }
+
+    #dish-customizations-list label.badge.selected {
+        background-color: #A78360 !important;
+        border-color: #A78360 !important;
+        color: #fff !important;
+    }
+
+    #dish-customizations-list label.badge.selected .text-danger {
+        color: #fff !important;
+    }
+
+    /* The theme's default .thumb img styling is built for a two-image
+       hover-swap effect (a second image fades in over the first on
+       hover). The related-items carousel below only renders one image
+       per item (.first-image, no second image), so that same rule was
+       leaving it at opacity:0 until hovered. Force it visible here
+       rather than editing the shared theme stylesheet. */
+    .product-carousel .thumb .image .first-image {
+        opacity: 1 !important;
+    }
+    .sidebar_widget .widget_inner {
+        background: #FFFCF8;
+    }
+    .single-countdown  {
+        background: #A78360;
+        color: #fff;
+    }
+    .deals-list-page .deal-row .shop-list-btn .btn{
+        color: #fff;
+        border-color: #A78360;
+    }
 </style>
 
 @endpush
@@ -991,11 +1036,11 @@
                      share one row with the grid/list toggle.
                 ================================================== --}}
 
-                <div class="deals-toolbar-panel" data-aos="fade-up" data-aos-delay="100">
+                <div class="deals-toolbar-panel" data-aos="fade-up" data-aos-delay="100" style="background: #A78360; border: 1px solid #A78360; border-radius: 12px; padding: 20px; margin-bottom: 40px;">
 
                     <div class="deals-toolbar-top">
 
-                        <div class="deals-toolbar-count">
+                        <div class="deals-toolbar-count"  style="color:#fff;">
 
                             @if ($deals->total() > 0)
 
@@ -1013,7 +1058,7 @@
 
                         </div>
 
-                        <div class="deals-toolbar-actions">
+                        <div class="deals-toolbar-actions"  style="color:#fff;">
 
                             {{-- Mobile-only trigger for the filter drawer (sidebar) --}}
                             <button type="button" class="deals-filter-trigger d-lg-none" id="deals-filter-open">
@@ -1820,7 +1865,7 @@
                  $typeLabels, $typeCounts, $recentDeals — just restyled)
             ================================================== --}}
 
-            <div class="col-lg-3 col-12 col-custom deals-filter-col" id="deals-filter-panel">
+            <div class="col-lg-3 col-12 col-custom deals-filter-col" id="deals-filter-panel"  style="background: #FAF5EE; border: 1px solid #A78360; border-radius: 12px; padding: 20px; margin-bottom: 40px;">
 
                 <aside class="sidebar_widget mt-10 mt-lg-0">
 
@@ -1828,7 +1873,7 @@
                         class="widget_inner"
                         data-aos="fade-up"
                         data-aos-delay="200"
-                    >
+                    style="background: #FAF5EE;">
                         <div class="d-flex justify-content-between align-items-center d-lg-none mb-3 deals-filter-drawer-head">
                             <h5 class="mb-0">Filter Deals</h5>
                             <button type="button" id="deals-filter-close" aria-label="Close filters">

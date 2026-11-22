@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
-
+use App\Models\Category;
 class ContactController extends Controller
 {
     public function index()
     {
-        return view('storefront.contact');
+         $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get();
+        return view('storefront.contact', compact('categories'));
     }
 
     public function store(Request $request)

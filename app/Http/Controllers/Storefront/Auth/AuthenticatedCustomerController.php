@@ -5,12 +5,19 @@ namespace App\Http\Controllers\Storefront\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Category;
 class AuthenticatedCustomerController extends Controller
 {
     public function create()
     {
-        return view('storefront.auth.login');
+         $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get();
+        return view('storefront.auth.login', compact('categories'));
     }
 
     public function store(Request $request)

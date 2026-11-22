@@ -7,12 +7,19 @@ use App\Mail\CustomerResetPasswordEmail;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\Category;
 class ForgotPasswordController extends Controller
 {
     public function create()
     {
-        return view('storefront.auth.forgot-password');
+         $categories = Category::topLevel()
+            ->active()
+            ->ordered()
+            ->with([
+                'children' => fn ($q) => $q->active()->ordered()
+            ])
+            ->get();
+        return view('storefront.auth.forgot-password', compact('categories'));
     }
 
     public function send(Request $request)
