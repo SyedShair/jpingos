@@ -16111,46 +16111,70 @@ input[type="checkbox"]:checked + label:after {
       -ms-transform: scaleY(1);
           transform: scaleY(1);
 }
+/* =====================================================================
+   MEGA MENU — bigger, automatically responsive, built for lots of categories
 
-/* Mega Menu */
+   Replaces your old .mega-menu block (all of it). Load it AFTER the theme CSS.
+   It keeps the theme's open/close mechanism (closed = scaleY(0); the theme's
+   hover rule opens it), so nothing else in your menu needs to change.
+   ===================================================================== */
+
 .mega-menu {
+  /* ---- the knobs: change these, nothing else ---- */
+  --mega-accent: #6B1118;
+  --mega-text: #212121;
+  --mega-col-min: 230px;                          /* narrowest a column can be. Smaller = more columns fit */
+  --mega-width: min(1320px, calc(100vw - 30px));  /* panel width on desktop, never wider than the screen */
+  --mega-max-height: 75vh;                        /* taller than this scrolls instead of running off-screen */
+
   background: #fff;
-  padding: 30px;
-  -webkit-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-  -webkit-transform-origin: 0 0 0;
-      -ms-transform-origin: 0 0 0;
-          transform-origin: 0 0 0;
-  -webkit-transform: scaleY(0);
-      -ms-transform: scaleY(0);
-          transform: scaleY(0);
+  padding: 40px 44px;
   position: absolute;
-  width: calc(100% + 185px);
-  left: 15px;
-  right: auto;
   top: 100%;
-  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  left: 50%;                                       /* centred under the menu bar... */
+  width: var(--mega-width);
+  margin-left: calc(var(--mega-width) / -2);       /* ...using margin, so it never fights the scaleY open/close */
   z-index: 99;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-  border-bottom: 3px solid #6B1118;
+  border-bottom: 3px solid var(--mega-accent);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+
+  /* The responsive part: as many columns as fit, however many categories you add */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--mega-col-min), 1fr));
+  gap: 34px 44px;
+  align-content: start;
+
+  /* Lots of categories: scroll inside the panel instead of overflowing the page */
+  max-height: var(--mega-max-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mega-accent) #eee;
+
+  /* Theme's open/close mechanism — leave as is */
+  transform: scaleY(0);
+  transform-origin: 0 0 0;
+  transition: all 0.3s ease-in-out;
 }
 
+.mega-menu::-webkit-scrollbar { width: 8px; }
+.mega-menu::-webkit-scrollbar-track { background: #eee; }
+.mega-menu::-webkit-scrollbar-thumb { background: var(--mega-accent); border-radius: 8px; }
+
+/* ---------- Each category group ---------- */
 .mega-menu > li {
   list-style: none;
+  min-width: 0;                                    /* lets long names wrap instead of stretching the column */
 }
 
 .mega-menu > li .mega-menu-title {
-  font-size: 18px;
-  font-weight: 600;
-  padding-bottom: 15px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--mega-text);
+  padding-bottom: 16px;
+  margin-bottom: 8px;
   position: relative;
   font-family: "Montserrat", sans-serif;
 }
@@ -16158,33 +16182,92 @@ input[type="checkbox"]:checked + label:after {
 .mega-menu > li .mega-menu-title::after {
   position: absolute;
   content: "";
-  background: #6B1118;
+  background: var(--mega-accent);
   bottom: 0;
   left: 0;
-  width: 50px;
-  height: 2px;
+  width: 56px;
+  height: 3px;
 }
 
 .mega-menu > li > ul {
   padding-left: 0;
+  margin: 0;
 }
 
-.mega-menu > li > ul a {
-  line-height: 1;
-  color: #212121;
+.mega-menu > li > ul a,
+.mega-menu > li > a {                              /* second selector: in case a category is a plain link with no sub-list */
+  line-height: 1.35;
+  color: var(--mega-text);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15.5px;
   display: block;
-  padding: 10px 0;
+  padding: 9px 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
+  overflow-wrap: anywhere;
+  transition: color 0.2s ease, padding-left 0.2s ease;
 }
 
-.mega-menu > li > ul a:hover {
-  color: #6B1118;
-  padding-left: 5px;
+.mega-menu > li > ul a:hover,
+.mega-menu > li > a:hover {
+  color: var(--mega-accent);
+  padding-left: 8px;
 }
 
+.mega-menu a:focus-visible {
+  outline: 2px solid var(--mega-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Very long lists ---------- */
+
+/* Only one group in the menu: flow its links across several columns */
+.mega-menu > li:only-child {
+  grid-column: 1 / -1;
+}
+.mega-menu > li:only-child > ul {
+  column-width: var(--mega-col-min);
+  column-gap: 44px;
+}
+.mega-menu > li:only-child > ul > li {
+  break-inside: avoid;
+}
+
+/* A group with 13+ links takes two columns' width and splits its links in two (desktop only) */
+@media (min-width: 992px) {
+  .mega-menu > li:has(> ul > li:nth-child(13)) {
+    grid-column: span 2;
+  }
+  .mega-menu > li:has(> ul > li:nth-child(13)) > ul {
+    column-count: 2;
+    column-gap: 44px;
+  }
+  .mega-menu > li:has(> ul > li:nth-child(13)) > ul > li {
+    break-inside: avoid;
+  }
+}
+
+/* ---------- Tablet & phone ---------- */
+@media (max-width: 991.98px) {
+  .mega-menu {
+    --mega-col-min: 160px;                         /* 1–2 columns on small screens */
+    --mega-max-height: 70vh;
+    left: 0;                                       /* same width as the menu bar, not centred on the page */
+    margin-left: 0;
+    width: 100%;
+    padding: 24px 20px;
+    gap: 24px 24px;
+  }
+
+  .mega-menu > li .mega-menu-title { font-size: 18px; }
+  .mega-menu > li > ul a,
+  .mega-menu > li > a { font-size: 15px; padding: 11px 0; }   /* bigger tap targets */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mega-menu,
+  .mega-menu a { transition: none; }
+}
 /* Actions */
 .header-actions {
   display: -webkit-box;

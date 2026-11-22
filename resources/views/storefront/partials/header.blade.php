@@ -57,7 +57,259 @@
         color: var(--bs-primary, #2fb35b);
     }
 </style>
+
+
+
 @endpush
+
+
+{{--
+    Full-screen site preloader.
+
+    Include it as the FIRST thing inside <body> in storefront/layouts/app.blade.php:
+
+        @include('storefront.partials.preloader')
+
+    It covers the page until everything has loaded, then fades out and removes
+    itself. Three things make sure it can never trap a visitor behind it:
+      1. the script hides it on "load" (after a short minimum, so it never just flashes);
+      2. the script hides it after 6s no matter what (a slow image shouldn't hold the page);
+      3. a pure-CSS fallback hides it after 6.5s even if the script never runs at all.
+--}}
+@php
+    $preloaderSettings = \App\Models\Setting::current();
+
+    $preloaderLogo = ! empty($preloaderSettings?->logo)
+        ? \Illuminate\Support\Facades\Storage::url($preloaderSettings->logo)
+        : asset('storefront/assets/images/logo/logo.png');
+
+    $preloaderName = $preloaderSettings?->site_name ?: config('app.name', 'Restaurant');
+@endphp
+
+<style>
+    #site-preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity .5s ease, visibility .5s ease;
+        /* CSS-only failsafe: hides the overlay even if the script below never runs. */
+        animation: sp-failsafe .01s linear 6.5s forwards;
+    }
+
+    #site-preloader.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    @keyframes sp-failsafe {
+        to { opacity: 0; visibility: hidden; pointer-events: none; }
+    }
+
+    #site-preloader .sp-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 24px;
+        text-align: center;
+    }
+
+    #site-preloader .sp-logo {
+        display: block;
+        max-width: 190px;
+        max-height: 72px;
+        width: auto;
+        height: auto;
+        animation: sp-pulse 2.4s ease-in-out infinite;
+    }
+
+    #site-preloader .sp-flame {
+        position: relative;
+        width: 76px;
+        height: 99px;
+    }
+
+    #site-preloader .sp-flame svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    /* Each layer flickers on its own rhythm, so the flame looks alive
+    
+       instead of pulsing as one block. */
+    #site-preloader .sp-f {
+        transform-box: fill-box;
+        transform-origin: 50% 100%;
+    }
+    #site-preloader .sp-f1 { animation: sp-flicker 1.15s ease-in-out infinite; }
+    #site-preloader .sp-f2 { animation: sp-flicker 0.85s ease-in-out infinite reverse; }
+    #site-preloader .sp-f3 { animation: sp-flicker 0.65s ease-in-out infinite; }
+
+    @keyframes sp-flicker {
+        0%, 100% { transform: scale(1, 1) rotate(0deg); }
+        25%      { transform: scale(.96, 1.06) rotate(-2deg); }
+        50%      { transform: scale(1.03, .96) rotate(1.5deg); }
+        75%      { transform: scale(.98, 1.04) rotate(-1deg); }
+    }
+
+    #site-preloader .sp-ember {
+        position: absolute;
+        bottom: 30px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #ff8a1f;
+        opacity: 0;
+        animation: sp-ember 1.8s ease-out infinite;
+    }
+    #site-preloader .sp-e1 { left: 18px; animation-delay: 0s; }
+    #site-preloader .sp-e2 { left: 36px; animation-delay: .6s; width: 4px; height: 4px; background: #ffb703; }
+    #site-preloader .sp-e3 { left: 54px; animation-delay: 1.1s; }
+    #site-preloader .sp-e4 { left: 28px; animation-delay: 1.4s; width: 3px; height: 3px; background: #D12026; }
+
+    @keyframes sp-ember {
+        0%   { transform: translateY(0) scale(1); opacity: 0; }
+        15%  { opacity: .9; }
+        100% { transform: translateY(-78px) scale(.2); opacity: 0; }
+    }
+
+    #site-preloader .sp-caption {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: #6b7280;
+    }
+
+    #site-preloader .sp-bar {
+        width: 150px;
+        height: 3px;
+        border-radius: 3px;
+        background: #f3e3e3;
+        overflow: hidden;
+    }
+
+    #site-preloader .sp-bar span {
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #D12026, #ff8a1f);
+        animation: sp-slide 1.2s ease-in-out infinite;
+    }
+
+    @keyframes sp-slide {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(260%); }
+    }
+
+    @keyframes sp-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: .82; transform: scale(.97); }
+    }
+
+    /* Respect "reduce motion": keep the picture, drop the movement.
+       (Selector targets descendants only, so the CSS failsafe on the
+       overlay itself keeps working.) */
+    @media (prefers-reduced-motion: reduce) {
+        #site-preloader .sp-inner * { animation: none !important; }
+        #site-preloader .sp-bar span { width: 100%; }
+        #site-preloader .sp-ember { display: none; }
+    }
+</style>
+
+<div id="site-preloader" role="status" aria-live="polite" aria-label="Loading {{ $preloaderName }}">
+    <div class="sp-inner">
+
+        <img class="sp-logo" src="{{ $preloaderLogo }}" alt="{{ $preloaderName }}" onerror="this.style.display='none'">
+
+        <div class="sp-flame" aria-hidden="true">
+            <span class="sp-ember sp-e1"></span>
+            <span class="sp-ember sp-e2"></span>
+            <span class="sp-ember sp-e3"></span>
+            <span class="sp-ember sp-e4"></span>
+
+            <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="sp-g1" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#ff5a1f"/><stop offset="1" stop-color="#D12026"/>
+                    </linearGradient>
+                    <linearGradient id="sp-g2" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#ffb703"/><stop offset="1" stop-color="#ff7a18"/>
+                    </linearGradient>
+                    <linearGradient id="sp-g3" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#ffd54a"/>
+                    </linearGradient>
+                </defs>
+                <path class="sp-f sp-f1" fill="url(#sp-g1)" d="M50 4 C54 26 80 40 80 76 C80 104 66 124 50 124 C34 124 20 104 20 76 C20 58 30 48 36 36 C38 46 44 50 46 50 C44 34 46 16 50 4 Z"/>
+                <path class="sp-f sp-f2" fill="url(#sp-g2)" d="M50 40 C53 56 68 64 68 88 C68 106 60 120 50 120 C40 120 32 106 32 88 C32 76 38 70 42 62 C43 68 47 70 48 70 C47 60 48 50 50 40 Z"/>
+                <path class="sp-f sp-f3" fill="url(#sp-g3)" d="M50 74 C52 84 59 89 59 100 C59 110 55 118 50 118 C45 118 41 110 41 100 C41 94 45 90 47 86 C48 90 50 91 50 91 C49 84 50 79 50 74 Z"/>
+            </svg>
+        </div>
+
+        <p class="sp-caption">Madras Cafe</p>
+        <div class="sp-bar" aria-hidden="true"><span></span></div>
+
+    </div>
+</div>
+
+{{-- Without JavaScript the script below can't run, so don't show it at all. --}}
+<noscript><style>#site-preloader { display: none !important; }</style></noscript>
+
+<script>
+(function () {
+    var overlay = document.getElementById('site-preloader');
+    if (! overlay) return;
+
+    var MIN_MS = 700;    // stay up at least this long, so a fast load doesn't just flash
+    var MAX_MS = 6000;   // never keep the visitor waiting longer than this
+
+    var shownAt = Date.now();
+    var hidden  = false;
+
+    function hide() {
+        if (hidden) return;
+        hidden = true;
+
+        overlay.classList.add('is-hidden');
+
+        // Remove it once the fade has finished, so it can't catch clicks or linger in the DOM.
+        setTimeout(function () {
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }, 700);
+    }
+
+    function pageLoaded() {
+        var remaining = Math.max(0, MIN_MS - (Date.now() - shownAt));
+        setTimeout(hide, remaining);
+    }
+
+    if (document.readyState === 'complete') {
+        pageLoaded();
+    } else {
+        window.addEventListener('load', pageLoaded);
+    }
+
+    // Failsafe: a slow image or a stalled request must not hold the page hostage.
+    setTimeout(hide, MAX_MS);
+
+    // Back/forward button: the browser may restore the page from its cache in
+    // whatever state it was left, so make sure the overlay isn't showing.
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) hide();
+    });
+})();
+</script>
 
 <div class="header section">
 

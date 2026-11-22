@@ -300,7 +300,7 @@ img.first-image {
                 <div class="col-12" data-aos="fade-up" data-aos-delay="300">
                     <div class="banner">
                         <div class="banner-image">
-                            <a href="shop-grid.html"><img src="{{ Storage::url($setting->banner_one ?? asset('storefront/assets/images/banner/big-banner2.png')) }}" alt="Banner"></a>
+                            <a href="{{ route('storefront.menu.index') }}"><img src="{{ Storage::url($setting->banner_one ?? asset('storefront/assets/images/banner/big-banner2.png')) }}" alt="Banner"></a>
                         </div>
                     </div>
                 </div>
@@ -600,7 +600,7 @@ img.first-image {
                 <div class="col-12" data-aos="fade-up" data-aos-delay="300">
                     <div class="banner">
                         <div class="banner-image">
-                            <a href="shop-grid.html"><img src="{{ $setting->banner_two ?? asset('storefront/assets/images/banner/big-banner2.png') }}" alt="Banner"></a>
+                            <a href="{{ route('storefront.menu.index') }}"><img src="{{ Storage::url($setting->banner_two) ?? asset('storefront/assets/images/banner/big-banner2.png') }}" alt="Banner"></a>
                         </div>
                     </div>
                 </div>
