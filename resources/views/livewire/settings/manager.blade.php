@@ -206,6 +206,17 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-3">Storefront</h5>
 
+                        <div class="mb-3">
+                            <label class="form-label" for="minimum-order">Minimum order</label>
+                            <div class="input-group">
+                                <span class="input-group-text">£</span>
+                                <input type="number" step="0.01" min="0" class="form-control" id="minimum-order"
+                                       wire:model="minimumOrder" placeholder="0.00">
+                            </div>
+                            <div class="form-text">Customers can't check out below this amount. Leave blank for no minimum.</div>
+                            @error('minimumOrder') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        </div>
+
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="show-delivery-checker" wire:model="showDeliveryChecker">
                             <label class="form-check-label" for="show-delivery-checker">

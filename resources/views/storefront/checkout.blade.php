@@ -1,3 +1,8 @@
+@php
+    // Minimum order set in Admin > Settings. 0 = no minimum.
+    $minimumOrder = (float) (\App\Models\Setting::current()->minimum_order ?? 0);
+    $belowMinimum = $minimumOrder > 0 && round((float) $cartSubtotal, 2) < round($minimumOrder, 2);
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -329,6 +334,40 @@
         .checkout-page .preorder-note i {
             color: #c99a1f;
             margin-top: 2px;
+        }
+
+        /* =========================================================
+           MINIMUM ORDER
+        ========================================================== */
+
+        .checkout-page .minimum-order-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #fdf0f2;
+            border: 1px solid #f1c6cd;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 13.5px;
+            color: var(--error);
+            margin-bottom: 20px;
+        }
+
+        .checkout-page .minimum-order-note i {
+            margin-top: 2px;
+        }
+
+        .checkout-page .minimum-order-note a {
+            color: var(--charcoal);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .checkout-page .checkout-continue-btn.is-blocked,
+        .checkout-page .checkout-continue-btn.is-blocked:hover {
+            opacity: .5;
+            cursor: not-allowed;
+            background: var(--muted);
         }
 
         /* =========================================================
@@ -707,6 +746,17 @@
 
                 <form id="checkout-info-form">
 
+                    @if ($belowMinimum)
+                        <div class="minimum-order-note" role="alert">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <span>
+                                The minimum order is <strong>£{{ number_format($minimumOrder, 2) }}</strong>.
+                                Add <strong>£{{ number_format($minimumOrder - (float) $cartSubtotal, 2) }}</strong> more to continue.
+                                <a href="{{ route('storefront.menu.index') }}">Add more items</a>
+                            </span>
+                        </div>
+                    @endif
+
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="checkout-section-title mb-0">Contact information</div>
 
@@ -941,7 +991,9 @@
                         <a href="{{ route('storefront.cart') }}" class="checkout-return-link">
                             <i class="fa fa-chevron-left"></i> Return to cart
                         </a>
-                        <button type="button" id="checkout-continue-btn" class="checkout-continue-btn">
+                        <button type="button" id="checkout-continue-btn"
+                                class="checkout-continue-btn {{ $belowMinimum ? 'is-blocked' : '' }}"
+                                @if ($belowMinimum) aria-disabled="true" @endif>
                             Continue to Payment
                         </button>
                     </div>
@@ -1089,6 +1141,7 @@
     const $preloaderText = $('#checkout-preloader-text');
 
     const cartSubtotal = parseFloat("{{ (float) $cartSubtotal }}");
+    const belowMinimum = @json($belowMinimum);
     const ukPostcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
     let deliveryAvailable = true;
@@ -1449,6 +1502,17 @@
     ========================================================== */
 
     $continueBtn.on('click', function (e) {
+
+        // Basket is below the minimum order set in Admin > Settings.
+        // (The server enforces this too — this just gives instant feedback.)
+        if (belowMinimum) {
+            e.preventDefault();
+            const note = document.querySelector('.minimum-order-note');
+            if (note) {
+                note.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return false;
+        }
 
         // Delivery: make sure the postcode in the box (typed OR pre-filled) has really been checked
         if (fulfilmentMethod() === 'delivery') {

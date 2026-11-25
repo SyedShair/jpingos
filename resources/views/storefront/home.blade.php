@@ -319,7 +319,7 @@ img.first-image {
                 <ul class="product-tab-nav nav justify-content-center mb-10 title-border-bottom mt-n3">
                     <li class="nav-item" data-aos="fade-up" data-aos-delay="300"><a class="nav-link active mt-3" data-bs-toggle="tab" href="#tab-product-all">All Menu</a></li>
                     <li class="nav-item" data-aos="fade-up" data-aos-delay="400"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-featured">Featured Dishes</a></li>
-                    <li class="nav-item" data-aos="fade-up" data-aos-delay="500"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-family"> Deals</a></li>
+                    <!-- <li class="nav-item" data-aos="fade-up" data-aos-delay="500"><a class="nav-link mt-3" data-bs-toggle="tab" href="#tab-product-family"> Deals</a></li> -->
                 </ul>
             </div>
             <!-- Tab End -->

@@ -1,3 +1,4 @@
+{{-- Save as: resources/views/livewire/orders/manager.blade.php  (replace your current file) --}}
 <div wire:poll.10s>
 
     {{-- =================================================
@@ -234,14 +235,29 @@
                                         @endif
                                     </td>
                                     <td class="text-end">
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-icon btn-outline-primary"
-                                            wire:click="viewOrder({{ $order->id }})"
-                                            title="View order"
-                                        >
-                                            <i class="material-icons-outlined" style="font-size: 16px;">visibility</i>
-                                        </button>
+                                        <div class="d-inline-flex gap-1">
+
+                                            {{-- Print receipt on the Star thermal printer (AJAX + toast) --}}
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-icon btn-outline-dark"
+                                                data-icon-only
+                                                onclick="printOrderReceipt({{ $order->id }}, this)"
+                                                title="Print receipt"
+                                            >
+                                                <i class="material-icons-outlined" style="font-size: 16px;">print</i>
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-icon btn-outline-primary"
+                                                wire:click="viewOrder({{ $order->id }})"
+                                                title="View order"
+                                            >
+                                                <i class="material-icons-outlined" style="font-size: 16px;">visibility</i>
+                                            </button>
+
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -571,9 +587,12 @@
                                 <option value="80">80mm</option>
                                 <option value="58">58mm</option>
                             </select>
-                            <button type="button" class="btn btn-sm btn-outline-dark" onclick="printOrderReceipt({{ $selectedOrder->id }})">
-                                <i class="material-icons-outlined" style="font-size:16px; vertical-align: text-bottom;">receipt</i> Print Receipt
+
+                            {{-- AJAX print to the Star printer — result shows as a toast --}}
+                            <button type="button" class="btn btn-sm btn-dark" onclick="printOrderReceipt({{ $selectedOrder->id }}, this)">
+                                <i class="material-icons-outlined" style="font-size:16px; vertical-align: text-bottom;">print</i> Print Receipt
                             </button>
+
                             <a href="{{ route('orders.print', ['order' => $selectedOrder->id, 'format' => 'a4']) }}" target="_blank" class="btn btn-sm btn-outline-dark">
                                 <i class="material-icons-outlined" style="font-size:16px; vertical-align: text-bottom;">description</i> Print A4
                             </a>
@@ -587,11 +606,3 @@
     @endif
 
 </div>
-
-<script>
-    function printOrderReceipt(orderId) {
-        const widthSelect = document.getElementById('thermal-width-select');
-        const width = widthSelect ? widthSelect.value : 80;
-        window.open(`/admin/orders/${orderId}/print?format=thermal&width=${width}`, '_blank');
-    }
-</script>

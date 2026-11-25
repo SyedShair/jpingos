@@ -57,4 +57,28 @@
 
 </body>
 
+<script>
+async function printOrderReceipt(orderId) {
+    const width = document.getElementById('thermal-width-select')?.value || 80;
+    const url = "{{ route('orders.print.escpos', ['order' => '__ID__']) }}".replace('__ID__', orderId);
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ width: width }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.message || 'Print failed');
+        // swap for your own toast if you have one
+        alert(data.message);
+    } catch (e) {
+        alert(e.message);
+    }
+}
+</script>
 </html>

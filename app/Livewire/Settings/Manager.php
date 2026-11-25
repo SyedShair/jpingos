@@ -33,6 +33,10 @@ class Manager extends Component
     public string $address = '';
     public string $mapUrl = '';
 
+    // Minimum basket value (food subtotal) a customer must reach to check out.
+    // Blank / 0 means "no minimum".
+    public string $minimumOrder = '';
+
     public array $openingHours = [];
     public bool $showDeliveryChecker = true;
 
@@ -50,6 +54,7 @@ class Manager extends Component
             'instagram'   => ['nullable', 'string', 'max:255'],
             'facebook'    => ['nullable', 'string', 'max:255'],
             'showDeliveryChecker' => ['boolean'],
+            'minimumOrder' => ['nullable', 'numeric', 'min:0', 'max:10000'],
             'address' => ['nullable', 'string', 'max:1000'],
             'mapUrl'  => ['nullable', 'url', 'max:500'],
             'openingHours.*.open'   => ['required_unless:openingHours.*.closed,true', 'nullable', 'date_format:H:i'],
@@ -70,6 +75,7 @@ class Manager extends Component
         $this->instagram  = $setting->instagram ?? '';
         $this->facebook   = $setting->facebook ?? '';
         $this->showDeliveryChecker = $setting->show_delivery_checker;
+        $this->minimumOrder = $setting->minimum_order > 0 ? (string) $setting->minimum_order : '';
         $this->address = $setting->address ?? '';
         $this->mapUrl  = $setting->map_url ?? '';
         $this->existingLogo      = $setting->logo;
@@ -102,6 +108,7 @@ class Manager extends Component
             'map_url' => $this->mapUrl ?: null,
             'opening_hours' => $this->openingHours,
             'show_delivery_checker' => $this->showDeliveryChecker,
+            'minimum_order' => round((float) ($this->minimumOrder ?: 0), 2),
         ];
 
         if ($this->newLogo) {

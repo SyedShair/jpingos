@@ -1,0 +1,33 @@
+
+PS C:\Windows\System32> Get-CimInstance Win32_Printer | Select-Object Name, ShareName, Shared, PortName | Format-Table -AutoSize
+
+Name                         ShareName Shared PortName
+----                         --------- ------ --------
+Star TSP143IIIBI Cutter                 False COM6:
+Microsoft Print to PDF                  False PORTPROMPT:
+HP ENVY 6000 series [3B3F59]            False WSD-757e2dc3-8df0-4a4c-a500-ed1bf8f92766
+
+
+PS C:\Windows\System32> $p = Get-CimInstance Win32_Printer -Filter "Name='Star TSP143IIIBI Cutter'"
+>> $p.Shared = $true
+>> $p.ShareName = "StarTSP"
+>> Set-CimInstance -InputObject $p
+PS C:\Windows\System32> Get-CimInstance Win32_Printer | Select-Object Name, ShareName, Shared, PortName | Format-Table -AutoSize
+
+Name                         ShareName Shared PortName
+----                         --------- ------ --------
+Star TSP143IIIBI Cutter      StarTSP     True COM6:
+Microsoft Print to PDF                  False PORTPROMPT:
+HP ENVY 6000 series [3B3F59]            False WSD-757e2dc3-8df0-4a4c-a500-ed1bf8f92766
+
+
+PS C:\Windows\System32> net view \\LAPTOP-FHDMOSJ0
+Shared resources at \\LAPTOP-FHDMOSJ0
+
+
+
+Share name  Type   Used as  Comment
+
+-------------------------------------------------------------------------------
+StarTSP     Print           Star TSP143IIIBI Cutter
+The command completed successfully.

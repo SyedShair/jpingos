@@ -1,4 +1,6 @@
 {{--
+    Save as: resources/views/livewire/orders/partials/queue-card.blade.php
+
     One order card, used by every column of the accept-queue board.
 
     Expects:
@@ -8,7 +10,8 @@
     This is @included inside the Livewire component's own view, so the
     wire:click / wire:model bindings below talk to AcceptQueue, and
     $adjustingOrderId / $adjustQuantities are its public properties.
-    The printOrder() helper comes from the x-data on the board's root.
+    printOrder() comes from the x-data on the board's root; thermal printing
+    calls window.printOrderReceipt() (admin layout) and shows a toast.
 --}}
 @php
     $typeLabel   = $order->order_type === 'dining' ? 'Dining' : ucfirst($order->order_type);
@@ -151,17 +154,20 @@
                 @switch($order->order_type)
                     @case('pickup') Picked Up @break
                     @case('dining') Served @break
-                    @default Handed to Driver @break                @endswitch
+                    @default Handed to Driver @break
+                @endswitch
             </button>
 
         @endif
 
     </div>
 
-    {{-- PRINT — available at every stage --}}
+    {{-- PRINT — available at every stage.
+         Receipt = AJAX print to the Star printer (toast shows the result).
+         A4 = printable page in a new tab. --}}
     <div class="card-print">
-        <button type="button" x-on:click="printOrder('{{ $printUrl }}', 'thermal')">Print receipt</button>
-        <button type="button" x-on:click="printOrder('{{ $printUrl }}', 'a4')">Print A4</button>
+        <button type="button" x-on:click="printOrder({{ $order->id }}, '{{ $printUrl }}', 'thermal', $el)">Print receipt</button>
+        <button type="button" x-on:click="printOrder({{ $order->id }}, '{{ $printUrl }}', 'a4', $el)">Print A4</button>
     </div>
 
 </div>

@@ -211,7 +211,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/orders', OrderManager::class)->name('orders.index');
         Route::get('/orders/accept', OrderAcceptQueue::class)->name('orders.accept');
         Route::get('/orders/{order:id}/print', [OrderPrintController::class, 'show'])->name('orders.print');
-
+Route::post('/admin/orders/{order:id}/print-escpos', [OrderPrintController::class, 'escpos'])
+    ->name('orders.print.escpos');
         // Slider section
         Route::resource('sliders', SliderController::class)->except(['show']);
         Route::patch('sliders/{slider}/toggle-active', [SliderController::class, 'toggleActive'])->name('sliders.toggle-active');
@@ -227,3 +228,67 @@ Route::prefix('admin')->group(function () {
         Route::get('/loyalty-coupons', LoyaltyCoupons::class)->name('loyalty-coupons.index');
     });
 });
+
+
+
+
+
+// ---------------------------------------------------------------
+// PASTE INTO routes/web.php  (TEMPORARY — remove after testing)
+// Open:  http://localhost:8000/escpos-test
+// Only runs when APP_ENV=local.
+//
+// Before this works:
+//   1. composer require mike42/escpos-php
+//   2. Windows > Printers & scanners > your Star printer >
+//      Printer properties > Sharing > tick "Share this printer"
+//      and give it a share name with NO spaces, e.g.  StarTSP
+//   3. Put that exact share name in $printerShare below.
+// ---------------------------------------------------------------
+
+use Mike42\Escpos\CapabilityProfile;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
+
+if (app()->environment('local')) {
+    Route::get('/escpos-test', function () {
+        $printerShare = 'StarTSP';   // <-- your printer's Windows share name
+
+        try {
+            // "simple" profile = basic code pages only. The "default" profile loads many
+            // Asian code pages that trigger a PHP "Ambiguous encoding" warning, which
+            // Laravel turns into an error.
+            $profile   = CapabilityProfile::load('simple');
+            $connector = new WindowsPrintConnector($printerShare);
+            $printer   = new Printer($connector, $profile);
+
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->setEmphasis(true);
+            $printer->text(config('app.name', 'Madras Cafe') . "\n");
+            $printer->setEmphasis(false);
+            $printer->text("PRINTER TEST\n");
+            $printer->text(now()->format('d/m/Y H:i:s') . "\n");
+            $printer->text(str_repeat('-', 42) . "\n");
+
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            // Always pass normal UTF-8 text (including £) — the library converts it
+            // to the printer's code page itself. Never use chr(156) or raw bytes.
+            $printer->text(str_pad('1 x Masala Dosa', 36) . "£6.50\n");
+            $printer->text(str_pad('2 x Garlic Naan', 36) . "£5.00\n");
+            $printer->text(str_repeat('-', 42) . "\n");
+
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->setEmphasis(true);
+            $printer->text("TEST PRINT OK\n");
+            $printer->setEmphasis(false);
+
+            $printer->feed(3);
+            $printer->cut();
+            $printer->close();
+
+            return 'Sent to printer "' . $printerShare . '".';
+        } catch (\Throwable $e) {
+            return response('Print failed: ' . $e->getMessage(), 500);
+        }
+    });
+}

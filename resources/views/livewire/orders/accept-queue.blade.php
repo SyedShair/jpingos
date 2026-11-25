@@ -3,11 +3,15 @@
     wire:poll.3s.keep-alive="$refresh"
     x-data="{
         thermalWidth: localStorage.getItem('thermalWidth') || '80',
-        printOrder(url, format) {
-            const query = format === 'thermal'
-                ? '?format=thermal&width=' + this.thermalWidth
-                : '?format=a4';
-            window.open(url + query, '_blank');
+
+        /* Thermal = AJAX print straight to the Star printer (toast shows the result).
+           A4 = printable page opened in a new tab. */
+        printOrder(id, url, format, el) {
+            if (format === 'thermal') {
+                window.printOrderReceipt(id, el, this.thermalWidth);
+                return;
+            }
+            window.open(url + '?format=a4', '_blank');
         },
 
         /* ---------- Uber-style looping order bell ---------- */
@@ -406,6 +410,7 @@
         }
 
         .accept-order-card .card-print button:hover { background: #f3f4f6; border-color: #9ca3af; }
+        .accept-order-card .card-print button[disabled] { opacity: .6; cursor: wait; }
 
         /* =========================================================
            ADJUST MODE

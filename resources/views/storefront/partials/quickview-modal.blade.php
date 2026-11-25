@@ -107,7 +107,7 @@
                                 <a class="btn  btn-hover-primary"
                                    id="quickview-view-link"
                                    href="#" style="background-color: #A78360; color: #fff; border-color: #A78360;">
-                                   Buy Now
+                                   View Full Product
                                 </a>
                             </div>
 

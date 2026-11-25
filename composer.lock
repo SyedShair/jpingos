@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41b30e8cbe2a1439a58ca03ef1de032d",
+    "content-hash": "208a6b8248239ed10cb45347587d4364",
     "packages": [
         {
             "name": "brick/math",
@@ -376,6 +376,66 @@
                 }
             ],
             "time": "2024-02-05T11:56:58+00:00"
+        },
+        {
+            "name": "dojo-engineering/dojo-php",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dojo-engineering/Dojo.PHP.git",
+                "reference": "b54d69a16b8ba1454560141402ee52dbf7301781"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dojo-engineering/Dojo.PHP/zipball/b54d69a16b8ba1454560141402ee52dbf7301781",
+                "reference": "b54d69a16b8ba1454560141402ee52dbf7301781",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dojo_PHP\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Dojo_PHP\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dojo",
+                    "email": "support@dojo.tech"
+                }
+            ],
+            "description": "The official Dojo PHP library, supporting PHP 7.4+",
+            "homepage": "https://github.com/dojo-engineering/Dojo.PHP",
+            "keywords": [
+                "api",
+                "dojo",
+                "package",
+                "php"
+            ],
+            "support": {
+                "source": "https://github.com/dojo-engineering/Dojo.PHP/tree/v2.0.0",
+                "issues": "https://github.com/dojo-engineering/Dojo.PHP/issues"
+            },
+            "time": "2025-10-09T10:38:10+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -2163,6 +2223,112 @@
                 }
             ],
             "time": "2026-08-31T15:40:58+00:00"
+        },
+        {
+            "name": "mike42/escpos-php",
+            "version": "v5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mike42/escpos-php.git",
+                "reference": "985d57cbfbef60bb98c08cb139714735f28d4518"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mike42/escpos-php/zipball/985d57cbfbef60bb98c08cb139714735f28d4518",
+                "reference": "985d57cbfbef60bb98c08cb139714735f28d4518",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-json": "*",
+                "ext-zlib": "*",
+                "mike42/gfx-php": "^1",
+                "php": ">=8.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11",
+                "squizlabs/php_codesniffer": "^4"
+            },
+            "suggest": {
+                "ext-gd": "Used for image printing if present.",
+                "ext-imagick": "Will be used for image printing if present. Required for PDF printing or use of custom fonts."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mike42\\": "src/Mike42"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Billington",
+                    "email": "michael.billington@gmail.com"
+                }
+            ],
+            "description": "PHP receipt printer library for use with ESC/POS-compatible thermal and impact printers",
+            "homepage": "https://github.com/mike42/escpos-php",
+            "keywords": [
+                "Epson",
+                "barcode",
+                "escpos",
+                "printer",
+                "receipt-printer"
+            ],
+            "support": {
+                "issues": "https://github.com/mike42/escpos-php/issues",
+                "source": "https://github.com/mike42/escpos-php/tree/v5.0"
+            },
+            "time": "2026-07-01T04:07:38+00:00"
+        },
+        {
+            "name": "mike42/gfx-php",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mike42/gfx-php.git",
+                "reference": "f13863c32b2ecd1d897565b85f2e1eaec8cb6d2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mike42/gfx-php/zipball/f13863c32b2ecd1d897565b85f2e1eaec8cb6d2e",
+                "reference": "f13863c32b2ecd1d897565b85f2e1eaec8cb6d2e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2.0"
+            },
+            "require-dev": {
+                "phpbench/phpbench": "^1",
+                "phpunit/phpunit": "^11",
+                "squizlabs/php_codesniffer": "^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mike42\\": "src/Mike42"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Billington",
+                    "email": "michael.billington@gmail.com"
+                }
+            ],
+            "description": "The pure PHP graphics library",
+            "homepage": "https://github.com/mike42/gfx-php",
+            "support": {
+                "issues": "https://github.com/mike42/gfx-php/issues",
+                "source": "https://github.com/mike42/gfx-php/tree/v1.0"
+            },
+            "time": "2026-06-29T17:32:07+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8528,7 +8694,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "dojo-engineering/dojo-php": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

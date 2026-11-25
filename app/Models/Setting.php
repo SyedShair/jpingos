@@ -10,7 +10,7 @@ class Setting extends Model
 protected $fillable = [
     'site_name', 'logo', 'banner_one', 'banner_two',
     'vat_number', 'address', 'map_url', 'email', 'phone', 'whatsapp', 'instagram', 'facebook',
-    'opening_hours', 'show_delivery_checker',
+    'opening_hours', 'show_delivery_checker','minimum_order',
 ];
 
     protected $casts = [

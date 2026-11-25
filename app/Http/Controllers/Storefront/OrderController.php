@@ -76,6 +76,22 @@ class OrderController extends Controller
 
         $subtotal = $this->cart->subtotal();
 
+        // Minimum order. Enforced here on the server — the checkout page
+        // only shows a friendly warning, it can't be relied on. Compared
+        // against the food subtotal (deal prices included), before the
+        // delivery fee and before any discount code.
+        $minimumOrder = (float) (Setting::current()->minimum_order ?? 0);
+
+        if ($minimumOrder > 0 && round((float) $subtotal, 2) < round($minimumOrder, 2)) {
+            return response()->json([
+                'message' => sprintf(
+                    'The minimum order is £%s. Please add £%s more to continue.',
+                    number_format($minimumOrder, 2),
+                    number_format($minimumOrder - (float) $subtotal, 2)
+                ),
+            ], 422);
+        }
+
         // Only delivery orders carry a fee. The fee itself comes from the
         // live postcode lookup on the checkout page; pickup, dining and
         // pre-order delivery are all zero.
